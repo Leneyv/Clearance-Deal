@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mariadb:10.11
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: clearance_secret_root
+      MYSQL_DATABASE: clearance_deal
+      MYSQL_USER: clearance_user
+      MYSQL_PASSWORD: clearance_secret_pw
+    volumes:
+      - db_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: clearance_user
+      WORDPRESS_DB_PASSWORD: clearance_secret_pw
+      WORDPRESS_DB_NAME: clearance_deal
+    volumes:
+      - ./wp-content:/var/www/html/wp-content
+
+volumes:
+  db_data:
