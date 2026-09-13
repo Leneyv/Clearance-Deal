@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 64" width="340" height="64" role="img" aria-label="Clearance Deal">
+  <defs>
+    <linearGradient id="cd-seal-w" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Seal / monogram -->
+  <circle cx="32" cy="32" r="28" fill="url(#cd-seal-w)" stroke="#f59e0b" stroke-width="2"/>
+  <circle cx="32" cy="32" r="22" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.55"/>
+  <text x="32" y="40" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" fill="#ffffff">CD</text>
+
+  <!-- Wordmark -->
+  <text x="76" y="32" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="27" letter-spacing="-0.5" fill="#ffffff">Clearance<tspan fill="#ef4444">Deal</tspan></text>
+
+  <!-- Divider rule -->
+  <rect x="77" y="40" width="30" height="2" fill="#f59e0b"/>
+
+  <!-- Tagline -->
+  <text x="77" y="52" font-family="Arial, Helvetica, sans-serif" font-weight="600" font-size="9.5" letter-spacing="1.6" fill="#94a3b8">PREMIUM DEALS &#183; VERIFIED DAILY</text>
+</svg>
