@@ -1334,27 +1334,27 @@ add_action( 'wp_footer', function () {
 	?>
 	<style id="clearance-countdown-css">
 	.deal-countdown {
-		display: flex;
+		display: inline-flex;
 		align-items: center;
-		gap: 6px;
+		gap: 4px;
 		background: linear-gradient(135deg, #e53e3e 0%, #dd6b20 100%);
 		color: #fff;
-		font-size: 12.5px;
+		font-size: 10px;
 		font-weight: 700;
-		padding: 7px 12px;
-		border-radius: 6px;
-		margin: 10px 0 8px;
-		box-shadow: 0 2px 10px rgba(229,62,62,0.35);
+		padding: 4px 8px;
+		border-radius: 4px;
+		margin: 6px 0 5px;
+		box-shadow: 0 2px 8px rgba(229,62,62,0.3);
 		animation: cd-glow 2.2s ease-in-out infinite;
 		letter-spacing: 0.01em;
 		line-height: 1.3;
 	}
 	.deal-countdown-timer {
 		font-family: 'Courier New', Courier, monospace;
-		font-size: 13.5px;
+		font-size: 10.5px;
 		font-weight: 900;
-		min-width: 130px;
-		letter-spacing: 0.03em;
+		min-width: 100px;
+		letter-spacing: 0.02em;
 		flex-shrink: 0;
 	}
 	@keyframes cd-glow {
