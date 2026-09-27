@@ -1318,7 +1318,7 @@ function clearance_deal_countdown_html() {
 	<div class="deal-countdown">
 		<span class="deal-countdown-icon">⏱</span>
 		<span class="deal-countdown-label">Offer expires in:</span>
-		<span class="deal-countdown-timer" data-countdown>1 hr 38 min 00 sec</span>
+		<span class="deal-countdown-timer" data-countdown>01:38:00 hrs</span>
 	</div>
 	<?php
 }
@@ -1353,7 +1353,7 @@ add_action( 'wp_footer', function () {
 		font-family: 'Courier New', Courier, monospace;
 		font-size: 10.5px;
 		font-weight: 900;
-		min-width: 100px;
+		min-width: 80px;
 		letter-spacing: 0.02em;
 		flex-shrink: 0;
 	}
@@ -1399,9 +1399,9 @@ add_action( 'wp_footer', function () {
 			var m = Math.floor((remaining % 3600) / 60);
 			var s = remaining % 60;
 
-			var display = h + ' hr ' +
-			              String(m).padStart(2, '0') + ' min ' +
-			              String(s).padStart(2, '0') + ' sec';
+			var display = String(h).padStart(2, '0') + ':' +
+			              String(m).padStart(2, '0') + ':' +
+			              String(s).padStart(2, '0') + ' hrs';
 
 			document.querySelectorAll('[data-countdown]').forEach(function (el) {
 				el.textContent = display;
