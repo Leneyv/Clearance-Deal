@@ -62,12 +62,17 @@ get_header();
 	var states = document.querySelectorAll('.ch-hero-state');
 	if (!states.length) return;
 	var current = 0;
+	var FADE_MS = 700;
 	setInterval(function () {
-		states[current].classList.remove('ch-hero-state--active');
-		states[current].setAttribute('aria-hidden', 'true');
+		var outgoing = current;
 		current = (current + 1) % states.length;
-		states[current].classList.add('ch-hero-state--active');
-		states[current].removeAttribute('aria-hidden');
+		var incoming = current;
+		states[outgoing].classList.remove('ch-hero-state--active');
+		states[outgoing].setAttribute('aria-hidden', 'true');
+		setTimeout(function () {
+			states[incoming].classList.add('ch-hero-state--active');
+			states[incoming].removeAttribute('aria-hidden');
+		}, FADE_MS + 80);
 	}, 4000);
 }());
 </script>
