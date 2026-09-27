@@ -1691,9 +1691,8 @@ a {
     font-size: clamp(2.5rem, 6vw, 5rem);
     margin-bottom: 1.5rem;
 }
-.ch-hero-h1 span {
-    color: #e8420a;
-}
+.ch-scroll-orange { color: #e8420a; }
+.ch-scroll-coral  { color: #EE6B5E; }
 .ch-hero-sub {
     color: #9ca3af;
     font-size: 1.1rem;
@@ -1813,22 +1812,28 @@ a {
 /* ==========================================
    Hero text crossfade (grid stacking)
    ========================================== */
-.ch-hero-text-wrap {
-    display: grid;
-    margin-bottom: 2.5rem;
+/* Hero scroll slots */
+.ch-scroll-slot {
+    display: block;
+    overflow: hidden;
+    position: relative;
 }
-.ch-hero-state {
-    grid-area: 1 / 1;
-    opacity: 0;
-    transition: opacity 0.7s ease;
+.ch-scroll-cur,
+.ch-scroll-nxt {
+    display: block;
+    will-change: transform;
+    transition: transform 0.52s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ch-scroll-nxt {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    transform: translateY(100%);
     pointer-events: none;
 }
-.ch-hero-state--active {
-    opacity: 1;
-    pointer-events: auto;
-}
+.ch-scroll-active .ch-scroll-cur { transform: translateY(-100%); }
+.ch-scroll-active .ch-scroll-nxt { transform: translateY(0); }
 @media (prefers-reduced-motion: reduce) {
-    .ch-hero-state { transition: none; }
+    .ch-scroll-cur, .ch-scroll-nxt { transition: none; }
 }
 
 /* Kenya badge variant */

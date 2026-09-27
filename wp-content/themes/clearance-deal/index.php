@@ -16,21 +16,20 @@ get_header();
 <section class="ch-hero">
 	<div class="ch-hero-inner">
 
-		<!-- Crossfading text block: badge + heading swap every 4 s -->
-		<div class="ch-hero-text-wrap" aria-live="polite">
-			<!-- State 1: theclearancehouse style (active by default) -->
-			<div class="ch-hero-state ch-hero-state--active">
-				<div class="ch-hero-badge">Updated daily · Top brands</div>
-				<h1 class="ch-hero-h1">Every clearance sale.<br><span>One place.</span></h1>
-			</div>
-			<!-- State 2: Kenya trust style -->
-			<div class="ch-hero-state" aria-hidden="true">
-				<div class="ch-hero-badge ch-hero-badge--kenya">
-					<span class="ch-green-dot"></span>Kenya's Trusted Clearance Store
-				</div>
-				<h1 class="ch-hero-h1">Genuine Products.<br><span class="ch-hero-h1--coral">Unbeatable Prices.</span></h1>
-			</div>
+		<div class="ch-hero-badge ch-hero-badge--kenya">
+			<span class="ch-green-dot"></span>Kenya's Trusted Clearance Store
 		</div>
+
+		<h1 class="ch-hero-h1" aria-live="polite">
+			<span class="ch-scroll-slot">
+				<span class="ch-scroll-cur">Every clearance sale.</span>
+				<span class="ch-scroll-nxt" aria-hidden="true">Genuine Products.</span>
+			</span>
+			<span class="ch-scroll-slot">
+				<span class="ch-scroll-cur ch-scroll-orange">One place.</span>
+				<span class="ch-scroll-nxt ch-scroll-coral" aria-hidden="true">Unbeatable Prices.</span>
+			</span>
+		</h1>
 
 		<p class="ch-hero-sub">6,000+ sales from top brands — all on sale, up to 80% off. Stop tab-switching. Start saving.</p>
 		<div class="ch-hero-stats">
@@ -55,21 +54,45 @@ get_header();
 </section>
 <script>
 (function () {
-	var states = document.querySelectorAll('.ch-hero-state');
-	if (!states.length) return;
-	var current = 0;
-	var FADE_MS = 700;
-	setInterval(function () {
-		var outgoing = current;
-		current = (current + 1) % states.length;
-		var incoming = current;
-		states[outgoing].classList.remove('ch-hero-state--active');
-		states[outgoing].setAttribute('aria-hidden', 'true');
+	var PAUSE   = 4000;
+	var DUR     = 520;
+	var STAGGER = 120;
+	var states  = [
+		[ { text: 'Every clearance sale.', cls: '' },           { text: 'One place.',         cls: 'ch-scroll-orange' } ],
+		[ { text: 'Genuine Products.',      cls: '' },           { text: 'Unbeatable Prices.', cls: 'ch-scroll-coral'  } ]
+	];
+	var slots = document.querySelectorAll('.ch-scroll-slot');
+	if (!slots.length) return;
+	var idx = 0;
+
+	function scrollSlot(slot, next, delay) {
+		var cur = slot.querySelector('.ch-scroll-cur');
+		var nxt = slot.querySelector('.ch-scroll-nxt');
+		nxt.textContent = next.text;
+		nxt.className   = 'ch-scroll-nxt ' + next.cls;
 		setTimeout(function () {
-			states[incoming].classList.add('ch-hero-state--active');
-			states[incoming].removeAttribute('aria-hidden');
-		}, FADE_MS + 80);
-	}, 4000);
+			slot.classList.add('ch-scroll-active');
+			setTimeout(function () {
+				cur.style.transition = 'none';
+				nxt.style.transition = 'none';
+				slot.classList.remove('ch-scroll-active');
+				cur.textContent = next.text;
+				cur.className   = 'ch-scroll-cur ' + next.cls;
+				requestAnimationFrame(function () {
+					requestAnimationFrame(function () {
+						cur.style.transition = '';
+						nxt.style.transition = '';
+					});
+				});
+			}, DUR + 80);
+		}, delay);
+	}
+
+	setInterval(function () {
+		var next = (idx + 1) % states.length;
+		slots.forEach(function (slot, i) { scrollSlot(slot, states[next][i], i * STAGGER); });
+		idx = next;
+	}, PAUSE);
 }());
 </script>
 
