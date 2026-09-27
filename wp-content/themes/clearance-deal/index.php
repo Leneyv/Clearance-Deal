@@ -13,41 +13,125 @@ get_header();
 ?>
 
 <!-- Hero Section -->
-<section class="hero">
-	<div class="hero-container">
-		<h1 class="hero-rolling-heading" id="heroRollingHeading">Find the Deepest <span>Clearance Price Cuts</span></h1>
-		<p>Verified sales, promo codes, and clearance deals updated hourly from top retailers.</p>
-		<form role="search" method="get" class="search-bar-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-			<input type="search" placeholder="Search for stores, brands, or items..." value="<?php echo get_search_query(); ?>" name="s" required>
-			<button type="submit">Search Deals</button>
-		</form>
+<section class="ch-hero">
+	<div class="ch-hero-inner">
+
+		<!-- Crossfading text block: badge + heading swap every 4 s -->
+		<div class="ch-hero-text-wrap" aria-live="polite">
+			<!-- State 1: theclearancehouse style (active by default) -->
+			<div class="ch-hero-state ch-hero-state--active">
+				<div class="ch-hero-badge">Updated daily · 200+ brands</div>
+				<h1 class="ch-hero-h1">Every clearance sale.<br><span>One place.</span></h1>
+			</div>
+			<!-- State 2: Kenya trust style -->
+			<div class="ch-hero-state" aria-hidden="true">
+				<div class="ch-hero-badge ch-hero-badge--kenya">
+					<span class="ch-green-dot"></span>Kenya's Trusted Clearance Store
+				</div>
+				<h1 class="ch-hero-h1">Genuine Products.<br><span class="ch-hero-h1--coral">Unbeatable Prices.</span></h1>
+			</div>
+		</div>
+
+		<p class="ch-hero-sub">30,000+ products from 200+ top brands — all on sale, up to 80% off. Stop tab-switching. Start saving.</p>
+		<div class="ch-hero-btns">
+			<a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="ch-btn-primary">Browse Deals</a>
+			<a href="<?php echo esc_url( home_url( '/contact' ) ); ?>" class="ch-btn-outline">Get Deal Alerts</a>
+		</div>
+		<div class="ch-hero-stats">
+			<div class="ch-stat">
+				<div class="ch-stat-num">30,000+</div>
+				<div class="ch-stat-label">Products on sale</div>
+			</div>
+			<div class="ch-stat">
+				<div class="ch-stat-num">100+</div>
+				<div class="ch-stat-label">Top brands</div>
+			</div>
+			<div class="ch-stat">
+				<div class="ch-stat-num">80%</div>
+				<div class="ch-stat-label">Max discount</div>
+			</div>
+			<div class="ch-stat">
+				<div class="ch-stat-num">Daily</div>
+				<div class="ch-stat-label">Update frequency</div>
+			</div>
+		</div>
 	</div>
 </section>
-
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-	var heading = document.getElementById('heroRollingHeading');
-	if (!heading) {
-		return;
-	}
-
-	var messages = [
-		'Find the Deepest <span>Clearance Price Cuts</span>',
-		'Every Day <span>New Deals</span> in Kenya',
-		'Limited Stock <span>Buy Before It\'s Gone</span>'
-	];
-	var index = 0;
-
+(function () {
+	var states = document.querySelectorAll('.ch-hero-state');
+	if (!states.length) return;
+	var current = 0;
 	setInterval(function () {
-		heading.classList.add('is-fading');
-		setTimeout(function () {
-			index = (index + 1) % messages.length;
-			heading.innerHTML = messages[index];
-			heading.classList.remove('is-fading');
-		}, 200);
-	}, 1750);
-});
+		states[current].classList.remove('ch-hero-state--active');
+		states[current].setAttribute('aria-hidden', 'true');
+		current = (current + 1) % states.length;
+		states[current].classList.add('ch-hero-state--active');
+		states[current].removeAttribute('aria-hidden');
+	}, 4000);
+}());
 </script>
+
+<!-- Brand Ticker -->
+<div class="ch-ticker-bar">
+	<div class="ch-ticker-track">
+		<span>Nike<span class="ch-ticker-dot">·</span></span>
+		<span>adidas<span class="ch-ticker-dot">·</span></span>
+		<span>Lululemon<span class="ch-ticker-dot">·</span></span>
+		<span>The North Face<span class="ch-ticker-dot">·</span></span>
+		<span>Michael Kors<span class="ch-ticker-dot">·</span></span>
+		<span>Patagonia<span class="ch-ticker-dot">·</span></span>
+		<span>PUMA<span class="ch-ticker-dot">·</span></span>
+		<span>Vans<span class="ch-ticker-dot">·</span></span>
+		<span>Timberland<span class="ch-ticker-dot">·</span></span>
+		<span>Under Armour<span class="ch-ticker-dot">·</span></span>
+		<span>Zara<span class="ch-ticker-dot">·</span></span>
+		<span>Calvin Klein<span class="ch-ticker-dot">·</span></span>
+		<span>Gymshark<span class="ch-ticker-dot">·</span></span>
+		<span>Alo Yoga<span class="ch-ticker-dot">·</span></span>
+		<span>Reebok<span class="ch-ticker-dot">·</span></span>
+		<span>Steve Madden<span class="ch-ticker-dot">·</span></span>
+		<span>Aldo<span class="ch-ticker-dot">·</span></span>
+		<span>Ted Baker<span class="ch-ticker-dot">·</span></span>
+		<span>Club Monaco<span class="ch-ticker-dot">·</span></span>
+		<span>Forever 21<span class="ch-ticker-dot">·</span></span>
+		<span>BCBG<span class="ch-ticker-dot">·</span></span>
+		<span>RW&amp;CO<span class="ch-ticker-dot">·</span></span>
+		<span>La Senza<span class="ch-ticker-dot">·</span></span>
+		<span>Ardene<span class="ch-ticker-dot">·</span></span>
+		<span>Psycho Bunny<span class="ch-ticker-dot">·</span></span>
+		<span>SAXX<span class="ch-ticker-dot">·</span></span>
+		<span>Tentree<span class="ch-ticker-dot">·</span></span>
+		<!-- duplicate for seamless loop -->
+		<span>Nike<span class="ch-ticker-dot">·</span></span>
+		<span>adidas<span class="ch-ticker-dot">·</span></span>
+		<span>Lululemon<span class="ch-ticker-dot">·</span></span>
+		<span>The North Face<span class="ch-ticker-dot">·</span></span>
+		<span>Michael Kors<span class="ch-ticker-dot">·</span></span>
+		<span>Patagonia<span class="ch-ticker-dot">·</span></span>
+		<span>PUMA<span class="ch-ticker-dot">·</span></span>
+		<span>Vans<span class="ch-ticker-dot">·</span></span>
+		<span>Timberland<span class="ch-ticker-dot">·</span></span>
+		<span>Under Armour<span class="ch-ticker-dot">·</span></span>
+		<span>Zara<span class="ch-ticker-dot">·</span></span>
+		<span>Calvin Klein<span class="ch-ticker-dot">·</span></span>
+		<span>Gymshark<span class="ch-ticker-dot">·</span></span>
+		<span>Alo Yoga<span class="ch-ticker-dot">·</span></span>
+		<span>Reebok<span class="ch-ticker-dot">·</span></span>
+		<span>Steve Madden<span class="ch-ticker-dot">·</span></span>
+		<span>Aldo<span class="ch-ticker-dot">·</span></span>
+		<span>Ted Baker<span class="ch-ticker-dot">·</span></span>
+		<span>Club Monaco<span class="ch-ticker-dot">·</span></span>
+		<span>Forever 21<span class="ch-ticker-dot">·</span></span>
+		<span>BCBG<span class="ch-ticker-dot">·</span></span>
+		<span>RW&amp;CO<span class="ch-ticker-dot">·</span></span>
+		<span>La Senza<span class="ch-ticker-dot">·</span></span>
+		<span>Ardene<span class="ch-ticker-dot">·</span></span>
+		<span>Psycho Bunny<span class="ch-ticker-dot">·</span></span>
+		<span>SAXX<span class="ch-ticker-dot">·</span></span>
+		<span>Tentree<span class="ch-ticker-dot">·</span></span>
+	</div>
+</div>
 
 <div class="top-announcement-bar">
 	<div class="top-announcement-track">
@@ -60,12 +144,18 @@ document.addEventListener('DOMContentLoaded', function () {
 	</div>
 </div>
 
+<div class="ch-deals-header">
+	<h2>Today's top deals</h2>
+	<p>Sorted by biggest discount</p>
+</div>
+
 <?php clearance_deal_featured_products_section(); ?>
 
 <?php if ( have_posts() ) : ?>
 <main class="main-content">
-	<div class="section-header">
-		<h2 class="section-title">Trending Clearance Deals</h2>
+	<div class="ch-deals-header">
+		<h2>More deals</h2>
+		<p>Fresh clearance finds</p>
 	</div>
 
 	<div class="deals-grid" id="deals-grid">

@@ -21,12 +21,13 @@
 			</div>
 
 			<div class="footer-links">
-				<h4>Popular Stores</h4>
+				<h4>Company</h4>
 				<ul>
-					<li><a href="#store-amazon"><i class="fa-solid fa-angle-right"></i> Amazon Deals</a></li>
-					<li><a href="#store-walmart"><i class="fa-solid fa-angle-right"></i> Walmart Clearance</a></li>
-					<li><a href="#store-bestbuy"><i class="fa-solid fa-angle-right"></i> Best Buy Price Drops</a></li>
-					<li><a href="#store-target"><i class="fa-solid fa-angle-right"></i> Target Redcard Specials</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> About Us</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/contact-us/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Contact Us</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/terms-and-conditions/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Terms &amp; Conditions</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Privacy Policy</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/refund-policy/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Refund Policy</a></li>
 				</ul>
 			</div>
 

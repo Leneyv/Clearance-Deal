@@ -9,6 +9,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// ── Meta Pixel ────────────────────────────────────────────────────────────────
+add_action( 'wp_head', function () { ?>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2181679409046850');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2181679409046850&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<?php }, 1 ); // priority 1 — fires near the top of <head>
+
 if ( ! function_exists( 'clearance_deal_setup' ) ) :
 	/**
 	 * Sets up theme defaults and registers support for various WordPress features.
@@ -116,13 +137,118 @@ add_action( 'widgets_init', 'clearance_deal_widgets_init' );
  * Enqueue scripts and styles.
  */
 function clearance_deal_scripts() {
-	// Enqueue main stylesheet
-	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.0.0' );
-
-	// Enqueue FontAwesome for icons (useful for stars, search, stores)
-	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0' );
+	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.0.4' );
+	// Self-hosted Font Awesome — eliminates external CDN round-trip
+	wp_enqueue_style(
+		'font-awesome',
+		get_template_directory_uri() . '/assets/css/font-awesome.local.min.css',
+		array(),
+		'6.4.0'
+	);
 }
 add_action( 'wp_enqueue_scripts', 'clearance_deal_scripts' );
+
+/**
+ * Load Font Awesome non-render-blocking via media swap trick.
+ * Swap media from "print" → "all" once the stylesheet is parsed,
+ * so it never blocks first paint.
+ */
+function clearance_deal_fa_nonblocking( $html, $handle ) {
+	if ( 'font-awesome' !== $handle ) {
+		return $html;
+	}
+	$html = str_replace( "media='all'", "media='print' onload=\"this.media='all'\"", $html );
+	// Noscript fallback so icons still appear without JS
+	$html .= "<noscript><link rel='stylesheet' href='" . esc_url( get_template_directory_uri() . '/assets/css/font-awesome.local.min.css' ) . "'></noscript>";
+	return $html;
+}
+add_filter( 'style_loader_tag', 'clearance_deal_fa_nonblocking', 10, 2 );
+
+/**
+ * Defer jQuery core (render-blocking by default in WP head).
+ * WooCommerce defers its own scripts; jQuery itself does not.
+ */
+function clearance_deal_defer_jquery( $tag, $handle ) {
+	if ( in_array( $handle, array( 'jquery-core', 'jquery-migrate' ), true ) && ! is_admin() ) {
+		// Don't defer jQuery on checkout/order-pay — payment gateway inline scripts need it immediately.
+		if ( function_exists( 'is_checkout' ) && ( is_checkout() || is_wc_endpoint_url( 'order-pay' ) ) ) {
+			return $tag;
+		}
+		return str_replace( '<script ', '<script defer ', $tag );
+	}
+	return $tag;
+}
+add_filter( 'script_loader_tag', 'clearance_deal_defer_jquery', 10, 2 );
+
+/**
+ * Disable wp-emoji — saves ~10KB JS + an extra DNS lookup.
+ */
+function clearance_deal_disable_emoji() {
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+}
+add_action( 'init', 'clearance_deal_disable_emoji' );
+
+/**
+ * Remove RSD and wlwmanifest link tags — not needed for a public store.
+ */
+remove_action( 'wp_head', 'rsd_link' );
+remove_action( 'wp_head', 'wlwmanifest_link' );
+remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+remove_action( 'wp_head', 'wp_generator' );
+
+
+/**
+ * Defer all non-critical WooCommerce and third-party scripts that
+ * aren't already deferred, including order-attribution and Facebook Pixel.
+ */
+function clearance_deal_defer_scripts( $tag, $handle ) {
+	if ( is_admin() ) {
+		return $tag;
+	}
+
+	$defer_handles = array(
+		'sourcebuster-js',
+		'wc-order-attribution',
+		'official-facebook-pixel',
+		'facebook-for-woocommerce',
+	);
+
+	foreach ( $defer_handles as $h ) {
+		if ( $h === $handle && false === strpos( $tag, 'defer' ) ) {
+			return str_replace( '<script ', '<script defer ', $tag );
+		}
+	}
+	return $tag;
+}
+add_filter( 'script_loader_tag', 'clearance_deal_defer_scripts', 10, 2 );
+
+/**
+ * Dequeue WooCommerce CSS that the homepage doesn't use.
+ * Also dequeue WooCommerce general CSS on non-WC pages — it's
+ * large and most of it is for cart/checkout/account only.
+ */
+function clearance_deal_dequeue_unused_wc() {
+	if ( ! is_woocommerce() && ! is_cart() && ! is_checkout() && ! is_account_page() ) {
+		wp_dequeue_style( 'woocommerce-general' );
+		wp_dequeue_style( 'woocommerce-smallscreen' );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'clearance_deal_dequeue_unused_wc', 99 );
+
+/**
+ * Add preconnect/dns-prefetch hints for performance.
+ */
+function clearance_deal_resource_hints() {
+	echo '<link rel="dns-prefetch" href="//www.googletagmanager.com">' . "\n";
+	echo '<link rel="dns-prefetch" href="//connect.facebook.net">' . "\n";
+}
+add_action( 'wp_head', 'clearance_deal_resource_hints', 1 );
 
 /**
  * Show a "Sold Out" badge for out-of-stock products.
@@ -155,9 +281,8 @@ function clearance_deal_trust_badges() {
 			<i class="fa-solid fa-truck-fast"></i>
 			<span><?php esc_html_e( 'Free Delivery', 'clearance-deal' ); ?></span>
 		</div>
-		<div class="trust-badge">
-			<i class="fa-solid fa-shield-halved"></i>
-			<span><?php esc_html_e( 'Secure Payment', 'clearance-deal' ); ?></span>
+		<div class="trust-badge trust-badge--mpesa">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/mpesa-logo.svg' ); ?>" alt="M-Pesa" class="mpesa-logo-img" />
 		</div>
 	</div>
 	<?php
@@ -261,11 +386,11 @@ add_action( 'woocommerce_admin_order_data_after_order_details', 'clearance_deal_
 function clearance_deal_whatsapp_number_setting( $settings ) {
 	$new_field = array(
 		'title'   => __( 'Store WhatsApp Number', 'clearance-deal' ),
-		'desc'    => __( 'Customers are prompted to send their order details to this number on WhatsApp after checkout. Include country code, digits only (e.g. 254737535353).', 'clearance-deal' ),
+		'desc'    => __( 'Customers are prompted to send their order details to this number on WhatsApp after checkout. Include country code, digits only (e.g. 254751338975).', 'clearance-deal' ),
 		'id'      => 'clearance_deal_store_whatsapp_number',
 		'type'    => 'text',
 		'css'     => 'min-width:300px;',
-		'default' => '254737535353',
+		'default' => '254751338975',
 	);
 
 	$inserted     = false;
@@ -321,7 +446,7 @@ function clearance_deal_thankyou_whatsapp_popup( $order_id ) {
 		return;
 	}
 
-	$store_number = clearance_deal_normalize_wa_phone( get_option( 'clearance_deal_store_whatsapp_number', '254737535353' ) );
+	$store_number = clearance_deal_normalize_wa_phone( get_option( 'clearance_deal_store_whatsapp_number', '254751338975' ) );
 	if ( ! $store_number ) {
 		return;
 	}
@@ -478,6 +603,227 @@ function clearance_deal_buy_now_redirect( $url ) {
 }
 add_filter( 'woocommerce_add_to_cart_redirect', 'clearance_deal_buy_now_redirect' );
 
+// ── Checkout UX Improvements ─────────────────────────────────────────────────
+
+/**
+ * 1. Single Name field (remove billing_last_name, rename first_name → Name, full-width)
+ * 2. Phone mandatory, email optional
+ * 4. Remove postcode (not used in Kenya)
+ */
+add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
+	// Single full-name field.
+	if ( isset( $fields['billing']['billing_first_name'] ) ) {
+		$fields['billing']['billing_first_name']['label']       = __( 'Name', 'clearance-deal' );
+		$fields['billing']['billing_first_name']['placeholder'] = __( 'Your full name', 'clearance-deal' );
+		$fields['billing']['billing_first_name']['class']       = array( 'form-row-wide' );
+	}
+	unset( $fields['billing']['billing_last_name'] );
+
+	// Phone required.
+	if ( isset( $fields['billing']['billing_phone'] ) ) {
+		$fields['billing']['billing_phone']['required'] = true;
+		$fields['billing']['billing_phone']['class']    = array( 'form-row-wide' );
+	}
+
+	// Email optional.
+	if ( isset( $fields['billing']['billing_email'] ) ) {
+		$fields['billing']['billing_email']['required'] = false;
+		$fields['billing']['billing_email']['label']   .= ' ' . __( '(optional)', 'clearance-deal' );
+		$fields['billing']['billing_email']['class']    = array( 'form-row-wide' );
+	}
+
+	// Remove postcode.
+	unset( $fields['billing']['billing_postcode'] );
+
+	return $fields;
+} );
+
+// 7. Remove "Have a coupon? Click here" toggle on checkout.
+add_action( 'init', function () {
+	remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
+} );
+
+// 6. Remove "Continue shopping" button from the add-to-cart notice.
+add_filter( 'wc_add_to_cart_message_html', function ( $message ) {
+	return preg_replace( '/<a\b[^>]*\bwc-forward\b[^>]*>.*?<\/a>/s', '', $message );
+}, 20 );
+
+/**
+ * 3, 5, 8. Checkout mobile/layout CSS.
+ *   3 – full width (remove excess left/right padding on mobile)
+ *   5 – truncate product name in Review Quantities panel (one line + ellipsis)
+ *   8 – truncate product name in "Your order" review table (one line + ellipsis)
+ */
+add_action( 'wp_head', function () {
+	if ( ! function_exists( 'is_checkout' ) || ( ! is_checkout() && ! is_wc_endpoint_url( 'order-pay' ) ) ) {
+		return;
+	}
+	?>
+	<style id="clearance-checkout-ux">
+	/* 3 – full width, minimal side padding on mobile */
+	@media (max-width: 768px) {
+		.woocommerce-page .woocommerce,
+		.woocommerce-checkout .woocommerce {
+			padding-left: 8px !important;
+			padding-right: 8px !important;
+		}
+		.wp-block-group,
+		.entry-content,
+		.site-main > .wp-block-group__inner-container {
+			padding-left: 8px !important;
+			padding-right: 8px !important;
+		}
+		.woocommerce-checkout-review-order-table,
+		.woocommerce-checkout-review-order-table th,
+		.woocommerce-checkout-review-order-table td {
+			font-size: 0.93em;
+		}
+	}
+
+	/* 5 – Review Quantities: product name one line, ellipsis */
+	.qty-editor-item-name {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		max-width: 160px;
+		flex: 1 1 0;
+		min-width: 0;
+	}
+
+	/* 8 – Your order table: product name one line, ellipsis */
+	.woocommerce-checkout-review-order-table .product-name {
+		max-width: 170px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.shop_table.woocommerce-checkout-review-order-table tbody .product-name {
+		max-width: 170px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	</style>
+	<?php
+}, 99 );
+
+// ── End Checkout UX Improvements ─────────────────────────────────────────────
+
+// ── Floating WhatsApp Chat Button ─────────────────────────────────────────────
+
+/**
+ * Floating WhatsApp chat button shown on the homepage and all product pages.
+ * Uses the store's WhatsApp number (same one used for order messages).
+ */
+add_action( 'wp_footer', function () {
+	if ( ! is_front_page() && ! is_product() ) {
+		return;
+	}
+
+	$store_number = clearance_deal_normalize_wa_phone(
+		get_option( 'clearance_deal_store_whatsapp_number', '254751338975' )
+	);
+
+	if ( ! $store_number ) {
+		return;
+	}
+
+	$wa_url = 'https://wa.me/' . $store_number . '?text=' . rawurlencode( 'Hi! I\'d like to know more about your deals.' );
+	?>
+	<style id="clearance-wa-float">
+	.wa-float-btn {
+		position: fixed;
+		bottom: 22px;
+		right: 20px;
+		z-index: 9999;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 58px;
+		height: 58px;
+		background: #25D366;
+		border-radius: 50%;
+		box-shadow: 0 4px 16px rgba(37,211,102,0.45), 0 2px 6px rgba(0,0,0,0.18);
+		text-decoration: none;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		animation: wa-pulse 2.4s ease-in-out infinite;
+	}
+	.wa-float-btn:hover,
+	.wa-float-btn:focus {
+		transform: scale(1.1);
+		box-shadow: 0 6px 24px rgba(37,211,102,0.55), 0 3px 10px rgba(0,0,0,0.22);
+		animation: none;
+		outline: none;
+	}
+	.wa-float-btn .fa-whatsapp {
+		color: #fff;
+		font-size: 32px;
+		line-height: 1;
+	}
+	/* Ripple pulse */
+	.wa-float-btn::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		background: rgba(37,211,102,0.4);
+		animation: wa-ripple 2.4s ease-out infinite;
+		pointer-events: none;
+	}
+	@keyframes wa-ripple {
+		0%   { transform: scale(1);   opacity: 0.7; }
+		70%  { transform: scale(1.7); opacity: 0;   }
+		100% { transform: scale(1.7); opacity: 0;   }
+	}
+	@keyframes wa-pulse {
+		0%, 100% { transform: scale(1);    }
+		50%       { transform: scale(1.05); }
+	}
+	/* Tooltip label */
+	.wa-float-label {
+		position: fixed;
+		bottom: 34px;
+		right: 88px;
+		z-index: 9998;
+		background: #fff;
+		color: #1a1a1a;
+		font-size: 13px;
+		font-weight: 600;
+		padding: 6px 12px;
+		border-radius: 20px;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+		white-space: nowrap;
+		opacity: 0;
+		transform: translateX(8px);
+		transition: opacity 0.25s, transform 0.25s;
+		pointer-events: none;
+	}
+	.wa-float-btn:hover ~ .wa-float-label,
+	.wa-float-btn:focus ~ .wa-float-label {
+		opacity: 1;
+		transform: translateX(0);
+	}
+	/* On very small screens make it slightly smaller */
+	@media (max-width: 400px) {
+		.wa-float-btn { width: 52px; height: 52px; bottom: 16px; right: 14px; }
+		.wa-float-btn .fa-whatsapp { font-size: 28px; }
+		.wa-float-label { bottom: 26px; right: 74px; font-size: 12px; }
+	}
+	</style>
+
+	<a href="<?php echo esc_url( $wa_url ); ?>"
+	   class="wa-float-btn"
+	   target="_blank"
+	   rel="noopener noreferrer"
+	   aria-label="<?php esc_attr_e( 'Chat with us on WhatsApp', 'clearance-deal' ); ?>">
+		<i class="fa-brands fa-whatsapp"></i>
+	</a>
+	<span class="wa-float-label"><?php esc_html_e( 'Chat with us', 'clearance-deal' ); ?></span>
+	<?php
+} );
+
+// ── End Floating WhatsApp Chat Button ─────────────────────────────────────────
+
 /**
  * Render the "We Have Something For Everyone" featured products band.
  *
@@ -493,7 +839,7 @@ function clearance_deal_featured_products_section() {
 		array(
 			'post_type'      => 'product',
 			'post_status'    => 'publish',
-			'posts_per_page' => 4,
+			'posts_per_page' => -1,
 			'orderby'        => 'menu_order',
 			'order'          => 'ASC',
 			'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
@@ -524,8 +870,9 @@ function clearance_deal_featured_products_section() {
 						continue;
 					}
 
-					$in_stock     = $product->is_in_stock();
-					$discount_pct = 0;
+					$in_stock       = $product->is_in_stock();
+					$discount_pct   = 0;
+					$urgency_label  = get_post_meta( get_the_ID(), 'deal_urgency_label', true );
 
 					if ( $product->is_on_sale() && $product->get_regular_price() && $product->get_sale_price() ) {
 						$discount_pct = clearance_deal_calculate_discount( $product->get_regular_price(), $product->get_sale_price() );
@@ -548,6 +895,10 @@ function clearance_deal_featured_products_section() {
 						<div class="deal-details">
 							<h3 class="deal-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 
+							<?php if ( $urgency_label ) : ?>
+								<p class="deal-urgency-label"><?php echo esc_html( $urgency_label ); ?></p>
+							<?php endif; ?>
+
 							<?php if ( $product->get_short_description() ) : ?>
 								<p class="deal-short-description"><?php echo wp_kses_post( $product->get_short_description() ); ?></p>
 							<?php endif; ?>
@@ -562,13 +913,12 @@ function clearance_deal_featured_products_section() {
 								<?php endif; ?>
 							</div>
 
+							<?php clearance_deal_countdown_html(); ?>
+
 							<?php if ( $in_stock ) : ?>
-								<a href="<?php echo esc_url( $buy_now_url ); ?>" class="btn-get-deal btn-rolling">
-										<span class="btn-rolling-track">
-											<span class="btn-rolling-text is-limited"><?php esc_html_e( 'Limited Stock', 'clearance-deal' ); ?></span>
-											<span class="btn-rolling-text is-buy"><?php esc_html_e( 'Buy Now', 'clearance-deal' ); ?></span>
-										</span>
-									</a>
+								<a href="<?php echo esc_url( $buy_now_url ); ?>" class="btn-get-deal">
+								<?php esc_html_e( 'Buy Now', 'clearance-deal' ); ?>
+							</a>
 							<?php else : ?>
 								<span class="btn-get-deal is-disabled"><?php esc_html_e( 'Sold Out', 'clearance-deal' ); ?></span>
 							<?php endif; ?>
@@ -952,4 +1302,118 @@ function clearance_deal_render_media( $post_id, $image_size = 'medium_large' ) {
 		<?php
 	}
 }
+
+// Hide stock quantity everywhere — never show "1000 in stock" or any number.
+add_filter( 'woocommerce_get_stock_html', '__return_empty_string' );
+add_filter( 'woocommerce_stock_html', '__return_empty_string', 10, 3 );
+
+// ── Offer Countdown Timer ─────────────────────────────────────────────────────
+
+/**
+ * Output the countdown timer badge HTML.
+ * The actual countdown is driven by a shared JS timer injected in wp_footer.
+ */
+function clearance_deal_countdown_html() {
+	?>
+	<div class="deal-countdown">
+		<span class="deal-countdown-icon">⏱</span>
+		<span class="deal-countdown-label">Offer expires in:</span>
+		<span class="deal-countdown-timer" data-countdown>1 hr 38 min 00 sec</span>
+	</div>
+	<?php
+}
+
+// Shop loop — after price (priority 10).
+add_action( 'woocommerce_after_shop_loop_item_title', 'clearance_deal_countdown_html', 15 );
+
+// Single product summary — between excerpt (20) and Add to Cart (30).
+add_action( 'woocommerce_single_product_summary', 'clearance_deal_countdown_html', 25 );
+
+// Countdown CSS + JS — injected once in the footer.
+add_action( 'wp_footer', function () {
+	?>
+	<style id="clearance-countdown-css">
+	.deal-countdown {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		background: linear-gradient(135deg, #e53e3e 0%, #dd6b20 100%);
+		color: #fff;
+		font-size: 12.5px;
+		font-weight: 700;
+		padding: 7px 12px;
+		border-radius: 6px;
+		margin: 10px 0 8px;
+		box-shadow: 0 2px 10px rgba(229,62,62,0.35);
+		animation: cd-glow 2.2s ease-in-out infinite;
+		letter-spacing: 0.01em;
+		line-height: 1.3;
+	}
+	.deal-countdown-timer {
+		font-family: 'Courier New', Courier, monospace;
+		font-size: 13.5px;
+		font-weight: 900;
+		min-width: 130px;
+		letter-spacing: 0.03em;
+		flex-shrink: 0;
+	}
+	@keyframes cd-glow {
+		0%, 100% { box-shadow: 0 2px 10px rgba(229,62,62,0.35); }
+		50%       { box-shadow: 0 4px 20px rgba(229,62,62,0.6);  }
+	}
+	</style>
+	<script id="clearance-countdown-js">
+	(function () {
+		var TOTAL    = 98 * 60;   // 1 hr 38 min → seconds
+		var RESET_AT = 10 * 60;   // reset when 10 min remain
+
+		function getEndTime() {
+			var stored = localStorage.getItem('cd_offer_end');
+			if (stored) {
+				var end       = parseInt(stored, 10);
+				var remaining = Math.floor((end - Date.now()) / 1000);
+				if (remaining > RESET_AT) {
+					return end;
+				}
+			}
+			var newEnd = Date.now() + TOTAL * 1000;
+			localStorage.setItem('cd_offer_end', String(newEnd));
+			return newEnd;
+		}
+
+		var endTime = getEndTime();
+
+		function tick() {
+			var remaining = Math.floor((endTime - Date.now()) / 1000);
+
+			// Reset when 10 minutes remain.
+			if (remaining <= RESET_AT) {
+				endTime = Date.now() + TOTAL * 1000;
+				localStorage.setItem('cd_offer_end', String(endTime));
+				remaining = TOTAL;
+			}
+
+			if (remaining < 0) { remaining = 0; }
+
+			var h = Math.floor(remaining / 3600);
+			var m = Math.floor((remaining % 3600) / 60);
+			var s = remaining % 60;
+
+			var display = h + ' hr ' +
+			              String(m).padStart(2, '0') + ' min ' +
+			              String(s).padStart(2, '0') + ' sec';
+
+			document.querySelectorAll('[data-countdown]').forEach(function (el) {
+				el.textContent = display;
+			});
+		}
+
+		tick();
+		setInterval(tick, 1000);
+	})();
+	</script>
+	<?php
+}, 99 );
+
+// ── End Offer Countdown Timer ─────────────────────────────────────────────────
 
