@@ -20,7 +20,7 @@ get_header();
 		<div class="ch-hero-text-wrap" aria-live="polite">
 			<!-- State 1: theclearancehouse style (active by default) -->
 			<div class="ch-hero-state ch-hero-state--active">
-				<div class="ch-hero-badge">Updated daily · 200+ brands</div>
+				<div class="ch-hero-badge">Updated daily · Top brands</div>
 				<h1 class="ch-hero-h1">Every clearance sale.<br><span>One place.</span></h1>
 			</div>
 			<!-- State 2: Kenya trust style -->
@@ -32,15 +32,11 @@ get_header();
 			</div>
 		</div>
 
-		<p class="ch-hero-sub">30,000+ products from 200+ top brands — all on sale, up to 80% off. Stop tab-switching. Start saving.</p>
-		<div class="ch-hero-btns">
-			<a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="ch-btn-primary">Browse Deals</a>
-			<a href="<?php echo esc_url( home_url( '/contact' ) ); ?>" class="ch-btn-outline">Get Deal Alerts</a>
-		</div>
+		<p class="ch-hero-sub">6,000+ sales from top brands — all on sale, up to 80% off. Stop tab-switching. Start saving.</p>
 		<div class="ch-hero-stats">
 			<div class="ch-stat">
-				<div class="ch-stat-num">30,000+</div>
-				<div class="ch-stat-label">Products on sale</div>
+				<div class="ch-stat-num">6,000+</div>
+				<div class="ch-stat-label">Sales on now</div>
 			</div>
 			<div class="ch-stat">
 				<div class="ch-stat-num">100+</div>
