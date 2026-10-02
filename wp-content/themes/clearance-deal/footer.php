@@ -17,7 +17,7 @@
 					class="footer-logo"
 					width="340"
 					height="64">
-				<p>Your ultimate destination for finding the absolute best deals, discount coupons, clearance sales, and price drops from around the web. Save big, every day.</p>
+				<p>Genuine human hair, wigs and extensions at clearance prices. Delivered across Kenya. Pay via M-Pesa.</p>
 			</div>
 
 			<div class="footer-links">
@@ -28,16 +28,6 @@
 					<li><a href="<?php echo esc_url( home_url( '/terms-and-conditions/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Terms &amp; Conditions</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Privacy Policy</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/refund-policy/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Refund Policy</a></li>
-				</ul>
-			</div>
-
-			<div class="footer-links">
-				<h4>Quick Navigation</h4>
-				<ul>
-					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Home Feed</a></li>
-					<li><a href="#featured-deals"><i class="fa-solid fa-angle-right"></i> Featured Deals</a></li>
-					<li><a href="#expired-deals"><i class="fa-solid fa-angle-right"></i> Expired Archive</a></li>
-					<li><a href="#submit-deal"><i class="fa-solid fa-angle-right"></i> Submit a Deal</a></li>
 				</ul>
 			</div>
 
@@ -56,10 +46,8 @@
 				&copy; <?php echo esc_html( date_i18n( 'Y' ) ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>. All rights reserved.
 			</div>
 			<div class="footer-social">
-				<a href="https://www.facebook.com/clearance.deal.kenya" target="_blank" rel="noopener noreferrer" style="margin-left: 1rem;"><i class="fa-brands fa-facebook-f"></i></a>
-				<a href="#" style="margin-left: 1rem;"><i class="fa-brands fa-twitter"></i></a>
-				<a href="#" style="margin-left: 1rem;"><i class="fa-brands fa-instagram"></i></a>
-				<a href="#" style="margin-left: 1rem;"><i class="fa-brands fa-telegram"></i></a>
+				<a href="https://www.facebook.com/clearance.deal.kenya" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="margin-left: 1rem;"><i class="fa-brands fa-facebook-f"></i></a>
+				<a href="https://instagram.com/clearance.kenya" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="margin-left: 1rem;"><i class="fa-brands fa-instagram"></i></a>
 			</div>
 		</div>
 	</footer><!-- #colophon -->
