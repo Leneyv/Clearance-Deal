@@ -1,3 +1,46 @@
 .DS_Store
 .env
 
+# WordPress core — never track
+/index.php
+/license.txt
+/readme.html
+/wp-activate.php
+/wp-blog-header.php
+/wp-comments-post.php
+/wp-config-sample.php
+/wp-config.php
+/wp-admin/
+/wp-includes/
+/wp-login.php
+/wp-cron.php
+/wp-links-opml.php
+/wp-load.php
+/wp-mail.php
+/wp-settings.php
+/wp-signup.php
+/wp-trackback.php
+/xmlrpc.php
+
+# Generated / uploaded content
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/advanced-cache.php
+/wp-content/backup-db/
+/wp-content/blogs.dir/
+/wp-content/upgrade/
+/wp-content/object-cache.php
+
+# Third-party plugins (not ours)
+/wp-content/plugins/akismet/
+/wp-content/plugins/facebook-for-woocommerce/
+/wp-content/plugins/header-footer-code-manager/
+/wp-content/plugins/independent-analytics/
+/wp-content/plugins/official-facebook-pixel/
+/wp-content/plugins/thebunch-ke-pesapal-woocommerce-3.1.3/
+/wp-content/plugins/woocommerce/
+/wp-content/plugins/wp-super-cache/
+
+# Log files
+*.log
+/wp-content/uploads/wc-logs/
