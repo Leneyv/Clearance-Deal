@@ -1433,3 +1433,42 @@ add_filter( 'woocommerce_add_to_cart_redirect', function ( $url ) {
 
 // ── End Buy Now Button + Checkout Redirect ────────────────────────────────────
 
+// ── M-Pesa Trust Badge ────────────────────────────────────────────────────────
+
+// Show M-Pesa logo + payment note on single product pages, below Add to Cart.
+add_action( 'woocommerce_single_product_summary', function () {
+	$logo_url = esc_url( get_template_directory_uri() . '/assets/images/mpesa-logo.svg' );
+	echo '<div class="mpesa-trust-badge">'
+		. '<img src="' . $logo_url . '" alt="M-Pesa" class="mpesa-trust-logo">'
+		. '<span>' . esc_html__( 'Pay securely via M-Pesa', 'clearance-deal' ) . '</span>'
+		. '</div>';
+}, 35 );
+
+// ── End M-Pesa Trust Badge ────────────────────────────────────────────────────
+
+// ── LocalBusiness Schema.org JSON-LD ─────────────────────────────────────────
+
+add_action( 'wp_head', function () {
+	$schema = [
+		'@context'        => 'https://schema.org',
+		'@type'           => 'ClothingStore',
+		'name'            => 'Clearance Deal Kenya',
+		'url'             => 'https://clearance.co.ke',
+		'telephone'       => '+254751338975',
+		'email'           => 'info@clearance.co.ke',
+		'address'         => [
+			'@type'           => 'PostalAddress',
+			'streetAddress'   => 'Office 303, 1st Floor, Highlight Business Park, South Zone, 4th Parklands',
+			'addressLocality' => 'Nairobi',
+			'addressCountry'  => 'KE',
+		],
+		'sameAs'          => [
+			'https://www.facebook.com/clearance.deal.kenya',
+			'https://instagram.com/clearance.kenya',
+		],
+	];
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+} );
+
+// ── End LocalBusiness Schema.org JSON-LD ─────────────────────────────────────
+

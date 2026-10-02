@@ -17,7 +17,11 @@
 					class="footer-logo"
 					width="340"
 					height="64">
-				<p>Genuine human hair, wigs and extensions at clearance prices. Delivered across Kenya. Pay via M-Pesa.</p>
+				<p>Genuine human hair, wigs and extensions at clearance prices. Delivered across Kenya.</p>
+				<div class="footer-mpesa">
+					<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/mpesa-logo.svg' ); ?>" alt="M-Pesa accepted">
+					<span><?php esc_html_e( 'M-Pesa accepted', 'clearance-deal' ); ?></span>
+				</div>
 			</div>
 
 			<div class="footer-links">
