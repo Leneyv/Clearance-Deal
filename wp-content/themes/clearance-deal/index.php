@@ -17,37 +17,19 @@ get_header();
 	<div class="ch-hero-inner">
 
 		<div class="ch-hero-badge ch-hero-badge--kenya">
-			<span class="ch-green-dot"></span>Kenya's Trusted Clearance Store
+			<span class="ch-green-dot"></span>Nairobi, Kenya
 		</div>
 
 		<div class="ch-hero-text-wrap" aria-live="polite">
 			<div class="ch-hero-state ch-hero-state--active">
-				<h1 class="ch-hero-h1">Every clearance sale.<br><span class="ch-scroll-orange">One place.</span></h1>
+				<h1 class="ch-hero-h1">Premium Human Hair.<br><span class="ch-scroll-orange">Clearance Prices.</span></h1>
 			</div>
 			<div class="ch-hero-state" aria-hidden="true">
-				<h1 class="ch-hero-h1">Genuine Products.<br><span class="ch-scroll-coral">Unbeatable Prices.</span></h1>
+				<h1 class="ch-hero-h1">Wigs &amp; Extensions.<br><span class="ch-scroll-coral">Delivered Kenya-wide.</span></h1>
 			</div>
 		</div>
 
-		<p class="ch-hero-sub">6,000+ sales from top brands — all on sale, up to 80% off. Stop tab-switching. Start saving.</p>
-		<div class="ch-hero-stats">
-			<div class="ch-stat">
-				<div class="ch-stat-num">6,000+</div>
-				<div class="ch-stat-label">Sales on now</div>
-			</div>
-			<div class="ch-stat">
-				<div class="ch-stat-num">100+</div>
-				<div class="ch-stat-label">Top brands</div>
-			</div>
-			<div class="ch-stat">
-				<div class="ch-stat-num">80%</div>
-				<div class="ch-stat-label">Max discount</div>
-			</div>
-			<div class="ch-stat">
-				<div class="ch-stat-num">Daily</div>
-				<div class="ch-stat-label">Update frequency</div>
-			</div>
-		</div>
+		<p class="ch-hero-sub">Genuine human hair, wigs and extensions — shipped to your door across Kenya. Pay via M-Pesa.</p>
 	</div>
 </section>
 <script>
@@ -80,66 +62,6 @@ get_header();
 }());
 </script>
 
-<!-- Brand Ticker -->
-<div class="ch-ticker-bar">
-	<div class="ch-ticker-track">
-		<span>Nike<span class="ch-ticker-dot">·</span></span>
-		<span>adidas<span class="ch-ticker-dot">·</span></span>
-		<span>Lululemon<span class="ch-ticker-dot">·</span></span>
-		<span>The North Face<span class="ch-ticker-dot">·</span></span>
-		<span>Michael Kors<span class="ch-ticker-dot">·</span></span>
-		<span>Patagonia<span class="ch-ticker-dot">·</span></span>
-		<span>PUMA<span class="ch-ticker-dot">·</span></span>
-		<span>Vans<span class="ch-ticker-dot">·</span></span>
-		<span>Timberland<span class="ch-ticker-dot">·</span></span>
-		<span>Under Armour<span class="ch-ticker-dot">·</span></span>
-		<span>Zara<span class="ch-ticker-dot">·</span></span>
-		<span>Calvin Klein<span class="ch-ticker-dot">·</span></span>
-		<span>Gymshark<span class="ch-ticker-dot">·</span></span>
-		<span>Alo Yoga<span class="ch-ticker-dot">·</span></span>
-		<span>Reebok<span class="ch-ticker-dot">·</span></span>
-		<span>Steve Madden<span class="ch-ticker-dot">·</span></span>
-		<span>Aldo<span class="ch-ticker-dot">·</span></span>
-		<span>Ted Baker<span class="ch-ticker-dot">·</span></span>
-		<span>Club Monaco<span class="ch-ticker-dot">·</span></span>
-		<span>Forever 21<span class="ch-ticker-dot">·</span></span>
-		<span>BCBG<span class="ch-ticker-dot">·</span></span>
-		<span>RW&amp;CO<span class="ch-ticker-dot">·</span></span>
-		<span>La Senza<span class="ch-ticker-dot">·</span></span>
-		<span>Ardene<span class="ch-ticker-dot">·</span></span>
-		<span>Psycho Bunny<span class="ch-ticker-dot">·</span></span>
-		<span>SAXX<span class="ch-ticker-dot">·</span></span>
-		<span>Tentree<span class="ch-ticker-dot">·</span></span>
-		<!-- duplicate for seamless loop -->
-		<span>Nike<span class="ch-ticker-dot">·</span></span>
-		<span>adidas<span class="ch-ticker-dot">·</span></span>
-		<span>Lululemon<span class="ch-ticker-dot">·</span></span>
-		<span>The North Face<span class="ch-ticker-dot">·</span></span>
-		<span>Michael Kors<span class="ch-ticker-dot">·</span></span>
-		<span>Patagonia<span class="ch-ticker-dot">·</span></span>
-		<span>PUMA<span class="ch-ticker-dot">·</span></span>
-		<span>Vans<span class="ch-ticker-dot">·</span></span>
-		<span>Timberland<span class="ch-ticker-dot">·</span></span>
-		<span>Under Armour<span class="ch-ticker-dot">·</span></span>
-		<span>Zara<span class="ch-ticker-dot">·</span></span>
-		<span>Calvin Klein<span class="ch-ticker-dot">·</span></span>
-		<span>Gymshark<span class="ch-ticker-dot">·</span></span>
-		<span>Alo Yoga<span class="ch-ticker-dot">·</span></span>
-		<span>Reebok<span class="ch-ticker-dot">·</span></span>
-		<span>Steve Madden<span class="ch-ticker-dot">·</span></span>
-		<span>Aldo<span class="ch-ticker-dot">·</span></span>
-		<span>Ted Baker<span class="ch-ticker-dot">·</span></span>
-		<span>Club Monaco<span class="ch-ticker-dot">·</span></span>
-		<span>Forever 21<span class="ch-ticker-dot">·</span></span>
-		<span>BCBG<span class="ch-ticker-dot">·</span></span>
-		<span>RW&amp;CO<span class="ch-ticker-dot">·</span></span>
-		<span>La Senza<span class="ch-ticker-dot">·</span></span>
-		<span>Ardene<span class="ch-ticker-dot">·</span></span>
-		<span>Psycho Bunny<span class="ch-ticker-dot">·</span></span>
-		<span>SAXX<span class="ch-ticker-dot">·</span></span>
-		<span>Tentree<span class="ch-ticker-dot">·</span></span>
-	</div>
-</div>
 
 <div class="top-announcement-bar">
 	<div class="top-announcement-track">
@@ -217,10 +139,6 @@ get_header();
 						<h3 class="deal-title"><a href="<?php echo esc_url( get_permalink() ); ?>"><?php the_title(); ?></a></h3>
 
 						<div class="deal-meta">
-							<span class="deal-rating">
-								<i class="fa-solid fa-star"></i> <?php echo esc_html( $deal_rating ); ?>
-							</span>
-							<span class="deal-separator">•</span>
 							<span class="deal-posted-time"><?php echo esc_html( human_time_diff( get_the_time( 'U' ), current_time( 'timestamp' ) ) . ' ago' ); ?></span>
 						</div>
 
