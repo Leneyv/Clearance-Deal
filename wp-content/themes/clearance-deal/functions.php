@@ -137,7 +137,7 @@ add_action( 'widgets_init', 'clearance_deal_widgets_init' );
  * Enqueue scripts and styles.
  */
 function clearance_deal_scripts() {
-	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.0.6' );
+	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.0.7' );
 	// Self-hosted Font Awesome — eliminates external CDN round-trip
 	wp_enqueue_style(
 		'font-awesome',
@@ -170,8 +170,11 @@ add_filter( 'style_loader_tag', 'clearance_deal_fa_nonblocking', 10, 2 );
  */
 function clearance_deal_defer_jquery( $tag, $handle ) {
 	if ( in_array( $handle, array( 'jquery-core', 'jquery-migrate' ), true ) && ! is_admin() ) {
-		// Don't defer jQuery on checkout/order-pay — payment gateway inline scripts need it immediately.
-		if ( function_exists( 'is_checkout' ) && ( is_checkout() || is_wc_endpoint_url( 'order-pay' ) ) ) {
+		// Don't defer jQuery on checkout/order-pay or product pages.
+		// Checkout: payment gateway inline scripts need it immediately.
+		// Product pages: the variation form JS relies on jQuery being ready before
+		// the form can be submitted, and deferring opens a race-condition window.
+		if ( function_exists( 'is_checkout' ) && ( is_checkout() || is_wc_endpoint_url( 'order-pay' ) || is_product() ) ) {
 			return $tag;
 		}
 		return str_replace( '<script ', '<script defer ', $tag );
@@ -849,6 +852,12 @@ function clearance_deal_featured_products_section() {
 					'terms'    => 'featured',
 				),
 			),
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				array(
+					'key'   => '_stock_status',
+					'value' => 'instock',
+				),
+			),
 		)
 	);
 
@@ -858,7 +867,6 @@ function clearance_deal_featured_products_section() {
 	?>
 	<section class="featured-band">
 		<div class="featured-band-container">
-			<h2 class="section-title featured-band-title"><?php esc_html_e( 'We Have Something For Everyone', 'clearance-deal' ); ?></h2>
 
 			<div class="featured-band-grid">
 				<?php
@@ -878,7 +886,37 @@ function clearance_deal_featured_products_section() {
 						$discount_pct = clearance_deal_calculate_discount( $product->get_regular_price(), $product->get_sale_price() );
 					}
 
-					$buy_now_url = add_query_arg( 'add-to-cart', $product->get_id(), home_url( '/' ) );
+					// Variable products get a JS variation selector; simple products go straight to add-to-cart.
+					$data_type_attr = '';
+					$data_vars_attr = '';
+					if ( $product->is_type( 'variable' ) ) {
+						$data_type_attr = 'data-product-type="variable"';
+						$vars_data      = [];
+						foreach ( $product->get_available_variations() as $var_data ) {
+							$variation = wc_get_product( $var_data['variation_id'] );
+							if ( ! $variation || ! $variation->is_purchasable() ) {
+								continue;
+							}
+							$label_parts = [];
+							foreach ( $variation->get_variation_attributes() as $attr_name => $attr_value ) {
+								$label         = wc_attribute_label( str_replace( 'attribute_', '', $attr_name ) );
+								$label_parts[] = $label . ': ' . ucfirst( $attr_value );
+							}
+							$v_price    = (float) ( $variation->get_sale_price() ?: $variation->get_price() );
+							$vars_data[] = [
+								'id'    => (int) $var_data['variation_id'],
+								'label' => implode( ' / ', $label_parts ) ?: ( 'Option ' . ( count( $vars_data ) + 1 ) ),
+								'price' => $v_price,
+							];
+						}
+						if ( ! empty( $vars_data ) ) {
+							$data_vars_attr = 'data-variations="' . esc_attr( wp_json_encode( $vars_data ) ) . '"';
+						}
+						$buy_now_url = get_permalink( $product->get_id() );
+					} else {
+						$data_type_attr = 'data-product-type="simple"';
+						$buy_now_url    = add_query_arg( 'add-to-cart', $product->get_id(), home_url( '/' ) );
+					}
 					?>
 					<div class="deal-card">
 						<div class="deal-media-wrapper" style="position: relative; overflow: hidden;">
@@ -891,6 +929,8 @@ function clearance_deal_featured_products_section() {
 								<div class="badge-clearance"><?php esc_html_e( 'Sold Out', 'clearance-deal' ); ?></div>
 							<?php endif; ?>
 						</div>
+
+						<span class="bnpl-badge">Buy Now Pay Later</span>
 
 						<div class="deal-details">
 							<h3 class="deal-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
@@ -913,10 +953,8 @@ function clearance_deal_featured_products_section() {
 								<?php endif; ?>
 							</div>
 
-							<?php clearance_deal_countdown_html(); ?>
-
 							<?php if ( $in_stock ) : ?>
-								<a href="<?php echo esc_url( $buy_now_url ); ?>" class="btn-get-deal">
+								<a href="<?php echo esc_url( $buy_now_url ); ?>" class="btn-get-deal" <?php echo $data_type_attr; // phpcs:ignore ?> <?php echo $data_vars_attr; // phpcs:ignore ?>>
 								<?php esc_html_e( 'Buy Now', 'clearance-deal' ); ?>
 							</a>
 							<?php else : ?>
@@ -961,18 +999,16 @@ function clearance_deal_featured_products_section() {
 				prevBtn.addEventListener('click', function (e) {
 					e.preventDefault();
 					show(index - 1);
-					startAutoplay();
 				});
 			}
 			if (nextBtn) {
 				nextBtn.addEventListener('click', function (e) {
 					e.preventDefault();
 					show(index + 1);
-					startAutoplay();
 				});
 			}
 
-			startAutoplay();
+			// No autoplay — images only advance on arrow click.
 		});
 	});
 	</script>
@@ -1307,113 +1343,93 @@ function clearance_deal_render_media( $post_id, $image_size = 'medium_large' ) {
 add_filter( 'woocommerce_get_stock_html', '__return_empty_string' );
 add_filter( 'woocommerce_stock_html', '__return_empty_string', 10, 3 );
 
-// ── Offer Countdown Timer ─────────────────────────────────────────────────────
+
+// ── Variable Product Price Display ───────────────────────────────────────────
 
 /**
- * Output the countdown timer badge HTML.
- * The actual countdown is driven by a shared JS timer injected in wp_footer.
+ * Replace the default "KES 2,800 – KES 11,200" range on variable products
+ * with a "WAS / NOW" format using the lowest-priced variation.
+ * WooCommerce's built-in JS then swaps in the selected variation's own
+ * regular/sale prices once the customer picks a bundle option.
  */
-function clearance_deal_countdown_html() {
-	?>
-	<div class="deal-countdown">
-		<span class="deal-countdown-icon">⏱</span>
-		<span class="deal-countdown-label">Offer expires in:</span>
-		<span class="deal-countdown-timer" data-countdown>01:38:00 hrs</span>
-	</div>
-	<?php
+add_filter( 'woocommerce_variable_price_html', function ( $price, $product ) {
+	$prices = $product->get_variation_prices( true );
+	if ( empty( $prices['price'] ) ) {
+		return $price;
+	}
+	// First entry = lowest-priced variation.
+	$min_id = key( $prices['price'] );
+	if ( ! $min_id ) {
+		return $price;
+	}
+	$variation = wc_get_product( $min_id );
+	if ( ! $variation ) {
+		return $price;
+	}
+	$regular = $variation->get_regular_price();
+	$sale    = $variation->get_sale_price();
+	if ( ! $regular || ! $sale ) {
+		return $price;
+	}
+	return '<del aria-hidden="true">' . wc_price( $regular ) . '</del> <ins>' . wc_price( $sale ) . '</ins>';
+}, 10, 2 );
+
+// ── End Variable Product Price Display ───────────────────────────────────────
+
+// ── Buy Now Pay Later Badge ───────────────────────────────────────────────────
+
+add_action( 'woocommerce_before_shop_loop_item_title', function () {
+	echo '<span class="bnpl-badge">Buy Now Pay Later</span>';
+}, 15 );
+
+// Single product summary — above the add-to-cart button (priority 39, which is just before add-to-cart at 40).
+add_action( 'woocommerce_single_product_summary', function () {
+	echo '<span class="bnpl-badge bnpl-badge--single">Buy Now Pay Later</span>';
+}, 39 );
+
+add_action( 'wp_enqueue_scripts', function () {
+	$css = '
+.bnpl-badge {
+	display: block;
+	background-color: #16a34a;
+	color: #ffffff;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	padding: 5px 12px;
+	line-height: 1.4;
+	text-align: center;
 }
+.bnpl-badge--single {
+	margin: 0 0 10px;
+	border-radius: 4px;
+}';
+	wp_add_inline_style( 'clearance-deal-style', $css );
+} );
 
-// Shop loop — after price (priority 10).
-add_action( 'woocommerce_after_shop_loop_item_title', 'clearance_deal_countdown_html', 15 );
+// ── End Buy Now Pay Later Badge ───────────────────────────────────────────────
 
-// Single product summary — between excerpt (20) and Add to Cart (30).
-add_action( 'woocommerce_single_product_summary', 'clearance_deal_countdown_html', 25 );
+// ── Buy Now Button + Checkout Redirect ───────────────────────────────────────
 
-// Countdown CSS + JS — injected once in the footer.
-add_action( 'wp_footer', function () {
-	?>
-	<style id="clearance-countdown-css">
-	.deal-countdown {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-		background: linear-gradient(135deg, #e53e3e 0%, #dd6b20 100%);
-		color: #fff;
-		font-size: 10px;
-		font-weight: 700;
-		padding: 4px 8px;
-		border-radius: 4px;
-		margin: 6px 0 5px;
-		box-shadow: 0 2px 8px rgba(229,62,62,0.3);
-		animation: cd-glow 2.2s ease-in-out infinite;
-		letter-spacing: 0.01em;
-		line-height: 1.3;
+// Rename "Add to cart" → "Buy Now" on shop/archive loop.
+add_filter( 'woocommerce_product_add_to_cart_text', function ( $text, $product ) {
+	return __( 'Buy Now', 'clearance-deal' );
+}, 10, 2 );
+
+// Rename on single product page.
+add_filter( 'woocommerce_product_single_add_to_cart_text', function ( $text, $product ) {
+	return __( 'Buy Now', 'clearance-deal' );
+}, 10, 2 );
+
+// After any non-AJAX add-to-cart (form submit or ?add-to-cart= URL),
+// redirect straight to checkout when the CPL plan cookie is already set.
+add_filter( 'woocommerce_add_to_cart_redirect', function ( $url ) {
+	if ( ! empty( $_COOKIE['cpl_plan_choice'] ) ) {
+		return wc_get_checkout_url();
 	}
-	.deal-countdown-timer {
-		font-family: 'Courier New', Courier, monospace;
-		font-size: 10.5px;
-		font-weight: 900;
-		min-width: 80px;
-		letter-spacing: 0.02em;
-		flex-shrink: 0;
-	}
-	@keyframes cd-glow {
-		0%, 100% { box-shadow: 0 2px 10px rgba(229,62,62,0.35); }
-		50%       { box-shadow: 0 4px 20px rgba(229,62,62,0.6);  }
-	}
-	</style>
-	<script id="clearance-countdown-js">
-	(function () {
-		var TOTAL    = 98 * 60;   // 1 hr 38 min → seconds
-		var RESET_AT = 10 * 60;   // reset when 10 min remain
+	return $url;
+} );
 
-		function getEndTime() {
-			var stored = localStorage.getItem('cd_offer_end');
-			if (stored) {
-				var end       = parseInt(stored, 10);
-				var remaining = Math.floor((end - Date.now()) / 1000);
-				if (remaining > RESET_AT) {
-					return end;
-				}
-			}
-			var newEnd = Date.now() + TOTAL * 1000;
-			localStorage.setItem('cd_offer_end', String(newEnd));
-			return newEnd;
-		}
-
-		var endTime = getEndTime();
-
-		function tick() {
-			var remaining = Math.floor((endTime - Date.now()) / 1000);
-
-			// Reset when 10 minutes remain.
-			if (remaining <= RESET_AT) {
-				endTime = Date.now() + TOTAL * 1000;
-				localStorage.setItem('cd_offer_end', String(endTime));
-				remaining = TOTAL;
-			}
-
-			if (remaining < 0) { remaining = 0; }
-
-			var h = Math.floor(remaining / 3600);
-			var m = Math.floor((remaining % 3600) / 60);
-			var s = remaining % 60;
-
-			var display = String(h).padStart(2, '0') + ':' +
-			              String(m).padStart(2, '0') + ':' +
-			              String(s).padStart(2, '0') + ' hrs';
-
-			document.querySelectorAll('[data-countdown]').forEach(function (el) {
-				el.textContent = display;
-			});
-		}
-
-		tick();
-		setInterval(tick, 1000);
-	})();
-	</script>
-	<?php
-}, 99 );
-
-// ── End Offer Countdown Timer ─────────────────────────────────────────────────
+// ── End Buy Now Button + Checkout Redirect ────────────────────────────────────
 
