@@ -170,11 +170,11 @@ add_filter( 'style_loader_tag', 'clearance_deal_fa_nonblocking', 10, 2 );
  */
 function clearance_deal_defer_jquery( $tag, $handle ) {
 	if ( in_array( $handle, array( 'jquery-core', 'jquery-migrate' ), true ) && ! is_admin() ) {
-		// Don't defer jQuery on checkout/order-pay or product pages.
+		// Don't defer jQuery on checkout/order-pay, product, shop or category pages.
 		// Checkout: payment gateway inline scripts need it immediately.
-		// Product pages: the variation form JS relies on jQuery being ready before
-		// the form can be submitted, and deferring opens a race-condition window.
-		if ( function_exists( 'is_checkout' ) && ( is_checkout() || is_wc_endpoint_url( 'order-pay' ) || is_product() ) ) {
+		// Product pages: variation form JS relies on jQuery before form submit.
+		// Shop/category: CPL's added_to_cart handler requires jQuery to be available.
+		if ( function_exists( 'is_checkout' ) && ( is_checkout() || is_wc_endpoint_url( 'order-pay' ) || is_product() || is_shop() || is_product_category() || is_product_tag() ) ) {
 			return $tag;
 		}
 		return str_replace( '<script ', '<script defer ', $tag );
@@ -506,95 +506,105 @@ add_action( 'woocommerce_thankyou', 'clearance_deal_thankyou_whatsapp_popup' );
  * API and reload the page so the checkout block's totals stay correct.
  */
 function clearance_deal_checkout_quantity_editor() {
-	if ( ! function_exists( 'WC' ) || ! WC()->cart || WC()->cart->is_empty() ) {
-		return;
-	}
-	?>
-	<div class="qty-editor">
-		<h2 class="qty-editor-title"><?php esc_html_e( 'Review Quantities', 'clearance-deal' ); ?></h2>
-		<div class="qty-editor-items">
-			<?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
-				$product = $cart_item['data'];
-				if ( ! $product ) {
-					continue;
-				}
-				?>
-				<div class="qty-editor-item" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>">
-					<div class="qty-editor-item-image"><?php echo $product->get_image( 'thumbnail' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
-					<div class="qty-editor-item-name"><?php echo esc_html( $product->get_name() ); ?></div>
-					<div class="qty-editor-item-controls">
-						<button type="button" class="qty-editor-btn qty-editor-minus" aria-label="<?php esc_attr_e( 'Decrease quantity', 'clearance-deal' ); ?>">&#8722;</button>
-						<input type="number" class="qty-editor-input" min="1" value="<?php echo esc_attr( $cart_item['quantity'] ); ?>">
-						<button type="button" class="qty-editor-btn qty-editor-plus" aria-label="<?php esc_attr_e( 'Increase quantity', 'clearance-deal' ); ?>">&#43;</button>
-					</div>
-					<div class="qty-editor-spinner" hidden></div>
-				</div>
-			<?php endforeach; ?>
-		</div>
-		<p class="qty-editor-hint"><?php esc_html_e( 'Totals below update automatically after you change a quantity.', 'clearance-deal' ); ?></p>
-	</div>
-	<script>
-	(function () {
-		var storeNonce = '';
+        if ( ! function_exists( 'WC' ) || ! WC()->cart || WC()->cart->is_empty() ) {
+                return;
+        }
+        ?>
+        <div class="qty-editor">
+                <h2 class="qty-editor-title"><?php esc_html_e( 'Review Quantities', 'clearance-deal' ); ?></h2>
+                <div class="qty-editor-items">
+                        <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
+                                $product = $cart_item['data'];
+                                if ( ! $product ) {
+                                        continue;
+                                }
+                                ?>
+                                <div class="qty-editor-item" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>">
+                                        <div class="qty-editor-item-image"><?php echo $product->get_image( 'thumbnail' ); ?></div>
+                                        <div class="qty-editor-item-name"><?php echo esc_html( $product->get_name() ); ?></div>
+                                        <div class="qty-editor-item-controls">
+                                                <button type="button" class="qty-editor-btn qty-editor-minus" aria-label="<?php esc_attr_e( 'Decrease quantity', 'clearance-deal' ); ?>">&#8722;</button>
+                                                <input type="number" class="qty-editor-input" min="1" value="<?php echo esc_attr( $cart_item['quantity'] ); ?>">
+                                                <button type="button" class="qty-editor-btn qty-editor-plus" aria-label="<?php esc_attr_e( 'Increase quantity', 'clearance-deal' ); ?>">&#43;</button>
+                                                <button type="button" class="qty-editor-btn qty-editor-remove" title="<?php esc_attr_e( 'Remove item', 'clearance-deal' ); ?>"><i class="fa-solid fa-trash-can"></i></button>
+                                        </div>
+                                        <div class="qty-editor-spinner" hidden></div>
+                                </div>
+                        <?php endforeach; ?>
+                </div>
+                <p class="qty-editor-hint"><?php esc_html_e( 'Totals below update automatically after you change a quantity or remove an item.', 'clearance-deal' ); ?></p>
+        </div>
+        <script>
+        (function () {
+                var storeNonce = '';
 
-		function storeApiFetch(path, options) {
-			options = options || {};
-			options.credentials = 'same-origin';
-			options.headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
-			return fetch('/?rest_route=' + path, options).then(function (res) {
-				var nonce = res.headers.get('Nonce');
-				if (nonce) {
-					storeNonce = nonce;
-				}
-				return res.json().then(function (data) {
-					if (!res.ok) {
-						throw data;
-					}
-					return data;
-				});
-			});
-		}
+                function storeApiFetch(path, options) {
+                        options = options || {};
+                        options.credentials = 'same-origin';
+                        options.headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+                        return fetch('/?rest_route=' + path, options).then(function (res) {
+                                var nonce = res.headers.get('Nonce');
+                                if (nonce) {
+                                        storeNonce = nonce;
+                                }
+                                return res.json().then(function (data) {
+                                        if (!res.ok) {
+                                                throw data;
+                                        }
+                                        return data;
+                                });
+                        });
+                }
 
-		// Prime the Store API nonce before any update request needs it.
-		storeApiFetch('/wc/store/v1/cart').catch(function () {});
+                storeApiFetch('/wc/store/v1/cart').catch(function () {});
 
-		document.querySelectorAll('.qty-editor-item').forEach(function (row) {
-			var key = row.getAttribute('data-cart-item-key');
-			var input = row.querySelector('.qty-editor-input');
-			var minus = row.querySelector('.qty-editor-minus');
-			var plus = row.querySelector('.qty-editor-plus');
-			var spinner = row.querySelector('.qty-editor-spinner');
+                document.querySelectorAll('.qty-editor-item').forEach(function (row) {
+                        var key = row.getAttribute('data-cart-item-key');
+                        var input = row.querySelector('.qty-editor-input');
+                        var minus = row.querySelector('.qty-editor-minus');
+                        var plus = row.querySelector('.qty-editor-plus');
+                        var removeBtn = row.querySelector('.qty-editor-remove');
+                        var spinner = row.querySelector('.qty-editor-spinner');
 
-			function updateQty(newQty) {
-				newQty = Math.max(1, parseInt(newQty, 10) || 1);
-				input.value = newQty;
-				input.disabled = true;
-				minus.disabled = true;
-				plus.disabled = true;
-				spinner.hidden = false;
+                        function updateQty(newQty) {
+                                newQty = Math.max(0, parseInt(newQty, 10) || 0);
+                                input.value = newQty;
+                                input.disabled = true;
+                                minus.disabled = true;
+                                plus.disabled = true;
+                                if (removeBtn) removeBtn.disabled = true;
+                                spinner.hidden = false;
 
-				storeApiFetch('/wc/store/v1/cart/update-item', {
-					method: 'POST',
-					headers: { 'Nonce': storeNonce },
-					body: JSON.stringify({ key: key, quantity: newQty })
-				}).then(function () {
-					window.location.reload();
-				}).catch(function () {
-					input.disabled = false;
-					minus.disabled = false;
-					plus.disabled = false;
-					spinner.hidden = true;
-					alert('<?php echo esc_js( __( 'Could not update quantity. Please try again.', 'clearance-deal' ) ); ?>');
-				});
-			}
+                                storeApiFetch('/wc/store/v1/cart/update-item', {
+                                        method: 'POST',
+                                        headers: { 'Nonce': storeNonce },
+                                        body: JSON.stringify({ key: key, quantity: newQty })
+                                }).then(function () {
+                                        window.location.reload();
+                                }).catch(function () {
+                                        input.disabled = false;
+                                        minus.disabled = false;
+                                        plus.disabled = false;
+                                        if (removeBtn) removeBtn.disabled = false;
+                                        spinner.hidden = true;
+                                        alert('<?php echo esc_js( __( 'Could not update quantity. Please try again.', 'clearance-deal' ) ); ?>');
+                                });
+                        }
 
-			minus.addEventListener('click', function () { updateQty(parseInt(input.value, 10) - 1); });
-			plus.addEventListener('click', function () { updateQty(parseInt(input.value, 10) + 1); });
-			input.addEventListener('change', function () { updateQty(input.value); });
-		});
-	})();
-	</script>
-	<?php
+                        minus.addEventListener('click', function () { updateQty(parseInt(input.value, 10) - 1); });
+                        plus.addEventListener('click', function () { updateQty(parseInt(input.value, 10) + 1); });
+                        input.addEventListener('change', function () { updateQty(input.value); });
+                        if (removeBtn) {
+                                removeBtn.addEventListener('click', function () {
+                                        if (confirm('<?php echo esc_js( __( 'Remove this item from your order?', 'clearance-deal' ) ); ?>')) {
+                                                updateQty(0);
+                                        }
+                                });
+                        }
+                });
+        })();
+        </script>
+        <?php
 }
 
 /**
@@ -602,7 +612,14 @@ function clearance_deal_checkout_quantity_editor() {
  * straight to checkout (site works like a single "Buy Now" flow).
  */
 function clearance_deal_buy_now_redirect( $url ) {
-	return wc_get_checkout_url();
+        // Only set default to 'deposit' if no plan choice is already set.
+        if ( empty( $_COOKIE['cpl_plan_choice'] ) && ( ! function_exists( 'WC' ) || ! WC()->session || ! WC()->session->get( 'cpl_plan_choice' ) ) ) {
+                if ( function_exists( 'WC' ) && WC()->session ) {
+                        WC()->session->set( 'cpl_plan_choice', 'deposit' );
+                }
+                wc_setcookie( 'cpl_plan_choice', 'deposit' );
+        }
+        return wc_get_checkout_url();
 }
 add_filter( 'woocommerce_add_to_cart_redirect', 'clearance_deal_buy_now_redirect' );
 
@@ -1270,6 +1287,7 @@ function clearance_deal_get_facebook_embed_url( $url ) {
  *
  * @param int    $post_id    The post/product ID.
  * @param string $image_size Fallback image size when no video is set.
+
  */
 function clearance_deal_render_media( $post_id, $image_size = 'medium_large' ) {
 	$video_url  = get_post_meta( $post_id, 'deal_video_url', true );
@@ -1376,6 +1394,60 @@ add_filter( 'woocommerce_variable_price_html', function ( $price, $product ) {
 
 // ── End Variable Product Price Display ───────────────────────────────────────
 
+/**
+ * Synchronize the single product top price with the selected variation.
+ * 1. Updates top price dynamically to the selected variation's price (WAS / NOW).
+ * 2. Hides the duplicate .woocommerce-variation-price above the Buy Now button
+ *    so customers do not see two conflicting or redundant prices.
+ * 3. Restores default price when selection is cleared.
+ */
+add_action( 'wp_footer', function () {
+	if ( ! is_product() ) {
+		return;
+	}
+	?>
+	<script>
+	jQuery(function($) {
+		var $price = $('.summary.entry-summary p.price, .summary.entry-summary .price').first();
+		if (!$price.length) return;
+		var defaultPriceHtml = $price.html();
+
+		function updateToVariation(variation) {
+			if (variation && variation.price_html && variation.price_html.trim() !== '') {
+				$price.html(variation.price_html);
+			}
+		}
+
+		$('.variations_form').on('show_variation', function(event, variation) {
+			updateToVariation(variation);
+		});
+
+		$('.variations_form').on('hide_variation reset_data', function() {
+			$price.html(defaultPriceHtml);
+		});
+
+		// Check if a variation is already active on load
+		var initialVarId = parseInt($('input[name="variation_id"]').val(), 10);
+		if (initialVarId > 0) {
+			var variationData = $('.variations_form').data('product_variations');
+			if (Array.isArray(variationData)) {
+				var activeVar = variationData.find(function(v) { return v.variation_id === initialVarId; });
+				if (activeVar) {
+					updateToVariation(activeVar);
+				}
+			}
+		}
+	});
+	</script>
+	<style>
+	/* Hide duplicate variation price above the Buy Now button to keep a single clean price */
+	.single-product .woocommerce-variation-price {
+		display: none !important;
+	}
+	</style>
+	<?php
+}, 99 );
+
 // ── Buy Now Pay Later Badge ───────────────────────────────────────────────────
 
 add_action( 'woocommerce_before_shop_loop_item_title', function () {
@@ -1422,15 +1494,6 @@ add_filter( 'woocommerce_product_single_add_to_cart_text', function ( $text, $pr
 	return __( 'Buy Now', 'clearance-deal' );
 }, 10, 2 );
 
-// After any non-AJAX add-to-cart (form submit or ?add-to-cart= URL),
-// redirect straight to checkout when the CPL plan cookie is already set.
-add_filter( 'woocommerce_add_to_cart_redirect', function ( $url ) {
-	if ( ! empty( $_COOKIE['cpl_plan_choice'] ) ) {
-		return wc_get_checkout_url();
-	}
-	return $url;
-} );
-
 // ── End Buy Now Button + Checkout Redirect ────────────────────────────────────
 
 // ── M-Pesa Trust Badge ────────────────────────────────────────────────────────
@@ -1471,4 +1534,173 @@ add_action( 'wp_head', function () {
 } );
 
 // ── End LocalBusiness Schema.org JSON-LD ─────────────────────────────────────
+
+
+
+// ── Force Cart to Checkout Redirect ──────────────────────────────────────────
+add_filter( "woocommerce_get_cart_url", function( $url ) {
+    if ( function_exists( "wc_get_checkout_url" ) ) {
+        return wc_get_checkout_url();
+    }
+    return $url;
+} );
+
+add_action( "template_redirect", function() {
+    if ( function_exists( "is_cart" ) && is_cart() ) {
+        wp_safe_redirect( wc_get_checkout_url() );
+        exit;
+    }
+} );
+
+// ── Hair Consultation Booking WhatsApp Flow ───────────────────────────────
+add_action( 'woocommerce_thankyou', function( $order_id ) {
+    if ( ! $order_id ) {
+        return;
+    }
+    $order = wc_get_order( $order_id );
+    if ( ! $order ) {
+        return;
+    }
+    $has_consultation = false;
+    foreach ( $order->get_items() as $item ) {
+        if ( $item->get_product_id() == 250 || stripos( $item->get_name(), 'Consultation' ) !== false ) {
+            $has_consultation = true;
+            break;
+        }
+    }
+    if ( ! $has_consultation ) {
+        return;
+    }
+    $store_number = clearance_deal_normalize_wa_phone( get_option( 'clearance_deal_store_whatsapp_number', '254751338975' ) );
+    if ( ! $store_number ) {
+        return;
+    }
+    $client_name = $order->get_formatted_billing_full_name();
+    $phone = $order->get_billing_phone();
+    $msg = "Hi Clearance Deal Kenya! I have paid 100% (KSh 1,000) for the Certified Hair Consultation Session.\n\nOrder #" . $order->get_order_number() . "\nName: " . $client_name . "\nPhone: " . $phone . "\nStatus: Paid (100% Fee)\n\nPlease share available consultation time slots. Thank you!";
+    $wa_url = 'https://wa.me/' . $store_number . '?text=' . rawurlencode( $msg );
+    ?>
+    <div style="background:#fff0f5; border:2px solid #e11d48; border-radius:12px; padding:24px; margin:24px 0; text-align:center;">
+        <h3 style="color:#e11d48; font-size:20px; font-weight:800; margin-bottom:8px;">Consultation Fee Received (100% Paid)</h3>
+        <p style="font-size:15px; color:#334155; margin-bottom:18px;">Thank you <?php echo esc_html( $client_name ); ?>! Click the button below to message our styling team on WhatsApp with your booking details so we can assign your consultation slot.</p>
+        <a href="<?php echo esc_url( $wa_url ); ?>" target="_blank" class="btn-get-deal" style="display:inline-block; max-width:360px; padding:14px 24px; font-size:16px; font-weight:700; background:#25d366; color:#fff;">
+            <i class="fa-brands fa-whatsapp" style="margin-right:8px;"></i> Connect on WhatsApp Now
+        </a>
+    </div>
+    <script>
+    setTimeout(function() {
+        window.open('<?php echo esc_url( $wa_url ); ?>', '_blank');
+    }, 1500);
+    </script>
+    <?php
+}, 5 );
+
+// ── Job Application CV Upload AJAX Handler ──────────────────────────────────
+add_action( 'wp_ajax_cd_upload_job_cv', 'cd_handle_job_cv_upload' );
+add_action( 'wp_ajax_nopriv_cd_upload_job_cv', 'cd_handle_job_cv_upload' );
+function cd_handle_job_cv_upload() {
+    check_ajax_referer( 'cd_job_application_nonce', 'security' );
+
+    $full_name  = isset( $_POST['applicant_name'] ) ? sanitize_text_field( wp_unslash( $_POST['applicant_name'] ) ) : '';
+    $phone      = isset( $_POST['applicant_phone'] ) ? sanitize_text_field( wp_unslash( $_POST['applicant_phone'] ) ) : '';
+    $job_title  = isset( $_POST['job_title'] ) ? sanitize_text_field( wp_unslash( $_POST['job_title'] ) ) : '';
+    $job_ref    = isset( $_POST['job_ref'] ) ? sanitize_text_field( wp_unslash( $_POST['job_ref'] ) ) : '';
+    $notes      = isset( $_POST['applicant_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['applicant_notes'] ) ) : '';
+
+    if ( empty( $full_name ) || empty( $phone ) || empty( $job_ref ) ) {
+        wp_send_json_error( array( 'message' => 'Please fill in your name, phone number, and selected job.' ) );
+    }
+
+    if ( empty( $_FILES['cv_file']['name'] ) ) {
+        wp_send_json_error( array( 'message' => 'Please select and attach your CV (PDF or Word document).' ) );
+    }
+
+    $file = $_FILES['cv_file'];
+    $allowed_extensions = array( 'pdf', 'doc', 'docx', 'rtf', 'txt' );
+    $file_ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+
+    if ( ! in_array( $file_ext, $allowed_extensions, true ) ) {
+        wp_send_json_error( array( 'message' => 'Invalid file format. Please upload your CV as a PDF or Word document.' ) );
+    }
+
+    if ( $file['size'] > 15 * 1024 * 1024 ) {
+        wp_send_json_error( array( 'message' => 'File size exceeds 15MB. Please upload a smaller file.' ) );
+    }
+
+    if ( ! function_exists( 'wp_handle_upload' ) ) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+    }
+
+    $upload_overrides = array(
+        'test_form' => false,
+        'mimes'     => array(
+            'pdf'  => 'application/pdf',
+            'doc'  => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'rtf'  => 'application/rtf',
+            'txt'  => 'text/plain',
+        ),
+    );
+
+    $movefile = wp_handle_upload( $file, $upload_overrides );
+
+    if ( ! $movefile || isset( $movefile['error'] ) ) {
+        $error_msg = isset( $movefile['error'] ) ? $movefile['error'] : 'Failed to save uploaded CV.';
+        wp_send_json_error( array( 'message' => $error_msg ) );
+    }
+
+    $cv_url = $movefile['url'];
+
+    // Build WhatsApp Message for +254 751 338 975
+    $store_number = '254751338975';
+    $wa_msg = "Hello Clearance Kenya HR Team!\n\n" .
+              "I am submitting my job application via clearance.co.ke/jobs:\n\n" .
+              "• Position: " . $job_title . "\n" .
+              "• Job Reference: " . $job_ref . "\n" .
+              "• Full Name: " . $full_name . "\n" .
+              "• Phone: " . $phone . "\n";
+    if ( ! empty( $notes ) ) {
+        $wa_msg .= "• Notes: " . $notes . "\n";
+    }
+    $wa_msg .= "\n📄 CV Attached / Download Link:\n" . $cv_url . "\n\n" .
+               "Looking forward to your response. Thank you!";
+
+    $wa_url = 'https://wa.me/' . $store_number . '?text=' . rawurlencode( $wa_msg );
+
+    wp_send_json_success( array(
+        'message' => 'CV uploaded successfully!',
+        'cv_url'  => $cv_url,
+        'wa_url'  => $wa_url,
+    ) );
+}
+
+// ── Ensure Clearance Pay Later Mini-Cart Styles Always Load ──────────────────
+add_action( 'wp_enqueue_scripts', function() {
+    if ( ! is_admin() && defined( 'CPL_PLUGIN_URL' ) && defined( 'CPL_VERSION' ) ) {
+        wp_enqueue_style(
+            'cpl-frontend',
+            CPL_PLUGIN_URL . 'assets/css/frontend.css',
+            array(),
+            CPL_VERSION
+        );
+    }
+}, 20 );
+
+// Fail-safe styling: ensure mini-cart drawer never bleeds into page flow
+add_action( 'wp_head', function() {
+    ?>
+    <style id="cpl-mini-cart-failsafe">
+    #cpl-cart-icon-btn { display: none !important; }
+    .cpl-mini-cart-panel:not(.cpl-mc-open) {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    .cpl-mini-cart-backdrop:not(.cpl-mc-open) {
+        display: none !important;
+    }
+    </style>
+    <?php
+}, 99 );
 

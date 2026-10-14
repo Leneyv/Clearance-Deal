@@ -2007,3 +2007,102 @@ a {
     width: auto;
     opacity: 0.8;
 }
+
+
+/* ── Trust & Authority Sections ────────────────────────────────────────────── */
+.ch-trust-bar {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px 16px;
+    box-shadow: var(--shadow-sm);
+}
+.ch-trust-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    text-align: center;
+}
+.ch-trust-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+.ch-trust-item i {
+    font-size: 24px;
+    color: #10b981;
+}
+.ch-trust-text h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+.ch-trust-text p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.ch-bnpl-steps {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+.ch-steps-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.ch-steps-header h2 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--secondary-color);
+}
+.ch-steps-header p {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-top: 6px;
+}
+.ch-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+.ch-step-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.ch-step-number {
+    width: 36px;
+    height: 36px;
+    background: var(--secondary-color);
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+    font-size: 16px;
+}
+.ch-step-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--secondary-color);
+}
+.ch-step-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.qty-editor-remove:hover {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+}
