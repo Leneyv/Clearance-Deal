@@ -137,7 +137,7 @@ add_action( 'widgets_init', 'clearance_deal_widgets_init' );
  * Enqueue scripts and styles.
  */
 function clearance_deal_scripts() {
-	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.1.1' );
+	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.1.2' );
 	// Self-hosted Font Awesome — eliminates external CDN round-trip
 	wp_enqueue_style(
 		'font-awesome',

@@ -178,6 +178,18 @@ get_header();
 			<button type="button" class="tab-filter-btn" data-cat="premium" onclick="filterCategoryTab('premium', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
 				<i class="fa-solid fa-crown" style="color:#9333ea;"></i> Premium Deals
 			</button>
+			<button type="button" class="tab-filter-btn" data-cat="hair" onclick="filterCategoryTab('hair', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-scissors" style="color:#0284c7;"></i> Shop by hair Deals
+			</button>
+			<button type="button" class="tab-filter-btn" data-cat="makeup" onclick="filterCategoryTab('makeup', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-wand-magic-sparkles" style="color:#db2777;"></i> Shop by Makup Deals
+			</button>
+			<button type="button" class="tab-filter-btn" data-cat="wigs" onclick="filterCategoryTab('wigs', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-feather" style="color:#d97706;"></i> Wigs
+			</button>
+			<button type="button" class="tab-filter-btn" data-cat="bundles" onclick="filterCategoryTab('bundles', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-box-open" style="color:#059669;"></i> Bundles
+			</button>
 		</div>
 	</div>
 
@@ -343,8 +355,27 @@ get_header();
 						$data_type_attr = 'data-product-type="simple"';
 						$buy_now_url    = add_query_arg( 'add-to-cart', $product->get_id(), home_url( '/' ) );
 					}
+
+					// Classify for category filtering
+					$cat_slugs        = wp_get_post_terms( get_the_ID(), 'product_cat', array( 'fields' => 'slugs' ) );
+					$title_lower      = strtolower( get_the_title() );
+					$has_wig_term     = in_array( 'wigs', $cat_slugs, true );
+					$has_hair_term    = in_array( 'hair-bundles', $cat_slugs, true ) || in_array( 'hair', $cat_slugs, true );
+					$has_makeup_term  = in_array( 'makeup', $cat_slugs, true );
+					$title_has_wig    = ( stripos( $title_lower, 'wig' ) !== false );
+					$title_has_bundle = ( stripos( $title_lower, 'bundle' ) !== false );
+
+					$is_makeup = $has_makeup_term || ( stripos( $title_lower, 'makeup' ) !== false ) || ( stripos( $title_lower, 'cosmetic' ) !== false );
+					$is_bundle = $title_has_bundle || ( $has_hair_term && ! $title_has_wig && ! $is_makeup );
+					$is_wig    = $title_has_wig || ( $has_wig_term && ! $title_has_bundle );
+					$is_hair   = $has_hair_term || $has_wig_term || $is_wig || $is_bundle || ( stripos( $title_lower, 'hair' ) !== false );
 					?>
-					<div class="deal-card cat-all cat-<?php echo esc_attr( $item_tier ); ?><?php echo $is_premium ? ' is-premium-card' : ''; ?>" data-price-cat="<?php echo esc_attr( $item_tier ); ?>">
+					<div class="deal-card cat-all cat-<?php echo esc_attr( $item_tier ); ?><?php echo $is_premium ? ' is-premium-card' : ''; ?>"
+						data-price-cat="<?php echo esc_attr( $item_tier ); ?>"
+						data-is-hair="<?php echo $is_hair ? '1' : '0'; ?>"
+						data-is-makeup="<?php echo $is_makeup ? '1' : '0'; ?>"
+						data-is-wig="<?php echo $is_wig ? '1' : '0'; ?>"
+						data-is-bundle="<?php echo $is_bundle ? '1' : '0'; ?>">
 						<div class="deal-media-wrapper" style="position: relative; overflow: hidden;">
 							<?php clearance_deal_render_featured_media( $product ); ?>
 
@@ -408,50 +439,77 @@ get_header();
 <!-- Category Switching Script -->
 <script>
 function filterCategoryTab(category, btn) {
+	// 1. Sync pill filter buttons on homepage
 	var buttons = document.querySelectorAll('.tab-filter-btn');
 	buttons.forEach(function (b) {
-		b.style.background = 'transparent';
-		b.style.color = '#475569';
-		b.style.boxShadow = 'none';
-		b.classList.remove('is-active');
+		var active = (b.getAttribute('data-cat') === category);
+		b.style.background = active ? '#fff' : 'transparent';
+		b.style.color = active ? '#0f172a' : '#475569';
+		b.style.boxShadow = active ? '0 2px 6px rgba(0,0,0,0.1)' : 'none';
+		b.classList.toggle('is-active', active);
 	});
 
-	if (btn) {
-		btn.style.background = '#fff';
-		btn.style.color = '#0f172a';
-		btn.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-		btn.classList.add('is-active');
-	} else {
-		var targetBtn = document.querySelector('.tab-filter-btn[data-cat="' + category + '"]');
-		if (targetBtn) {
-			targetBtn.style.background = '#fff';
-			targetBtn.style.color = '#0f172a';
-			targetBtn.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-			targetBtn.classList.add('is-active');
-		}
-	}
+	// 2. Sync header sub-bar tabs
+	document.querySelectorAll('.cat-bar-item').forEach(function (t) {
+		t.classList.toggle('is-active', t.getAttribute('data-cat') === category);
+	});
 
+	// 3. Sync mobile nav drawer tabs
+	document.querySelectorAll('.mobile-nav-deal-tab').forEach(function (t) {
+		t.classList.toggle('is-active', t.getAttribute('data-cat') === category);
+	});
+
+	// 4. Filter product cards
 	var cards = document.querySelectorAll('#mainProductsGrid .deal-card');
 	var headers = document.querySelectorAll('#mainProductsGrid .tier-section-header');
 
 	cards.forEach(function (card) {
+		var match = false;
 		if (category === 'all') {
-			card.style.display = '';
-		} else {
-			var cardTier = card.getAttribute('data-price-cat');
-			card.style.display = (cardTier === category) ? '' : 'none';
+			match = true;
+		} else if (category === 'price-1' || category === 'price-2' || category === 'price-3' || category === 'premium') {
+			match = (card.getAttribute('data-price-cat') === category);
+		} else if (category === 'hair') {
+			match = (card.getAttribute('data-is-hair') === '1');
+		} else if (category === 'makeup') {
+			match = (card.getAttribute('data-is-makeup') === '1');
+		} else if (category === 'wigs') {
+			match = (card.getAttribute('data-is-wig') === '1');
+		} else if (category === 'bundles') {
+			match = (card.getAttribute('data-is-bundle') === '1');
 		}
+		card.style.display = match ? '' : 'none';
 	});
 
+	// 5. Filter or hide tier section headers
 	headers.forEach(function (header) {
 		if (category === 'all') {
 			header.style.display = '';
+		} else if (category === 'price-1' || category === 'price-2' || category === 'price-3' || category === 'premium') {
+			header.style.display = (header.getAttribute('data-tier-header') === category) ? '' : 'none';
 		} else {
-			var headerTier = header.getAttribute('data-tier-header');
-			header.style.display = (headerTier === category) ? '' : 'none';
+			// For specific product categories (hair, makeup, wigs, bundles), hide price headers for seamless layout
+			header.style.display = 'none';
 		}
 	});
 }
+window.filterCategoryTab = filterCategoryTab;
+
+// Auto-filter when landing on URL with hash e.g. #wigs, #bundles, #price-1
+function handleCategoryHash() {
+	var hash = window.location.hash.replace('#', '');
+	if (!hash) return;
+	var validTabs = ['all', 'price-1', 'price-2', 'price-3', 'premium', 'hair', 'makeup', 'wigs', 'bundles'];
+	if (validTabs.indexOf(hash) !== -1) {
+		filterCategoryTab(hash);
+	}
+}
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', handleCategoryHash);
+} else {
+	handleCategoryHash();
+}
+window.addEventListener('hashchange', handleCategoryHash);
 </script>
 
 <!-- Authenticity Guarantee & Burn Test Section -->
