@@ -1179,8 +1179,25 @@ function clearance_deal_single_product_media() {
 	$has_video = get_post_meta( $product->get_id(), 'deal_video_url', true ) || get_post_meta( $product->get_id(), 'deal_video_file', true );
 
 	if ( $has_video ) {
-		echo '<div class="images">';
+		echo '<div class="images deal-has-video-gallery">';
 		clearance_deal_render_media( $product->get_id(), 'large' );
+
+		$image_ids = array();
+		if ( $product->get_image_id() ) {
+			$image_ids[] = $product->get_image_id();
+		}
+		$image_ids = array_unique( array_filter( array_merge( $image_ids, $product->get_gallery_image_ids() ) ) );
+		if ( ! empty( $image_ids ) ) {
+			echo '<div class="deal-video-gallery-thumbnails" style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">';
+			foreach ( $image_ids as $img_id ) {
+				$full_url  = wp_get_attachment_image_url( $img_id, 'full' );
+				$thumb_url = wp_get_attachment_image_url( $img_id, 'woocommerce_thumbnail' );
+				echo '<a href="' . esc_url( $full_url ) . '" class="deal-video-gallery-thumb" style="flex:0 0 calc(25% - 8px); border-radius:8px; overflow:hidden; border:1px solid #e2e8f0; display:block;" target="_blank">';
+				echo '<img src="' . esc_url( $thumb_url ) . '" alt="' . esc_attr( get_the_title( $product->get_id() ) ) . '" style="width:100%; height:auto; display:block; object-fit:cover; aspect-ratio:1;">';
+				echo '</a>';
+			}
+			echo '</div>';
+		}
 		echo '</div>';
 	} else {
 		woocommerce_show_product_images();
