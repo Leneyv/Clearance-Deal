@@ -48,6 +48,10 @@
 			</div><!-- .site-branding -->
 
 			<div class="header-actions">
+				<a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-cart" title="<?php esc_attr_e( 'View Cart', 'clearance-deal' ); ?>">
+					<i class="fa-solid fa-cart-shopping"></i>
+					<span class="header-cart-count"><?php echo ( function_exists( 'WC' ) && WC()->cart ) ? WC()->cart->get_cart_contents_count() : 0; ?></span>
+				</a>
 				<a href="https://wa.me/254751338975" class="header-whatsapp" target="_blank" rel="noopener">
 					<i class="fa-brands fa-whatsapp"></i>
 					<span>WhatsApp Us</span>
@@ -63,6 +67,7 @@
 			<nav class="mobile-nav-links">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a>
 				<a href="<?php echo esc_url( home_url( '/shop' ) ); ?>">Shop</a>
+				<a href="<?php echo esc_url( wc_get_cart_url() ); ?>">Cart</a>
 				<a href="<?php echo esc_url( home_url( '/#featured-deals' ) ); ?>">Featured Deals</a>
 				<a href="<?php echo esc_url( home_url( '/#about' ) ); ?>">About Us</a>
 			</nav>

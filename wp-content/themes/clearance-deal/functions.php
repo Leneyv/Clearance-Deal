@@ -498,113 +498,202 @@ function clearance_deal_thankyou_whatsapp_popup( $order_id ) {
 add_action( 'woocommerce_thankyou', 'clearance_deal_thankyou_whatsapp_popup' );
 
 /**
+ * AJAX handler for updating or removing items from the cart on checkout.
+ */
+add_action( 'wp_ajax_clearance_checkout_cart_action', 'clearance_deal_ajax_checkout_cart_action' );
+add_action( 'wp_ajax_nopriv_clearance_checkout_cart_action', 'clearance_deal_ajax_checkout_cart_action' );
+function clearance_deal_ajax_checkout_cart_action() {
+	if ( ! check_ajax_referer( 'clearance_cart_nonce', 'nonce', false ) ) {
+		wp_send_json_error( array( 'message' => __( 'Security check failed. Please refresh the page.', 'clearance-deal' ) ) );
+	}
+
+	if ( function_exists( 'wc_load_cart' ) ) {
+		wc_load_cart();
+	}
+
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+		wp_send_json_error( array( 'message' => __( 'Cart not available', 'clearance-deal' ) ) );
+	}
+
+	$key         = isset( $_POST['key'] ) ? sanitize_text_field( wp_unslash( $_POST['key'] ) ) : '';
+	$action_type = isset( $_POST['action_type'] ) ? sanitize_text_field( wp_unslash( $_POST['action_type'] ) ) : 'update';
+	$qty         = isset( $_POST['qty'] ) ? intval( $_POST['qty'] ) : 0;
+
+	if ( empty( $key ) || ! isset( WC()->cart->get_cart()[ $key ] ) ) {
+		wp_send_json_error( array( 'message' => __( 'Item not found in cart', 'clearance-deal' ) ) );
+	}
+
+	if ( 'remove' === $action_type || $qty <= 0 ) {
+		WC()->cart->remove_cart_item( $key );
+	} else {
+		WC()->cart->set_quantity( $key, $qty, true );
+	}
+
+	WC()->cart->calculate_totals();
+
+	wp_send_json_success( array(
+		'cart_empty' => WC()->cart->is_empty(),
+		'count'      => WC()->cart->get_cart_contents_count(),
+		'subtotal'   => WC()->cart->get_cart_subtotal(),
+		'total'      => WC()->cart->get_total(),
+	) );
+}
+
+/**
  * A server-rendered "Review Quantities" panel shown above the checkout
- * block. The block-based Checkout page has no built-in way to change
- * item quantities (only the Cart page does), and this store's "Buy Now"
- * flow skips the Cart page entirely -- so without this, a customer can't
- * adjust quantity at all during purchase. Updates go through the Store
- * API and reload the page so the checkout block's totals stay correct.
+ * form. Allows the customer to review their items, change quantities (+/-),
+ * or remove items with a trash icon. Changes update WooCommerce cart via AJAX
+ * and recalculate the checkout totals immediately.
  */
 function clearance_deal_checkout_quantity_editor() {
-        if ( ! function_exists( 'WC' ) || ! WC()->cart || WC()->cart->is_empty() ) {
-                return;
-        }
-        ?>
-        <div class="qty-editor">
-                <h2 class="qty-editor-title"><?php esc_html_e( 'Review Quantities', 'clearance-deal' ); ?></h2>
-                <div class="qty-editor-items">
-                        <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
-                                $product = $cart_item['data'];
-                                if ( ! $product ) {
-                                        continue;
-                                }
-                                ?>
-                                <div class="qty-editor-item" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>">
-                                        <div class="qty-editor-item-image"><?php echo $product->get_image( 'thumbnail' ); ?></div>
-                                        <div class="qty-editor-item-name"><?php echo esc_html( $product->get_name() ); ?></div>
-                                        <div class="qty-editor-item-controls">
-                                                <button type="button" class="qty-editor-btn qty-editor-minus" aria-label="<?php esc_attr_e( 'Decrease quantity', 'clearance-deal' ); ?>">&#8722;</button>
-                                                <input type="number" class="qty-editor-input" min="1" value="<?php echo esc_attr( $cart_item['quantity'] ); ?>">
-                                                <button type="button" class="qty-editor-btn qty-editor-plus" aria-label="<?php esc_attr_e( 'Increase quantity', 'clearance-deal' ); ?>">&#43;</button>
-                                                <button type="button" class="qty-editor-btn qty-editor-remove" title="<?php esc_attr_e( 'Remove item', 'clearance-deal' ); ?>"><i class="fa-solid fa-trash-can"></i></button>
-                                        </div>
-                                        <div class="qty-editor-spinner" hidden></div>
-                                </div>
-                        <?php endforeach; ?>
-                </div>
-                <p class="qty-editor-hint"><?php esc_html_e( 'Totals below update automatically after you change a quantity or remove an item.', 'clearance-deal' ); ?></p>
-        </div>
-        <script>
-        (function () {
-                var storeNonce = '';
+	if ( ! function_exists( 'WC' ) || ! WC()->cart || WC()->cart->is_empty() ) {
+		return;
+	}
 
-                function storeApiFetch(path, options) {
-                        options = options || {};
-                        options.credentials = 'same-origin';
-                        options.headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
-                        return fetch('/?rest_route=' + path, options).then(function (res) {
-                                var nonce = res.headers.get('Nonce');
-                                if (nonce) {
-                                        storeNonce = nonce;
-                                }
-                                return res.json().then(function (data) {
-                                        if (!res.ok) {
-                                                throw data;
-                                        }
-                                        return data;
-                                });
-                        });
-                }
+	$cart     = WC()->cart->get_cart();
+	$nonce    = wp_create_nonce( 'clearance_cart_nonce' );
+	$ajax_url = admin_url( 'admin-ajax.php' );
+	?>
+	<div class="qty-editor" id="clearanceQtyEditor">
+		<h2 class="qty-editor-title"><?php esc_html_e( 'Review Quantities', 'clearance-deal' ); ?></h2>
+		<div class="qty-editor-items">
+			<?php foreach ( $cart as $cart_item_key => $cart_item ) :
+				$product = $cart_item['data'];
+				if ( ! $product ) {
+					continue;
+				}
+				$qty = (int) $cart_item['quantity'];
+				?>
+				<div class="qty-editor-item" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>" id="qty-item-<?php echo esc_attr( $cart_item_key ); ?>">
+					<div class="qty-editor-item-image"><?php echo $product->get_image( 'thumbnail' ); ?></div>
+					<div class="qty-editor-item-name"><?php echo esc_html( $product->get_name() ); ?></div>
+					<div class="qty-editor-item-controls">
+						<button type="button" class="qty-editor-btn qty-editor-minus" aria-label="<?php esc_attr_e( 'Decrease quantity', 'clearance-deal' ); ?>">&#8722;</button>
+						<input type="number" class="qty-editor-input" min="1" max="99" value="<?php echo esc_attr( $qty ); ?>">
+						<button type="button" class="qty-editor-btn qty-editor-plus" aria-label="<?php esc_attr_e( 'Increase quantity', 'clearance-deal' ); ?>">&#43;</button>
+						<button type="button" class="qty-editor-btn qty-editor-remove" title="<?php esc_attr_e( 'Remove item', 'clearance-deal' ); ?>"><i class="fa-solid fa-trash-can"></i></button>
+					</div>
+					<div class="qty-editor-spinner" hidden></div>
+				</div>
+			<?php endforeach; ?>
+		</div>
+		<p class="qty-editor-hint"><?php esc_html_e( 'Totals below update automatically after you change a quantity or remove an item.', 'clearance-deal' ); ?></p>
+	</div>
+	<script>
+	(function () {
+		var ajaxUrl = <?php echo wp_json_encode( $ajax_url ); ?>;
+		var nonce = <?php echo wp_json_encode( $nonce ); ?>;
 
-                storeApiFetch('/wc/store/v1/cart').catch(function () {});
+		document.querySelectorAll('.qty-editor-item').forEach(function (row) {
+			var key = row.getAttribute('data-cart-item-key');
+			var input = row.querySelector('.qty-editor-input');
+			var minus = row.querySelector('.qty-editor-minus');
+			var plus = row.querySelector('.qty-editor-plus');
+			var removeBtn = row.querySelector('.qty-editor-remove');
+			var spinner = row.querySelector('.qty-editor-spinner');
 
-                document.querySelectorAll('.qty-editor-item').forEach(function (row) {
-                        var key = row.getAttribute('data-cart-item-key');
-                        var input = row.querySelector('.qty-editor-input');
-                        var minus = row.querySelector('.qty-editor-minus');
-                        var plus = row.querySelector('.qty-editor-plus');
-                        var removeBtn = row.querySelector('.qty-editor-remove');
-                        var spinner = row.querySelector('.qty-editor-spinner');
+			function doCartAction(actionType, newQty) {
+				if (spinner) spinner.hidden = false;
+				input.disabled = true;
+				minus.disabled = true;
+				plus.disabled = true;
+				if (removeBtn) removeBtn.disabled = true;
 
-                        function updateQty(newQty) {
-                                newQty = Math.max(0, parseInt(newQty, 10) || 0);
-                                input.value = newQty;
-                                input.disabled = true;
-                                minus.disabled = true;
-                                plus.disabled = true;
-                                if (removeBtn) removeBtn.disabled = true;
-                                spinner.hidden = false;
+				var formData = new FormData();
+				formData.append('action', 'clearance_checkout_cart_action');
+				formData.append('nonce', nonce);
+				formData.append('key', key);
+				formData.append('action_type', actionType);
+				formData.append('qty', newQty);
 
-                                storeApiFetch('/wc/store/v1/cart/update-item', {
-                                        method: 'POST',
-                                        headers: { 'Nonce': storeNonce },
-                                        body: JSON.stringify({ key: key, quantity: newQty })
-                                }).then(function () {
-                                        window.location.reload();
-                                }).catch(function () {
-                                        input.disabled = false;
-                                        minus.disabled = false;
-                                        plus.disabled = false;
-                                        if (removeBtn) removeBtn.disabled = false;
-                                        spinner.hidden = true;
-                                        alert('<?php echo esc_js( __( 'Could not update quantity. Please try again.', 'clearance-deal' ) ); ?>');
-                                });
-                        }
+				fetch(ajaxUrl, {
+					method: 'POST',
+					body: formData,
+					credentials: 'same-origin'
+				})
+				.then(function (res) { return res.json(); })
+				.then(function (res) {
+					if (res && res.success) {
+						if (actionType === 'remove' || newQty <= 0) {
+							row.style.transition = 'all 0.3s ease';
+							row.style.opacity = '0';
+							row.style.transform = 'translateX(-20px)';
+							setTimeout(function () {
+								row.remove();
+								if (res.data.cart_empty) {
+									var editor = document.getElementById('clearanceQtyEditor');
+									if (editor) {
+										editor.innerHTML = '<div style="text-align:center; padding:30px 15px;"><i class="fa-solid fa-bag-shopping" style="font-size:36px; color:#cbd5e1; margin-bottom:12px;"></i><p style="font-size:16px; font-weight:700; color:#334155; margin-bottom:12px;">Your cart is currently empty.</p><a href="/" style="display:inline-block; background:#ef4444; color:#fff; font-weight:700; padding:10px 24px; border-radius:8px; text-decoration:none;">View Today\'s Deals</a></div>';
+									}
+								}
+							}, 300);
+						} else {
+							input.value = newQty;
+							input.disabled = false;
+							minus.disabled = false;
+							plus.disabled = false;
+							if (removeBtn) removeBtn.disabled = false;
+							if (spinner) spinner.hidden = true;
+						}
 
-                        minus.addEventListener('click', function () { updateQty(parseInt(input.value, 10) - 1); });
-                        plus.addEventListener('click', function () { updateQty(parseInt(input.value, 10) + 1); });
-                        input.addEventListener('change', function () { updateQty(input.value); });
-                        if (removeBtn) {
-                                removeBtn.addEventListener('click', function () {
-                                        if (confirm('<?php echo esc_js( __( 'Remove this item from your order?', 'clearance-deal' ) ); ?>')) {
-                                                updateQty(0);
-                                        }
-                                });
-                        }
-                });
-        })();
-        </script>
-        <?php
+						// Trigger WooCommerce checkout update
+						if (window.jQuery) {
+							window.jQuery(document.body).trigger('update_checkout');
+						}
+
+						// Refresh checkout state so all price calculations, Lipa Polepole deposit and fees are 100% synchronized
+						setTimeout(function () {
+							window.location.reload();
+						}, 350);
+					} else {
+						throw new Error(res && res.data && res.data.message ? res.data.message : 'Error updating cart');
+					}
+				})
+				.catch(function (err) {
+					input.disabled = false;
+					minus.disabled = false;
+					plus.disabled = false;
+					if (removeBtn) removeBtn.disabled = false;
+					if (spinner) spinner.hidden = true;
+					alert('Could not update cart. Please refresh the page and try again.');
+				});
+			}
+
+			minus.addEventListener('click', function (e) {
+				e.preventDefault();
+				var cur = parseInt(input.value, 10) || 1;
+				if (cur <= 1) {
+					doCartAction('remove', 0);
+				} else {
+					doCartAction('update', cur - 1);
+				}
+			});
+
+			plus.addEventListener('click', function (e) {
+				e.preventDefault();
+				var cur = parseInt(input.value, 10) || 1;
+				doCartAction('update', cur + 1);
+			});
+
+			input.addEventListener('change', function () {
+				var val = parseInt(input.value, 10);
+				if (isNaN(val) || val <= 0) {
+					doCartAction('remove', 0);
+				} else {
+					doCartAction('update', val);
+				}
+			});
+
+			if (removeBtn) {
+				removeBtn.addEventListener('click', function (e) {
+					e.preventDefault();
+					doCartAction('remove', 0);
+				});
+			}
+		});
+	})();
+	</script>
+	<?php
 }
 
 /**
@@ -1488,20 +1577,7 @@ require_once get_template_directory() . '/inc/seo-aeo.php';
 
 
 
-// ── Force Cart to Checkout Redirect ──────────────────────────────────────────
-add_filter( "woocommerce_get_cart_url", function( $url ) {
-    if ( function_exists( "wc_get_checkout_url" ) ) {
-        return wc_get_checkout_url();
-    }
-    return $url;
-} );
 
-add_action( "template_redirect", function() {
-    if ( function_exists( "is_cart" ) && is_cart() ) {
-        wp_safe_redirect( wc_get_checkout_url() );
-        exit;
-    }
-} );
 
 // ── Hair Consultation Booking WhatsApp Flow ───────────────────────────────
 add_action( 'woocommerce_thankyou', function( $order_id ) {
