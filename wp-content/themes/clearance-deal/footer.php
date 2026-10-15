@@ -46,13 +46,9 @@
 			</div>
 		</div>
 
-		<div class="footer-bottom">
+		<div class="footer-bottom" style="justify-content: center; text-align: center;">
 			<div class="site-info">
 				&copy; <?php echo esc_html( date_i18n( 'Y' ) ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>. All rights reserved.
-			</div>
-			<div class="footer-social">
-				<a href="https://www.facebook.com/clearance.deal.kenya" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="margin-left: 1rem;"><i class="fa-brands fa-facebook-f"></i></a>
-				<a href="https://instagram.com/clearance.kenya" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="margin-left: 1rem;"><i class="fa-brands fa-instagram"></i></a>
 			</div>
 		</div>
 	</footer><!-- #colophon -->
