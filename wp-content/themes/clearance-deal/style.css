@@ -2130,3 +2130,35 @@ a {
     border-color: var(--primary-color) !important;
     color: #ffffff !important;
 }
+
+/* ==========================================
+   4 Price Categories & Premium Deal Cards
+   ========================================== */
+.category-tabs-wrapper::-webkit-scrollbar {
+    display: none;
+}
+.category-tabs-wrapper {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.tier-section-header {
+    transition: all 0.2s ease;
+}
+.deal-card.is-premium-card {
+    border: 1.5px solid #d8b4fe !important;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.08);
+    position: relative;
+}
+.deal-card.is-premium-card:hover {
+    border-color: #a855f7 !important;
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.16);
+    transform: translateY(-2px);
+}
+.deal-card.is-premium-card .btn-get-deal {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
+    color: #ffffff !important;
+}
+.deal-card.is-premium-card .btn-get-deal:hover {
+    background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%) !important;
+}
+

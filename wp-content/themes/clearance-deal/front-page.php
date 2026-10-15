@@ -135,32 +135,31 @@ get_header();
 		<p>Direct salon overstock &amp; batch liquidations at wholesale markdowns</p>
 	</div>
 
-	<!-- Interactive Category Switcher -->
-	<div class="category-tabs-wrapper" style="display:flex; justify-content:center; margin-bottom:30px; padding:0 15px;">
-		<div style="background:#e2e8f0; padding:5px; border-radius:999px; display:inline-flex; gap:6px;">
-			<button type="button" class="tab-filter-btn is-active" data-cat="all" onclick="filterCategoryTab('all', this)" style="padding:10px 22px; border-radius:999px; font-size:14px; font-weight:700; border:none; cursor:pointer; background:#fff; color:#0f172a; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:all 0.2s;">
+	<!-- Interactive Category Switcher (4 Price Categories) -->
+	<div class="category-tabs-wrapper" style="display:flex; justify-content:center; margin-bottom:30px; padding:0 15px; overflow-x:auto; -webkit-overflow-scrolling:touch;">
+		<div class="category-tabs-pill" style="background:#e2e8f0; padding:6px; border-radius:999px; display:inline-flex; gap:6px; flex-wrap:nowrap; max-width:100%;">
+			<button type="button" class="tab-filter-btn is-active" data-cat="all" onclick="filterCategoryTab('all', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:#fff; color:#0f172a; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:all 0.2s; white-space:nowrap;">
 				<i class="fa-solid fa-border-all"></i> All Deals
 			</button>
-			<button type="button" class="tab-filter-btn" data-cat="hair" onclick="filterCategoryTab('hair', this)" style="padding:10px 22px; border-radius:999px; font-size:14px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s;">
-				<i class="fa-solid fa-scissors"></i> Hair &amp; Wigs
+			<button type="button" class="tab-filter-btn" data-cat="price-1" onclick="filterCategoryTab('price-1', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-tag"></i> KSh 3,000 – 10,000
 			</button>
-			<button type="button" class="tab-filter-btn" data-cat="makeup" onclick="filterCategoryTab('makeup', this)" style="padding:10px 22px; border-radius:999px; font-size:14px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s;">
-				<i class="fa-solid fa-wand-magic-sparkles"></i> Makeup &amp; Beauty
+			<button type="button" class="tab-filter-btn" data-cat="price-2" onclick="filterCategoryTab('price-2', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-tags"></i> KSh 11,000 – 15,000
+			</button>
+			<button type="button" class="tab-filter-btn" data-cat="price-3" onclick="filterCategoryTab('price-3', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-fire" style="color:#ea580c;"></i> KSh 15,000 – 20,000
+			</button>
+			<button type="button" class="tab-filter-btn" data-cat="premium" onclick="filterCategoryTab('premium', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-crown" style="color:#9333ea;"></i> 💎 Premium
 			</button>
 		</div>
 	</div>
 
 	<?php
-	// Query all in-stock products in 'hair' and 'makeup' categories, sorted by menu_order
+	// Query all in-stock clearance products sorted by menu_order
 	$product_visibility_terms = function_exists( 'wc_get_product_visibility_term_ids' ) ? wc_get_product_visibility_term_ids() : array();
-	$tax_query = array(
-		'relation' => 'AND',
-		array(
-			'taxonomy' => 'product_cat',
-			'field'    => 'slug',
-			'terms'    => array( 'hair', 'makeup', 'wigs' ),
-		),
-	);
+	$tax_query = array();
 	if ( ! empty( $product_visibility_terms['exclude-from-catalog'] ) ) {
 		$tax_query[] = array(
 			'taxonomy' => 'product_visibility',
@@ -194,6 +193,7 @@ get_header();
 		<div class="featured-band-container">
 			<div class="featured-band-grid" id="mainProductsGrid">
 				<?php
+				$current_tier_rendered = '';
 				while ( $products_query->have_posts() ) :
 					$products_query->the_post();
 					$product = wc_get_product( get_the_ID() );
@@ -209,33 +209,82 @@ get_header();
 					if ( $product->is_type( 'variable' ) ) {
 						$reg_p = $product->get_variation_regular_price( 'min', true );
 						$sal_p = $product->get_variation_sale_price( 'min', true );
+						$effective_price = (float) ( $sal_p ?: ( $product->get_variation_price( 'min', true ) ?: 0 ) );
 						if ( $reg_p && $sal_p && $reg_p > $sal_p ) {
 							$discount_pct = clearance_deal_calculate_discount( $reg_p, $sal_p );
 						}
 					} elseif ( $product->is_on_sale() && $product->get_regular_price() && $product->get_sale_price() ) {
-						$discount_pct = clearance_deal_calculate_discount( $product->get_regular_price(), $product->get_sale_price() );
+						$reg_p = $product->get_regular_price();
+						$sal_p = $product->get_sale_price();
+						$effective_price = (float) $sal_p;
+						$discount_pct = clearance_deal_calculate_discount( $reg_p, $sal_p );
+					} else {
+						$effective_price = (float) ( $product->get_price() ?: 0 );
 					}
 
-					// Detect Category class (hair vs makeup)
-					$terms = get_the_terms( get_the_ID(), 'product_cat' );
-					$is_hair = false;
-					$is_makeup = false;
-					if ( $terms && ! is_wp_error( $terms ) ) {
-						foreach ( $terms as $term ) {
-							if ( 'hair' === $term->slug || 'wigs' === $term->slug ) {
-								$is_hair = true;
-							}
-							if ( 'makeup' === $term->slug ) {
-								$is_makeup = true;
-							}
-						}
+					// Determine 4 price categories
+					if ( $effective_price <= 10000 ) {
+						$item_tier       = 'price-1';
+						$tier_pill_label = 'KSh 3,000 – 10,000';
+						$is_premium      = false;
+					} elseif ( $effective_price > 10000 && $effective_price <= 15000 ) {
+						$item_tier       = 'price-2';
+						$tier_pill_label = 'KSh 11,000 – 15,000';
+						$is_premium      = false;
+					} elseif ( $effective_price > 15000 && $effective_price <= 20000 ) {
+						$item_tier       = 'price-3';
+						$tier_pill_label = 'KSh 15,000 – 20,000';
+						$is_premium      = false;
+					} else {
+						$item_tier       = 'premium';
+						$tier_pill_label = '💎 Premium';
+						$is_premium      = true;
 					}
-					$cat_class = 'cat-all';
-					if ( $is_hair ) {
-						$cat_class .= ' cat-hair';
-					}
-					if ( $is_makeup ) {
-						$cat_class .= ' cat-makeup';
+
+					// Category Section Divider Header
+					if ( $current_tier_rendered !== $item_tier ) {
+						$current_tier_rendered = $item_tier;
+						if ( 'price-1' === $item_tier ) :
+							?>
+							<div class="tier-section-header" data-tier-header="price-1" style="grid-column: 1 / -1; margin: 10px 0 10px; padding: 14px 20px; background: #f8fafc; border-left: 4px solid #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+								<div style="font-weight: 800; font-size: 16px; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+									<i class="fa-solid fa-tag" style="color: #0f172a;"></i>
+									<span>1st Category: KSh 3,000 – 10,000 Deals</span>
+								</div>
+								<span style="font-size: 12px; font-weight: 700; color: #475569; background: #e2e8f0; padding: 4px 10px; border-radius: 999px;">Under 10K</span>
+							</div>
+							<?php
+						elseif ( 'price-2' === $item_tier ) :
+							?>
+							<div class="tier-section-header" data-tier-header="price-2" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+								<div style="font-weight: 800; font-size: 16px; color: #166534; display: flex; align-items: center; gap: 8px;">
+									<i class="fa-solid fa-tags" style="color: #16a34a;"></i>
+									<span>2nd Category: KSh 11,000 – 15,000 Deals</span>
+								</div>
+								<span style="font-size: 12px; font-weight: 700; color: #166534; background: #dcfce7; padding: 4px 10px; border-radius: 999px;">11K – 15K</span>
+							</div>
+							<?php
+						elseif ( 'price-3' === $item_tier ) :
+							?>
+							<div class="tier-section-header" data-tier-header="price-3" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: #fff7ed; border-left: 4px solid #ea580c; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+								<div style="font-weight: 800; font-size: 16px; color: #9a3412; display: flex; align-items: center; gap: 8px;">
+									<i class="fa-solid fa-fire" style="color: #ea580c;"></i>
+									<span>3rd Category: KSh 15,000 – 20,000 Deals</span>
+								</div>
+								<span style="font-size: 12px; font-weight: 700; color: #9a3412; background: #ffedd5; padding: 4px 10px; border-radius: 999px;">15K – 20K</span>
+							</div>
+							<?php
+						elseif ( 'premium' === $item_tier ) :
+							?>
+							<div class="tier-section-header" data-tier-header="premium" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-left: 4px solid #9333ea; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+								<div style="font-weight: 800; font-size: 16px; color: #6b21a8; display: flex; align-items: center; gap: 8px;">
+									<i class="fa-solid fa-crown" style="color: #9333ea;"></i>
+									<span>4th Category: 💎 Premium Clearance Deals</span>
+								</div>
+								<span style="font-size: 12px; font-weight: 800; color: #7e22ce; background: #f5d0fe; padding: 4px 10px; border-radius: 999px;">Premium Tier</span>
+							</div>
+							<?php
+						endif;
 					}
 
 					// Variable products get JS variations selector
@@ -270,7 +319,7 @@ get_header();
 						$buy_now_url    = add_query_arg( 'add-to-cart', $product->get_id(), home_url( '/' ) );
 					}
 					?>
-					<div class="deal-card <?php echo esc_attr( $cat_class ); ?>" data-item-category="<?php echo $is_makeup ? 'makeup' : 'hair'; ?>">
+					<div class="deal-card cat-all cat-<?php echo esc_attr( $item_tier ); ?><?php echo $is_premium ? ' is-premium-card' : ''; ?>" data-price-cat="<?php echo esc_attr( $item_tier ); ?>">
 						<div class="deal-media-wrapper" style="position: relative; overflow: hidden;">
 							<?php clearance_deal_render_featured_media( $product ); ?>
 
@@ -281,18 +330,32 @@ get_header();
 								<div class="badge-clearance"><?php esc_html_e( 'Sold Out', 'clearance-deal' ); ?></div>
 							<?php endif; ?>
 
-							<span style="position:absolute; bottom:10px; left:10px; background:rgba(15,23,42,0.85); color:#fff; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px; text-transform:uppercase;">
-								<?php echo $is_makeup ? 'Makeup' : 'Hair & Wigs'; ?>
-							</span>
+							<?php if ( $is_premium ) : ?>
+								<span style="position:absolute; bottom:10px; left:10px; background:linear-gradient(135deg, #7c3aed 0%, #ec4899 100%); color:#fff; font-size:11px; font-weight:800; padding:4px 9px; border-radius:4px; text-transform:uppercase; box-shadow:0 2px 8px rgba(124,58,237,0.4); letter-spacing:0.5px;">
+									<i class="fa-solid fa-crown" style="margin-right:3px;"></i> Premium
+								</span>
+							<?php else : ?>
+								<span style="position:absolute; bottom:10px; left:10px; background:rgba(15,23,42,0.85); color:#fff; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px; text-transform:uppercase;">
+									<?php echo esc_html( $tier_pill_label ); ?>
+								</span>
+							<?php endif; ?>
 						</div>
 
-						<span class="bnpl-badge">Buy Now Pay Later (50% Deposit)</span>
+						<?php if ( $is_premium ) : ?>
+							<span class="bnpl-badge" style="background:#f3e8ff; color:#7e22ce; border-color:#d8b4fe; font-weight:800;">
+								<i class="fa-solid fa-crown" style="color:#a855f7; margin-right:3px;"></i> Premium Clearance Deal (50% Deposit)
+							</span>
+						<?php else : ?>
+							<span class="bnpl-badge">Buy Now Pay Later (50% Deposit)</span>
+						<?php endif; ?>
 
 						<div class="deal-details">
 							<h3 class="deal-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 
 							<?php if ( $urgency_label ) : ?>
-								<p class="deal-urgency-label"><?php echo esc_html( $urgency_label ); ?></p>
+								<p class="deal-urgency-label"<?php echo $is_premium ? ' style="color:#7e22ce; font-weight:700;"' : ''; ?>><?php echo esc_html( $urgency_label ); ?></p>
+							<?php elseif ( $is_premium ) : ?>
+								<p class="deal-urgency-label" style="color:#7e22ce; font-weight:700;">💎 VIP Premium Stock</p>
 							<?php else : ?>
 								<p class="deal-urgency-label" style="color:#d97706;">🔥 Verified Clearance Stock</p>
 							<?php endif; ?>
@@ -354,13 +417,23 @@ function filterCategoryTab(category, btn) {
 	}
 
 	var cards = document.querySelectorAll('#mainProductsGrid .deal-card');
+	var headers = document.querySelectorAll('#mainProductsGrid .tier-section-header');
+
 	cards.forEach(function (card) {
 		if (category === 'all') {
 			card.style.display = '';
-		} else if (category === 'hair') {
-			card.style.display = card.classList.contains('cat-hair') ? '' : 'none';
-		} else if (category === 'makeup') {
-			card.style.display = card.classList.contains('cat-makeup') ? '' : 'none';
+		} else {
+			var cardTier = card.getAttribute('data-price-cat');
+			card.style.display = (cardTier === category) ? '' : 'none';
+		}
+	});
+
+	headers.forEach(function (header) {
+		if (category === 'all') {
+			header.style.display = '';
+		} else {
+			var headerTier = header.getAttribute('data-tier-header');
+			header.style.display = (headerTier === category) ? '' : 'none';
 		}
 	});
 }
