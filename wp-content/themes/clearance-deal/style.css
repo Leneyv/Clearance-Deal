@@ -503,10 +503,10 @@ a {
     padding: 0.5rem;
 }
 
-/* Per-card auto-looping image carousel */
+/* Per-card image carousel */
 .deal-carousel-slide {
     opacity: 0;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.25s ease;
     pointer-events: none;
 }
 
@@ -519,20 +519,28 @@ a {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.94);
     border: none;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: var(--secondary-color);
-    box-shadow: var(--shadow-sm);
-    z-index: 15;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 25;
     transition: var(--transition);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    pointer-events: auto;
+}
+
+.deal-carousel-arrow i {
+    pointer-events: none;
 }
 
 .deal-carousel-arrow:hover {
@@ -546,6 +554,22 @@ a {
 
 .deal-carousel-next {
     right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .deal-carousel-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1.05rem;
+        background-color: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    .deal-carousel-prev {
+        left: 0.4rem;
+    }
+    .deal-carousel-next {
+        right: 0.4rem;
+    }
 }
 
 .deal-pricing .price {

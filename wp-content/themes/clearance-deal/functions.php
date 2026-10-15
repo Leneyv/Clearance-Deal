@@ -137,7 +137,7 @@ add_action( 'widgets_init', 'clearance_deal_widgets_init' );
  * Enqueue scripts and styles.
  */
 function clearance_deal_scripts() {
-	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.0.7' );
+	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.0.8' );
 	// Self-hosted Font Awesome — eliminates external CDN round-trip
 	wp_enqueue_style(
 		'font-awesome',
@@ -986,49 +986,6 @@ function clearance_deal_featured_products_section() {
 			</div>
 		</div>
 	</section>
-	<script>
-	document.addEventListener('DOMContentLoaded', function () {
-		document.querySelectorAll('.deal-carousel').forEach(function (carousel) {
-			var slides = carousel.querySelectorAll('.deal-carousel-slide');
-			if (slides.length <= 1) {
-				return;
-			}
-
-			var index = 0;
-			var intervalTime = parseInt(carousel.getAttribute('data-autoplay'), 10) || 4000;
-			var timer;
-
-			function show(newIndex) {
-				slides[index].classList.remove('is-active');
-				index = (newIndex + slides.length) % slides.length;
-				slides[index].classList.add('is-active');
-			}
-
-			function startAutoplay() {
-				clearInterval(timer);
-				timer = setInterval(function () { show(index + 1); }, intervalTime);
-			}
-
-			var prevBtn = carousel.querySelector('.deal-carousel-prev');
-			var nextBtn = carousel.querySelector('.deal-carousel-next');
-
-			if (prevBtn) {
-				prevBtn.addEventListener('click', function (e) {
-					e.preventDefault();
-					show(index - 1);
-				});
-			}
-			if (nextBtn) {
-				nextBtn.addEventListener('click', function (e) {
-					e.preventDefault();
-					show(index + 1);
-				});
-			}
-
-			// No autoplay — images only advance on arrow click.
-		});
-	});
-	</script>
 	<?php
 }
 
@@ -1703,4 +1660,148 @@ add_action( 'wp_head', function() {
     </style>
     <?php
 }, 99 );
+
+/**
+ * Global image carousel script for deal cards (mobile and desktop).
+ * Supports click/tap on left/right arrows and touch swiping on mobile devices.
+ */
+function clearance_deal_carousel_script() {
+    ?>
+    <script id="clearance-deal-carousel-js">
+    (function () {
+        var lastArrowTap = 0;
+
+        function handleArrowAction(btn) {
+            if (!btn) return;
+            var now = Date.now();
+            if (now - lastArrowTap < 120) return;
+            lastArrowTap = now;
+
+            var carousel = btn.closest('.deal-carousel');
+            if (!carousel) return;
+
+            var slides = carousel.querySelectorAll('.deal-carousel-slide');
+            if (slides.length <= 1) return;
+
+            var currentIndex = 0;
+            for (var i = 0; i < slides.length; i++) {
+                if (slides[i].classList.contains('is-active')) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+
+            slides[currentIndex].classList.remove('is-active');
+
+            var isNext = btn.classList.contains('deal-carousel-next');
+            var nextIndex = isNext
+                ? (currentIndex + 1) % slides.length
+                : (currentIndex - 1 + slides.length) % slides.length;
+
+            var targetSlide = slides[nextIndex];
+            if (targetSlide.getAttribute('loading') === 'lazy') {
+                targetSlide.setAttribute('loading', 'eager');
+            }
+            targetSlide.classList.add('is-active');
+        }
+
+        // Capture phase click handler ensures buttons always respond even if cards or links try to capture events
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest('.deal-carousel-arrow');
+            if (btn) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleArrowAction(btn);
+            }
+        }, true);
+
+        // Touch handler for instant mobile response without delay
+        document.addEventListener('touchend', function (e) {
+            var btn = e.target.closest('.deal-carousel-arrow');
+            if (btn) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleArrowAction(btn);
+            }
+        }, { passive: false, capture: true });
+
+        // Swipe gesture support for mobile browsing
+        function bindSwipeToCarousel(carousel) {
+            if (!carousel || carousel.dataset.swipeInit === 'true') return;
+            carousel.dataset.swipeInit = 'true';
+
+            var startX = 0;
+            var startY = 0;
+            var startTime = 0;
+
+            carousel.addEventListener('touchstart', function (e) {
+                if (e.target.closest('.deal-carousel-arrow')) return;
+                if (!e.changedTouches || !e.changedTouches[0]) return;
+                startX = e.changedTouches[0].clientX;
+                startY = e.changedTouches[0].clientY;
+                startTime = Date.now();
+            }, { passive: true });
+
+            carousel.addEventListener('touchend', function (e) {
+                if (e.target.closest('.deal-carousel-arrow')) return;
+                if (!e.changedTouches || !e.changedTouches[0]) return;
+
+                var endX = e.changedTouches[0].clientX;
+                var endY = e.changedTouches[0].clientY;
+                var diffX = endX - startX;
+                var diffY = endY - startY;
+                var elapsed = Date.now() - startTime;
+
+                // Thresholds: horizontal swipe > 35px, more horizontal than vertical, within 600ms
+                if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY) && elapsed < 600) {
+                    var slides = carousel.querySelectorAll('.deal-carousel-slide');
+                    if (slides.length <= 1) return;
+
+                    var currentIndex = 0;
+                    for (var i = 0; i < slides.length; i++) {
+                        if (slides[i].classList.contains('is-active')) {
+                            currentIndex = i;
+                            break;
+                        }
+                    }
+
+                    slides[currentIndex].classList.remove('is-active');
+
+                    var nextIndex = diffX < 0
+                        ? (currentIndex + 1) % slides.length
+                        : (currentIndex - 1 + slides.length) % slides.length;
+
+                    var targetSlide = slides[nextIndex];
+                    if (targetSlide.getAttribute('loading') === 'lazy') {
+                        targetSlide.setAttribute('loading', 'eager');
+                    }
+                    targetSlide.classList.add('is-active');
+                }
+            }, { passive: true });
+        }
+
+        function initSwipeGestures() {
+            var carousels = document.querySelectorAll('.deal-carousel');
+            carousels.forEach(bindSwipeToCarousel);
+        }
+
+        // Lazy-bind swipe on touchstart on document for any dynamically loaded or rendered cards
+        document.addEventListener('touchstart', function (e) {
+            var carousel = e.target.closest('.deal-carousel');
+            if (carousel && carousel.dataset.swipeInit !== 'true') {
+                bindSwipeToCarousel(carousel);
+            }
+        }, { passive: true });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSwipeGestures);
+        } else {
+            initSwipeGestures();
+        }
+    })();
+    </script>
+    <?php
+}
+add_action( 'wp_footer', 'clearance_deal_carousel_script', 30 );
+
 
