@@ -222,6 +222,46 @@ get_header();
 	);
 
 	if ( $products_query->have_posts() ) :
+		// Group products strictly by price tier so that each tier header is rendered exactly once
+		$tier_order_map = array(
+			'price-1' => 1,
+			'price-2' => 2,
+			'price-3' => 3,
+			'premium' => 4,
+		);
+
+		usort( $products_query->posts, function ( $a, $b ) use ( $tier_order_map ) {
+			$get_tier_info = function ( $post_id ) {
+				$prod = wc_get_product( $post_id );
+				if ( ! $prod ) return array( 'tier' => 'price-1', 'order' => 0 );
+				$cat_slugs = wp_get_post_terms( $post_id, 'product_cat', array( 'fields' => 'slugs' ) );
+				if ( in_array( 'deals-premium', $cat_slugs, true ) ) {
+					return array( 'tier' => 'premium', 'order' => (int) $prod->get_menu_order() );
+				}
+				$price = (float) ( $prod->get_sale_price() ?: ( $prod->get_price() ?: 0 ) );
+				if ( $price <= 10000 ) {
+					$tier = 'price-1';
+				} elseif ( $price <= 15000 ) {
+					$tier = 'price-2';
+				} elseif ( $price <= 20000 ) {
+					$tier = 'price-3';
+				} else {
+					$tier = 'premium';
+				}
+				return array( 'tier' => $tier, 'order' => (int) $prod->get_menu_order() );
+			};
+
+			$a_info = $get_tier_info( $a->ID );
+			$b_info = $get_tier_info( $b->ID );
+
+			$a_rank = $tier_order_map[ $a_info['tier'] ] ?? 99;
+			$b_rank = $tier_order_map[ $b_info['tier'] ] ?? 99;
+
+			if ( $a_rank !== $b_rank ) {
+				return $a_rank - $b_rank;
+			}
+			return $a_info['order'] - $b_info['order'];
+		} );
 	?>
 	<section class="featured-band">
 		<div class="featured-band-container">
@@ -256,8 +296,14 @@ get_header();
 						$effective_price = (float) ( $product->get_price() ?: 0 );
 					}
 
-					// Determine 4 price categories
-					if ( $effective_price <= 10000 ) {
+					$cat_slugs = wp_get_post_terms( get_the_ID(), 'product_cat', array( 'fields' => 'slugs' ) );
+
+					// Determine 4 price categories (deals-premium or > 20000 = premium)
+					if ( in_array( 'deals-premium', $cat_slugs, true ) || $effective_price > 20000 ) {
+						$item_tier       = 'premium';
+						$tier_pill_label = '💎 Premium';
+						$is_premium      = true;
+					} elseif ( $effective_price <= 10000 ) {
 						$item_tier       = 'price-1';
 						$tier_pill_label = 'KSh 3,000 – 10,000';
 						$is_premium      = false;
@@ -265,14 +311,10 @@ get_header();
 						$item_tier       = 'price-2';
 						$tier_pill_label = 'KSh 11,000 – 15,000';
 						$is_premium      = false;
-					} elseif ( $effective_price > 15000 && $effective_price <= 20000 ) {
+					} else {
 						$item_tier       = 'price-3';
 						$tier_pill_label = 'KSh 15,000 – 20,000';
 						$is_premium      = false;
-					} else {
-						$item_tier       = 'premium';
-						$tier_pill_label = '💎 Premium';
-						$is_premium      = true;
 					}
 
 					// Category Section Divider Header
