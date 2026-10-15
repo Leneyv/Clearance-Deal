@@ -2376,4 +2376,26 @@ a {
     padding: 0 5px;
 }
 
+/* Make Monthly Instalment Bold in Pay Later Breakdown */
+.cpl-breakdown-row--instalment dt,
+.cpl-breakdown-row--instalment dt strong {
+    font-weight: 700 !important;
+    color: var(--secondary-color, #0f172a) !important;
+    font-size: 0.95rem !important;
+}
+
+.cpl-breakdown-row--instalment dd,
+.cpl-breakdown-row--instalment dd strong {
+    font-weight: 800 !important;
+    color: #15803d !important;
+    font-size: 1.05rem !important;
+}
+
+.cpl-breakdown-row--instalment .cpl-per-month {
+    font-weight: 700 !important;
+    color: #15803d !important;
+    font-size: 0.82rem !important;
+}
+
+
 
