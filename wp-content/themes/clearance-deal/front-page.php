@@ -23,8 +23,33 @@ get_header();
 	</div>
 </div>
 
-<!-- Hero Section with Trust Signals -->
+<!-- Hero Section with Background Video & Trust Signals -->
 <section class="ch-hero">
+	<!-- Background Video (Desktop & Mobile) -->
+	<div class="ch-hero-video-bg" aria-hidden="true">
+		<video
+			class="ch-hero-video ch-hero-video--desktop"
+			autoplay
+			loop
+			muted
+			playsinline
+			preload="metadata"
+			poster="<?php echo esc_url( content_url( '/uploads/videos/hero-banner-poster.jpg' ) ); ?>">
+			<source src="<?php echo esc_url( content_url( '/uploads/videos/hero-banner-desktop.mp4' ) ); ?>" type="video/mp4">
+		</video>
+		<video
+			class="ch-hero-video ch-hero-video--mobile"
+			autoplay
+			loop
+			muted
+			playsinline
+			preload="metadata"
+			poster="<?php echo esc_url( content_url( '/uploads/videos/hero-banner-poster.jpg' ) ); ?>">
+			<source src="<?php echo esc_url( content_url( '/uploads/videos/hero-banner-mobile.mp4' ) ); ?>" type="video/mp4">
+		</video>
+		<div class="ch-hero-video-overlay"></div>
+	</div>
+
 	<div class="ch-hero-inner">
 
 		<div class="ch-hero-badge ch-hero-badge--kenya">
