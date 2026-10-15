@@ -142,16 +142,16 @@ get_header();
 				<i class="fa-solid fa-border-all"></i> All Deals
 			</button>
 			<button type="button" class="tab-filter-btn" data-cat="price-1" onclick="filterCategoryTab('price-1', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
-				<i class="fa-solid fa-tag"></i> KSh 3,000 – 10,000
+				<i class="fa-solid fa-tag"></i> From KSh 3,000 to 10,000 Deals
 			</button>
 			<button type="button" class="tab-filter-btn" data-cat="price-2" onclick="filterCategoryTab('price-2', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
-				<i class="fa-solid fa-tags"></i> KSh 11,000 – 15,000
+				<i class="fa-solid fa-tags"></i> From KSh 11,000 to 15,000 Deals
 			</button>
 			<button type="button" class="tab-filter-btn" data-cat="price-3" onclick="filterCategoryTab('price-3', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
-				<i class="fa-solid fa-fire" style="color:#ea580c;"></i> KSh 15,000 – 20,000
+				<i class="fa-solid fa-fire" style="color:#ea580c;"></i> From KSh 15,000 to 20,000 Deals
 			</button>
 			<button type="button" class="tab-filter-btn" data-cat="premium" onclick="filterCategoryTab('premium', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
-				<i class="fa-solid fa-crown" style="color:#9333ea;"></i> 💎 Premium
+				<i class="fa-solid fa-crown" style="color:#9333ea;"></i> Premium Deals
 			</button>
 		</div>
 	</div>
@@ -249,7 +249,7 @@ get_header();
 							<div class="tier-section-header" data-tier-header="price-1" style="grid-column: 1 / -1; margin: 10px 0 10px; padding: 14px 20px; background: #f8fafc; border-left: 4px solid #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 								<div style="font-weight: 800; font-size: 16px; color: #0f172a; display: flex; align-items: center; gap: 8px;">
 									<i class="fa-solid fa-tag" style="color: #0f172a;"></i>
-									<span>1st Category: KSh 3,000 – 10,000 Deals</span>
+									<span>From KSh 3,000 to 10,000 Deals</span>
 								</div>
 								<span style="font-size: 12px; font-weight: 700; color: #475569; background: #e2e8f0; padding: 4px 10px; border-radius: 999px;">Under 10K</span>
 							</div>
@@ -259,7 +259,7 @@ get_header();
 							<div class="tier-section-header" data-tier-header="price-2" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 								<div style="font-weight: 800; font-size: 16px; color: #166534; display: flex; align-items: center; gap: 8px;">
 									<i class="fa-solid fa-tags" style="color: #16a34a;"></i>
-									<span>2nd Category: KSh 11,000 – 15,000 Deals</span>
+									<span>From KSh 11,000 to 15,000 Deals</span>
 								</div>
 								<span style="font-size: 12px; font-weight: 700; color: #166534; background: #dcfce7; padding: 4px 10px; border-radius: 999px;">11K – 15K</span>
 							</div>
@@ -269,7 +269,7 @@ get_header();
 							<div class="tier-section-header" data-tier-header="price-3" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: #fff7ed; border-left: 4px solid #ea580c; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 								<div style="font-weight: 800; font-size: 16px; color: #9a3412; display: flex; align-items: center; gap: 8px;">
 									<i class="fa-solid fa-fire" style="color: #ea580c;"></i>
-									<span>3rd Category: KSh 15,000 – 20,000 Deals</span>
+									<span>From KSh 15,000 to 20,000 Deals</span>
 								</div>
 								<span style="font-size: 12px; font-weight: 700; color: #9a3412; background: #ffedd5; padding: 4px 10px; border-radius: 999px;">15K – 20K</span>
 							</div>
@@ -279,7 +279,7 @@ get_header();
 							<div class="tier-section-header" data-tier-header="premium" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-left: 4px solid #9333ea; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 								<div style="font-weight: 800; font-size: 16px; color: #6b21a8; display: flex; align-items: center; gap: 8px;">
 									<i class="fa-solid fa-crown" style="color: #9333ea;"></i>
-									<span>4th Category: 💎 Premium Clearance Deals</span>
+									<span>From KSh 20,000 &amp; Above – Premium Deals</span>
 								</div>
 								<span style="font-size: 12px; font-weight: 800; color: #7e22ce; background: #f5d0fe; padding: 4px 10px; border-radius: 999px;">Premium Tier</span>
 							</div>
@@ -328,16 +328,6 @@ get_header();
 							<?php endif; ?>
 							<?php if ( ! $in_stock ) : ?>
 								<div class="badge-clearance"><?php esc_html_e( 'Sold Out', 'clearance-deal' ); ?></div>
-							<?php endif; ?>
-
-							<?php if ( $is_premium ) : ?>
-								<span style="position:absolute; bottom:10px; left:10px; background:linear-gradient(135deg, #7c3aed 0%, #ec4899 100%); color:#fff; font-size:11px; font-weight:800; padding:4px 9px; border-radius:4px; text-transform:uppercase; box-shadow:0 2px 8px rgba(124,58,237,0.4); letter-spacing:0.5px;">
-									<i class="fa-solid fa-crown" style="margin-right:3px;"></i> Premium
-								</span>
-							<?php else : ?>
-								<span style="position:absolute; bottom:10px; left:10px; background:rgba(15,23,42,0.85); color:#fff; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px; text-transform:uppercase;">
-									<?php echo esc_html( $tier_pill_label ); ?>
-								</span>
 							<?php endif; ?>
 						</div>
 
