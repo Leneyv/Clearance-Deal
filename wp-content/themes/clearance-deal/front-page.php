@@ -52,9 +52,6 @@ get_header();
 
 	<div class="ch-hero-inner">
 
-		<div class="ch-hero-badge ch-hero-badge--kenya">
-			<span class="ch-green-dot"></span> Nairobi Office &bull; 4th Parklands
-		</div>
 
 		<div class="ch-hero-text-wrap" aria-live="polite">
 			<div class="ch-hero-state ch-hero-state--active">
