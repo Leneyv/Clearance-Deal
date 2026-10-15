@@ -259,48 +259,69 @@ a {
     transition: var(--transition);
 }
 
-/* Mobile drawer */
+/* Navigation Drawer (Mobile & Desktop) */
 .mobile-nav-drawer {
-    display: none;
-    flex-direction: column;
-    background: #ffffff;
-    border-top: 1px solid var(--border-color);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    display: none !important;
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    z-index: 150;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    z-index: 999;
 }
 
 .mobile-nav-drawer.is-open {
-    max-height: 300px;
+    display: block !important;
 }
 
 .mobile-nav-links {
     display: flex;
     flex-direction: column;
     padding: 0.5rem 0;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .mobile-nav-links a {
-    padding: 0.85rem 1.5rem;
-    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.95rem 1.5rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--text-main);
+    color: var(--secondary-color);
     border-bottom: 1px solid var(--border-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.mobile-nav-links a i {
+    width: 22px;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    text-align: center;
+}
+
+.mobile-nav-links a:hover {
+    background: #f8fafc;
+    color: var(--primary-color);
+}
+
+.mobile-nav-links a:hover i {
+    color: var(--primary-color);
 }
 
 .mobile-nav-links a:last-child {
     border-bottom: none;
 }
 
-.mobile-nav-links a:hover {
-    background: #f8fafc;
-    color: var(--primary-color);
+.mobile-nav-links a.mobile-nav-whatsapp {
+    color: #16a34a;
+}
+.mobile-nav-links a.mobile-nav-whatsapp i {
+    color: #16a34a;
 }
 
 /* ==========================================
@@ -1491,10 +1512,6 @@ a {
 
     .header-whatsapp {
         padding: 0.5rem 0.65rem;
-    }
-
-    .mobile-nav-drawer {
-        display: flex;
     }
 
     /* Hero */
