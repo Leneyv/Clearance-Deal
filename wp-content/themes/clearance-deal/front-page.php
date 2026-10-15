@@ -357,7 +357,7 @@ get_header();
 					$cat_slugs        = wp_get_post_terms( get_the_ID(), 'product_cat', array( 'fields' => 'slugs' ) );
 					$title_lower      = strtolower( get_the_title() );
 					$has_wig_term     = in_array( 'wigs', $cat_slugs, true );
-					$has_hair_term    = in_array( 'hair-bundles', $cat_slugs, true ) || in_array( 'hair', $cat_slugs, true );
+					$has_hair_term    = in_array( 'hair-bundles', $cat_slugs, true ) || in_array( 'hair', $cat_slugs, true ) || in_array( 'hairtools', $cat_slugs, true ) || in_array( 'hair-tools', $cat_slugs, true );
 					$has_makeup_term  = in_array( 'makeup', $cat_slugs, true );
 					$title_has_wig    = ( stripos( $title_lower, 'wig' ) !== false );
 					$title_has_bundle = ( stripos( $title_lower, 'bundle' ) !== false );
