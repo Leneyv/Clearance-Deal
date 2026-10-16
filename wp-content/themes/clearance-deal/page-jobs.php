@@ -517,14 +517,14 @@ get_header();
                             <li>Lead daily store operations, customer service, and dispatch logistics across Nairobi and upcountry branches.</li>
                             <li>Develop and execute strategic retail expansion, clearance inventory turnover, and revenue growth plans.</li>
                             <li>Supervise department heads in sales, accounting, marketing, and warehousing to ensure high performance and strict KPIs.</li>
-                            <li>Maintain rigorous operational controls, cash flow oversight, and compliance with statutory and tax regulations in Kenya.</li>
+                            <li>Maintain rigorous operational controls, cash flow oversight, and compliance with statutory and tax regulations.</li>
                         </ul>
                     </div>
                     <div class="cd-job-section">
                         <h4><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> Requirements &amp; Qualifications</h4>
                         <ul>
                             <li>Bachelor's degree in Business Administration, Operations Management, or related field (MBA is an advantage).</li>
-                            <li>5+ years of senior leadership experience in retail, wholesale FMCG, e-commerce, or beauty/fashion distribution in Kenya.</li>
+                            <li>5+ years of senior leadership experience in retail, wholesale FMCG, e-commerce, or beauty/fashion distribution.</li>
                             <li>Demonstrated expertise in P&amp;L management, team leadership, supply chain, and customer dispute resolution.</li>
                             <li>Strong analytical mindset and proficiency with modern ERP/inventory management platforms.</li>
                         </ul>
@@ -614,7 +614,7 @@ get_header();
                         <h4><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> Requirements &amp; Qualifications</h4>
                         <ul>
                             <li>3+ to 5 years sales management experience with a proven track record of hitting and exceeding aggressive targets.</li>
-                            <li>Hands-on experience in WhatsApp commerce, tele-sales, or showroom retail in Kenya.</li>
+                            <li>Hands-on experience in WhatsApp commerce, tele-sales, or showroom retail.</li>
                             <li>In-depth product knowledge of human hair extensions, lace front wigs, and cosmetic beauty items.</li>
                             <li>Charismatic leader with strong coaching, data tracking, and communication skills.</li>
                         </ul>
@@ -704,7 +704,7 @@ get_header();
                         <h4><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> Requirements &amp; Qualifications</h4>
                         <ul>
                             <li>CPA Part II or Bachelor of Commerce (Finance/Accounting option) / Diploma in Accounting.</li>
-                            <li>2+ years accounting experience in an e-commerce, retail store, or wholesale business setting in Kenya.</li>
+                            <li>2+ years accounting experience in an e-commerce, retail store, or wholesale business setting.</li>
                             <li>High proficiency in QuickBooks / ERP software and advanced Microsoft Excel skills (VLOOKUP, Pivot Tables).</li>
                             <li>Uncompromising integrity, attention to detail, and sound understanding of KRA compliance requirements.</li>
                         </ul>

@@ -32,11 +32,11 @@ function cd_get_job_listings() {
 				'Lead daily store operations, customer service, and dispatch logistics across Nairobi and upcountry branches.',
 				'Develop and execute strategic retail expansion, clearance inventory turnover, and revenue growth plans.',
 				'Supervise department heads in sales, accounting, marketing, and warehousing to ensure high performance and strict KPIs.',
-				'Maintain rigorous operational controls, cash flow oversight, and compliance with statutory and tax regulations in Kenya.',
+				'Maintain rigorous operational controls, cash flow oversight, and compliance with statutory and tax regulations.',
 			),
 			'requirements'       => array(
 				'Bachelor\'s degree in Business Administration, Operations Management, or related field (MBA is an advantage).',
-				'5+ years of senior leadership experience in retail, wholesale FMCG, e-commerce, or beauty/fashion distribution in Kenya.',
+				'5+ years of senior leadership experience in retail, wholesale FMCG, e-commerce, or beauty/fashion distribution.',
 				'Demonstrated expertise in P&L management, team leadership, supply chain, and customer dispute resolution.',
 				'Strong analytical mindset and proficiency with modern ERP/inventory management platforms.',
 			),
@@ -108,7 +108,7 @@ function cd_get_job_listings() {
 			),
 			'requirements'       => array(
 				'3+ to 5 years sales management experience with a proven track record of hitting and exceeding aggressive targets.',
-				'Hands-on experience in WhatsApp commerce, tele-sales, or showroom retail in Kenya.',
+				'Hands-on experience in WhatsApp commerce, tele-sales, or showroom retail.',
 				'In-depth product knowledge of human hair extensions, lace front wigs, and cosmetic beauty items.',
 				'Charismatic leader with strong coaching, data tracking, and communication skills.',
 			),
@@ -180,7 +180,7 @@ function cd_get_job_listings() {
 			),
 			'requirements'       => array(
 				'CPA Part II or Bachelor of Commerce (Finance/Accounting option) / Diploma in Accounting.',
-				'2+ years accounting experience in an e-commerce, retail store, or wholesale business setting in Kenya.',
+				'2+ years accounting experience in an e-commerce, retail store, or wholesale business setting.',
 				'High proficiency in QuickBooks / ERP software and advanced Microsoft Excel skills (VLOOKUP, Pivot Tables).',
 				'Uncompromising integrity, attention to detail, and sound understanding of KRA compliance requirements.',
 			),
