@@ -2474,6 +2474,26 @@ a {
     font-size: 0.82rem !important;
 }
 
+/* Bottom Payment Due Today Row below Total Repayable */
+.cpl-breakdown-row--due-today-bottom {
+    border-top: 1px dashed #fed7aa;
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
+.cpl-breakdown-row--due-today-bottom dt {
+    font-weight: 700 !important;
+    color: var(--secondary-color, #0f172a) !important;
+    font-size: 0.95rem !important;
+}
+
+.cpl-breakdown-row--due-today-bottom dd,
+.cpl-breakdown-row--due-today-bottom .cpl-breakdown-deposit {
+    font-weight: 800 !important;
+    color: #ef4444 !important;
+    font-size: 1.05rem !important;
+}
+
 /* Sub-Header Horizontal Category Tabs Bar */
 .header-category-bar {
     background: #0f172a;
