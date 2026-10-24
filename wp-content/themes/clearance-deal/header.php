@@ -48,6 +48,57 @@
 	.mobile-nav-links a.mobile-nav-whatsapp{color:#16a34a}
 	.mobile-nav-links a.mobile-nav-whatsapp i{color:#16a34a}
 
+	/* Critical Product Media Layout (prevents cached padding-top / black boxes) */
+	.deal-card .deal-media-wrapper,
+	.deal-media-wrapper {
+		position: relative !important;
+		width: 100% !important;
+		overflow: hidden !important;
+		background: transparent !important;
+		background-color: transparent !important;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+		height: auto !important;
+		min-height: 0 !important;
+	}
+	.deal-card .deal-image-wrapper {
+		position: relative !important;
+		width: 100% !important;
+		padding-top: 100% !important;
+		overflow: hidden !important;
+		background-color: #f8fafc !important;
+	}
+	.deal-card .deal-image-wrapper img {
+		position: absolute !important;
+		top: 0 !important;
+		left: 0 !important;
+		width: 100% !important;
+		height: 100% !important;
+		object-fit: contain !important;
+		padding: 0.35rem !important;
+	}
+	.deal-card .deal-media-container,
+	.deal-card .deal-media-container.has-local-video,
+	.deal-card .deal-media-container.has-instagram,
+	.deal-card .deal-media-container.has-facebook {
+		position: relative !important;
+		width: 100% !important;
+		padding-top: 100% !important;
+		overflow: hidden !important;
+		background-color: #000 !important;
+	}
+	.deal-card .deal-media-container video,
+	.deal-card .deal-local-video {
+		position: absolute !important;
+		top: 0 !important;
+		left: 0 !important;
+		width: 100% !important;
+		height: 100% !important;
+		object-fit: cover !important;
+	}
+	.deal-short-description {
+		display: none !important;
+	}
 
 	</style>
 </head>

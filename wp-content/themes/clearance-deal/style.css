@@ -1624,13 +1624,32 @@ a {
         border-radius: 8px;
     }
 
-    .deal-image-wrapper {
+    .deal-image-wrapper,
+    .deal-media-container,
+    .deal-media-container.has-local-video,
+    .deal-media-container.has-instagram,
+    .deal-media-container.has-facebook {
         padding-top: 100% !important;
     }
 
+    .deal-card .deal-media-wrapper,
     .deal-media-wrapper {
         padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        background: transparent !important;
         background-color: transparent !important;
+    }
+
+    .deal-media-container video,
+    .deal-local-video {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
     }
 
     .deal-details {

@@ -1,0 +1,99 @@
+/**
+ * Clearance Pay Later – admin styles.
+ */
+
+/* ---- Orders list badge ---- */
+.cpl-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cpl-badge--deposit {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+.cpl-badge--full {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* ---- Meta box ---- */
+.cpl-metabox { font-size: 13px; }
+
+.cpl-meta-none { color: #64748b; font-style: italic; }
+
+.cpl-metabox-section {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 14px 0;
+}
+.cpl-metabox-section:last-child { border-bottom: none; }
+.cpl-metabox-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: #64748b;
+  margin: 0 0 10px;
+}
+
+.cpl-meta-table { width: 100%; border-collapse: collapse; }
+.cpl-meta-table th,
+.cpl-meta-table td {
+  padding: 5px 6px;
+  text-align: left;
+  vertical-align: top;
+}
+.cpl-meta-table th {
+  color: #64748b;
+  font-weight: normal;
+  width: 45%;
+}
+.cpl-meta-table td { font-weight: 600; }
+
+/* Agreement row */
+.cpl-agreement-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cpl-select { min-width: 160px; }
+
+.cpl-agreement-saved {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+/* Schedule table */
+.cpl-schedule-table th,
+.cpl-schedule-table td {
+  padding: 6px 8px;
+  font-size: 12px;
+}
+.cpl-row-paid td { color: #94a3b8; }
+.cpl-status-paid { color: #16a34a; font-weight: 600; }
+.cpl-status-pending { color: #f59e0b; }
+
+/* Email section */
+.cpl-email-wrap { display: flex; flex-direction: column; gap: 6px; }
+.cpl-email-wrap label { font-weight: 600; font-size: 12px; color: #64748b; }
+.cpl-email-subject { margin: 0 !important; }
+.cpl-email-body { font-family: monospace; resize: vertical; }
+
+.cpl-email-status {
+  font-size: 12px;
+  font-weight: 600;
+}
+.cpl-email-status.success { color: #16a34a; }
+.cpl-email-status.error   { color: #ef4444; }
+
+/* Screen-reader only */
+.cpl-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}

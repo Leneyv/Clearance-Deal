@@ -417,7 +417,7 @@ get_header();
 						data-is-makeup="<?php echo $is_makeup ? '1' : '0'; ?>"
 						data-is-wig="<?php echo $is_wig ? '1' : '0'; ?>"
 						data-is-bundle="<?php echo $is_bundle ? '1' : '0'; ?>">
-						<div class="deal-media-wrapper" style="position: relative; overflow: hidden; background: transparent; padding-top: 0;">
+						<div class="deal-media-wrapper" style="position: relative !important; width: 100% !important; overflow: hidden !important; background: transparent !important; padding-top: 0 !important; padding-bottom: 0 !important; height: auto !important; min-height: 0 !important;">
 							<?php clearance_deal_render_featured_media( $product ); ?>
 
 							<?php if ( $discount_pct > 0 ) : ?>

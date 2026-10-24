@@ -137,7 +137,7 @@ add_action( 'widgets_init', 'clearance_deal_widgets_init' );
  * Enqueue scripts and styles.
  */
 function clearance_deal_scripts() {
-	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), '1.1.3' );
+	wp_enqueue_style( 'clearance-deal-style', get_stylesheet_uri(), array(), (string) filemtime( get_stylesheet_directory() . '/style.css' ) );
 	// Self-hosted Font Awesome — eliminates external CDN round-trip
 	wp_enqueue_style(
 		'font-awesome',
@@ -1025,7 +1025,7 @@ function clearance_deal_featured_products_section() {
 					}
 					?>
 					<div class="deal-card">
-						<div class="deal-media-wrapper" style="position: relative; overflow: hidden;">
+						<div class="deal-media-wrapper" style="position: relative !important; width: 100% !important; overflow: hidden !important; background: transparent !important; padding-top: 0 !important; padding-bottom: 0 !important; height: auto !important; min-height: 0 !important;">
 							<?php clearance_deal_render_featured_media( $product ); ?>
 
 							<?php if ( $discount_pct > 0 ) : ?>
