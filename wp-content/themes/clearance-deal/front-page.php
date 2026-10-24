@@ -163,11 +163,11 @@ get_header();
 			<button type="button" class="tab-filter-btn is-active" data-cat="all" onclick="filterCategoryTab('all', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:#fff; color:#0f172a; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:all 0.2s; white-space:nowrap;">
 				<i class="fa-solid fa-border-all"></i> All Deals
 			</button>
-			<button type="button" class="tab-filter-btn" data-cat="price-1" onclick="filterCategoryTab('price-1', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
-				<i class="fa-solid fa-tag"></i> From KSh 3,000 to 10,000 Deals
-			</button>
 			<button type="button" class="tab-filter-btn" data-cat="price-2" onclick="filterCategoryTab('price-2', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
 				<i class="fa-solid fa-tags"></i> From KSh 11,000 to 15,000 Deals
+			</button>
+			<button type="button" class="tab-filter-btn" data-cat="price-1" onclick="filterCategoryTab('price-1', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
+				<i class="fa-solid fa-tag"></i> From KSh 3,000 to 10,000 Deals
 			</button>
 			<button type="button" class="tab-filter-btn" data-cat="price-3" onclick="filterCategoryTab('price-3', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:transparent; color:#475569; transition:all 0.2s; white-space:nowrap;">
 				<i class="fa-solid fa-fire" style="color:#ea580c;"></i> From KSh 15,000 to 20,000 Deals
@@ -224,8 +224,8 @@ get_header();
 	if ( $products_query->have_posts() ) :
 		// Group products strictly by price tier so that each tier header is rendered exactly once
 		$tier_order_map = array(
-			'price-1' => 1,
-			'price-2' => 2,
+			'price-2' => 1,
+			'price-1' => 2,
 			'price-3' => 3,
 			'premium' => 4,
 		);
@@ -319,10 +319,12 @@ get_header();
 
 					// Category Section Divider Header
 					if ( $current_tier_rendered !== $item_tier ) {
+						$is_first_tier         = empty( $current_tier_rendered );
 						$current_tier_rendered = $item_tier;
+						$tier_margin           = $is_first_tier ? 'margin: 10px 0 10px;' : 'margin: 30px 0 10px;';
 						if ( 'price-1' === $item_tier ) :
 							?>
-							<div class="tier-section-header" data-tier-header="price-1" style="grid-column: 1 / -1; margin: 10px 0 10px; padding: 14px 20px; background: #f8fafc; border-left: 4px solid #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+							<div class="tier-section-header" id="price-1" data-tier-header="price-1" style="grid-column: 1 / -1; <?php echo $tier_margin; ?> padding: 14px 20px; background: #f8fafc; border-left: 4px solid #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 								<div style="font-weight: 800; font-size: 16px; color: #0f172a; display: flex; align-items: center; gap: 8px;">
 									<i class="fa-solid fa-tag" style="color: #0f172a;"></i>
 									<span>From KSh 3,000 to 10,000 Deals</span>
@@ -332,7 +334,7 @@ get_header();
 							<?php
 						elseif ( 'price-2' === $item_tier ) :
 							?>
-							<div class="tier-section-header" data-tier-header="price-2" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+							<div class="tier-section-header" id="price-2" data-tier-header="price-2" style="grid-column: 1 / -1; <?php echo $tier_margin; ?> padding: 14px 20px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 								<div style="font-weight: 800; font-size: 16px; color: #166534; display: flex; align-items: center; gap: 8px;">
 									<i class="fa-solid fa-tags" style="color: #16a34a;"></i>
 									<span>From KSh 11,000 to 15,000 Deals</span>
@@ -342,7 +344,7 @@ get_header();
 							<?php
 						elseif ( 'price-3' === $item_tier ) :
 							?>
-							<div class="tier-section-header" data-tier-header="price-3" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: #fff7ed; border-left: 4px solid #ea580c; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+							<div class="tier-section-header" id="price-3" data-tier-header="price-3" style="grid-column: 1 / -1; <?php echo $tier_margin; ?> padding: 14px 20px; background: #fff7ed; border-left: 4px solid #ea580c; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 								<div style="font-weight: 800; font-size: 16px; color: #9a3412; display: flex; align-items: center; gap: 8px;">
 									<i class="fa-solid fa-fire" style="color: #ea580c;"></i>
 									<span>From KSh 15,000 to 20,000 Deals</span>
@@ -352,7 +354,7 @@ get_header();
 							<?php
 						elseif ( 'premium' === $item_tier ) :
 							?>
-							<div class="tier-section-header" data-tier-header="premium" style="grid-column: 1 / -1; margin: 30px 0 10px; padding: 14px 20px; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-left: 4px solid #9333ea; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+							<div class="tier-section-header" id="premium" data-tier-header="premium" style="grid-column: 1 / -1; <?php echo $tier_margin; ?> padding: 14px 20px; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-left: 4px solid #9333ea; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 								<div style="font-weight: 800; font-size: 16px; color: #6b21a8; display: flex; align-items: center; gap: 8px;">
 									<i class="fa-solid fa-crown" style="color: #9333ea;"></i>
 									<span>From KSh 20,000 &amp; Above – Premium Deals</span>
