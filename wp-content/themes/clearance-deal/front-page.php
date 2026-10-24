@@ -417,7 +417,7 @@ get_header();
 						data-is-makeup="<?php echo $is_makeup ? '1' : '0'; ?>"
 						data-is-wig="<?php echo $is_wig ? '1' : '0'; ?>"
 						data-is-bundle="<?php echo $is_bundle ? '1' : '0'; ?>">
-						<div class="deal-media-wrapper" style="position: relative; overflow: hidden;">
+						<div class="deal-media-wrapper" style="position: relative; overflow: hidden; background: transparent; padding-top: 0;">
 							<?php clearance_deal_render_featured_media( $product ); ?>
 
 							<?php if ( $discount_pct > 0 ) : ?>
@@ -447,9 +447,7 @@ get_header();
 								<p class="deal-urgency-label" style="color:#d97706;">🔥 Verified Clearance Stock</p>
 							<?php endif; ?>
 
-							<?php if ( $product->get_short_description() ) : ?>
-								<p class="deal-short-description"><?php echo wp_kses_post( $product->get_short_description() ); ?></p>
-							<?php endif; ?>
+
 
 							<div class="deal-pricing">
 								<?php echo $product->get_price_html(); ?>

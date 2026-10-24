@@ -758,7 +758,8 @@ a {
     position: relative;
     width: 100%;
     overflow: hidden;
-    background-color: #000000;
+    background-color: transparent;
+    padding-top: 0;
 }
 
 .deal-media-container {
@@ -934,10 +935,7 @@ a {
 }
 
 .deal-short-description {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-    margin-bottom: 0.75rem;
+    display: none !important;
 }
 
 .deal-meta {
@@ -1626,9 +1624,13 @@ a {
         border-radius: 8px;
     }
 
-    .deal-image-wrapper,
-    .deal-media-wrapper {
+    .deal-image-wrapper {
         padding-top: 100% !important;
+    }
+
+    .deal-media-wrapper {
+        padding-top: 0 !important;
+        background-color: transparent !important;
     }
 
     .deal-details {
