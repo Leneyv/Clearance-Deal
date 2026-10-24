@@ -157,9 +157,9 @@ get_header();
 		<p>Direct salon overstock &amp; batch liquidations at wholesale markdowns</p>
 	</div>
 
-	<!-- Interactive Category Switcher (4 Price Categories) -->
-	<div class="category-tabs-wrapper" style="display:flex; justify-content:center; margin-bottom:30px; padding:0 15px; overflow-x:auto; -webkit-overflow-scrolling:touch;">
-		<div class="category-tabs-pill" style="background:#e2e8f0; padding:6px; border-radius:999px; display:inline-flex; gap:6px; flex-wrap:nowrap; max-width:100%;">
+	<!-- Interactive Category Switcher (Horizontal scroll on mobile and desktop) -->
+	<div class="category-tabs-wrapper">
+		<div class="category-tabs-pill">
 			<button type="button" class="tab-filter-btn is-active" data-cat="all" onclick="filterCategoryTab('all', this)" style="padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; border:none; cursor:pointer; background:#fff; color:#0f172a; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:all 0.2s; white-space:nowrap;">
 				<i class="fa-solid fa-border-all"></i> All Deals
 			</button>

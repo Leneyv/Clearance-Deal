@@ -48,33 +48,7 @@
 	.mobile-nav-links a.mobile-nav-whatsapp{color:#16a34a}
 	.mobile-nav-links a.mobile-nav-whatsapp i{color:#16a34a}
 
-	/* Sub-Header Horizontal Category Tabs Bar (Desktop) & Vertical (Mobile) */
-	.header-category-bar{background:#0f172a;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.12)}
-	.header-category-container{max-width:1200px;margin:0 auto;display:flex}
-	.cat-bar-item{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem .85rem;font-size:.82rem;font-weight:700;color:#cbd5e1;text-decoration:none;border-bottom:2.5px solid transparent;transition:all .2s ease;white-space:nowrap;flex-shrink:0}
-	.cat-bar-item i{font-size:.9rem}
-	.cat-bar-item:hover{color:#fff;background:rgba(255,255,255,0.06)}
-	.cat-bar-item.is-active{color:#fff;border-bottom-color:#ef4444}
-	.cat-bar-item--premium{color:#e9d5ff}
-	.cat-bar-item--premium:hover{color:#f3e8ff}
-	.cat-bar-item--premium.is-active{border-bottom-color:#a855f7}
 
-	@media (min-width:769px){
-		.header-category-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-		.header-category-bar::-webkit-scrollbar{display:none}
-		.header-category-container{flex-direction:row;align-items:center;gap:.35rem;padding:0 1rem;white-space:nowrap}
-	}
-
-	@media (max-width:768px){
-		.header-category-bar{overflow:visible}
-		.header-category-container{flex-direction:column;align-items:stretch;gap:0;padding:0;white-space:normal}
-		.cat-bar-item{display:flex;align-items:center;gap:.65rem;padding:.75rem 1.15rem;font-size:.88rem;color:#cbd5e1;border-bottom:1px solid rgba(255,255,255,0.07);border-left:3px solid transparent;border-top:none;border-right:none;white-space:normal;width:100%;box-sizing:border-box}
-		.cat-bar-item i{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
-		.cat-bar-item:last-child{border-bottom:none}
-		.cat-bar-item:hover,.cat-bar-item:active{background:rgba(255,255,255,0.05);color:#fff}
-		.cat-bar-item.is-active{background:rgba(255,255,255,0.08);color:#fff;border-left-color:#ef4444;border-bottom-color:rgba(255,255,255,0.07)}
-		.cat-bar-item--premium.is-active{border-left-color:#a855f7;background:rgba(168,85,247,0.12);color:#f3e8ff}
-	}
 	</style>
 </head>
 
@@ -126,38 +100,7 @@
 			</div>
 		</div>
 
-		<!-- Sub-Header Horizontal Category Tabs Bar (Desktop & Mobile) -->
-		<nav class="header-category-bar" aria-label="<?php esc_attr_e( 'Category Tabs', 'clearance-deal' ); ?>">
-			<div class="header-category-container">
-				<a href="<?php echo esc_url( home_url( '/#deals-section' ) ); ?>" class="cat-bar-item is-active" data-cat="all">
-					<i class="fa-solid fa-border-all"></i> <?php esc_html_e( 'All Deals', 'clearance-deal' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/#price-2' ) ); ?>" class="cat-bar-item" data-cat="price-2">
-					<i class="fa-solid fa-tags"></i> <?php esc_html_e( 'From KSh 11,000 to 15,000 Deals', 'clearance-deal' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/#price-1' ) ); ?>" class="cat-bar-item" data-cat="price-1">
-					<i class="fa-solid fa-tag"></i> <?php esc_html_e( 'From KSh 3,000 to 10,000 Deals', 'clearance-deal' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/#price-3' ) ); ?>" class="cat-bar-item" data-cat="price-3">
-					<i class="fa-solid fa-fire" style="color:#ea580c;"></i> <?php esc_html_e( 'From KSh 15,000 to 20,000 Deals', 'clearance-deal' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/#premium' ) ); ?>" class="cat-bar-item cat-bar-item--premium" data-cat="premium">
-					<i class="fa-solid fa-crown" style="color:#a855f7;"></i> <?php esc_html_e( 'Premium Deals', 'clearance-deal' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/#hair' ) ); ?>" class="cat-bar-item" data-cat="hair">
-					<i class="fa-solid fa-scissors" style="color:#38bdf8;"></i> <?php esc_html_e( 'Shop by hair Deals', 'clearance-deal' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/#makeup' ) ); ?>" class="cat-bar-item" data-cat="makeup">
-					<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i> <?php esc_html_e( 'Shop by Makup Deals', 'clearance-deal' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/#wigs' ) ); ?>" class="cat-bar-item" data-cat="wigs">
-					<i class="fa-solid fa-feather" style="color:#fbbf24;"></i> <?php esc_html_e( 'Wigs', 'clearance-deal' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/#bundles' ) ); ?>" class="cat-bar-item" data-cat="bundles">
-					<i class="fa-solid fa-box-open" style="color:#4ade80;"></i> <?php esc_html_e( 'Bundles', 'clearance-deal' ); ?>
-				</a>
-			</div>
-		</nav>
+
 
 		<!-- Navigation Drawer (Mobile & Desktop) with All 9 Tabs -->
 		<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">

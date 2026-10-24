@@ -2582,121 +2582,47 @@ a {
     font-size: 1.05rem !important;
 }
 
-/* Sub-Header Horizontal Category Tabs Bar (Desktop) & Vertical (Mobile) */
-.header-category-bar {
-    background: #0f172a;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+/* Category Switcher Tabs Below Hero Banner — Horizontal View on Mobile & Desktop */
+.category-tabs-wrapper {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    margin-bottom: 24px !important;
+    padding: 6px 16px 14px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
-.header-category-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
+.category-tabs-wrapper::-webkit-scrollbar {
+    display: none !important;
 }
-.cat-bar-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.65rem 0.85rem;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #cbd5e1;
-    text-decoration: none;
-    border-bottom: 2.5px solid transparent;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-.cat-bar-item i {
-    font-size: 0.9rem;
-}
-.cat-bar-item:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.06);
-}
-.cat-bar-item.is-active {
-    color: #ffffff;
-    border-bottom-color: #ef4444;
-}
-.cat-bar-item--premium {
-    color: #e9d5ff;
-}
-.cat-bar-item--premium:hover {
-    color: #f3e8ff;
-}
-.cat-bar-item--premium.is-active {
-    border-bottom-color: #a855f7;
-}
-
-@media (min-width: 769px) {
-    .header-category-bar {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-    .header-category-bar::-webkit-scrollbar {
-        display: none;
-    }
-    .header-category-container {
-        flex-direction: row;
-        align-items: center;
-        gap: 0.35rem;
-        padding: 0 1rem;
-        white-space: nowrap;
+@media (min-width: 1024px) {
+    .category-tabs-wrapper {
+        justify-content: center !important;
     }
 }
-
-@media (max-width: 768px) {
-    .header-category-bar {
-        overflow: visible;
-    }
-    .header-category-container {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        padding: 0;
-        white-space: normal;
-    }
-    .cat-bar-item {
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-        padding: 0.75rem 1.15rem;
-        font-size: 0.88rem;
-        color: #cbd5e1;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-        border-left: 3px solid transparent;
-        border-top: none;
-        border-right: none;
-        white-space: normal;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    .cat-bar-item i {
-        font-size: 1rem;
-        width: 20px;
-        text-align: center;
-        flex-shrink: 0;
-    }
-    .cat-bar-item:last-child {
-        border-bottom: none;
-    }
-    .cat-bar-item:hover,
-    .cat-bar-item:active {
-        background: rgba(255, 255, 255, 0.05);
-        color: #ffffff;
-    }
-    .cat-bar-item.is-active {
-        background: rgba(255, 255, 255, 0.08);
-        color: #ffffff;
-        border-left-color: #ef4444;
-        border-bottom-color: rgba(255, 255, 255, 0.07);
-    }
-    .cat-bar-item--premium.is-active {
-        border-left-color: #a855f7;
-        background: rgba(168, 85, 247, 0.12);
-        color: #f3e8ff;
-    }
+.category-tabs-pill {
+    background: #e2e8f0 !important;
+    padding: 6px !important;
+    border-radius: 999px !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+    max-width: none !important;
+    width: max-content !important;
+    flex-shrink: 0 !important;
+}
+.tab-filter-btn {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
 }
 
 /* Category drawer deal tab styles */
