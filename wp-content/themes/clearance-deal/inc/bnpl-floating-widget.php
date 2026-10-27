@@ -85,11 +85,8 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 					<i class="fa-solid fa-circle-check"></i>
 				</div>
 				<h4 class="bnpl-success-heading">🎉 Approved!</h4>
-				<p class="bnpl-success-message">
-					congragulation you are eligible- shop now
-				</p>
-				<p class="bnpl-success-sub">
-					Enjoy 50% deposit clearance deals across all genuine human hair &amp; wigs!
+				<p class="bnpl-success-message" style="font-size: 13px; font-weight: 700; color: #166534; line-height: 1.4; margin-bottom: 14px !important;">
+					Congratulation you are eligible for buy now pay later, buy now before deals are over
 				</p>
 				<button type="button" id="bnplShopNowBtn" class="bnpl-shop-btn">
 					<span>Shop Now</span>
