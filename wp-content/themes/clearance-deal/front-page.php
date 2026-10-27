@@ -144,7 +144,7 @@ get_header();
 			</div>
 			<div>
 				<strong style="display:block; font-size:15px; color:#0f172a; margin-bottom:2px;">Lipa Polepole (BNPL)</strong>
-				<p style="font-size:13px; color:#64748b; line-height:1.4; margin:0;">Pay 50% deposit now upon delivery, then 12 easy monthly instalments.</p>
+				<p style="font-size:13px; color:#64748b; line-height:1.4; margin:0;">Pay 50% now and buy, then 12 easy monthly instalments.</p>
 			</div>
 		</div>
 	</div>
