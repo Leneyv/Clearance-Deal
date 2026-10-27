@@ -15,7 +15,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 <div id="bnplFloatingWidget" class="bnpl-floating-widget is-open" aria-live="polite">
 	<!-- Vertical Sticky Tab (Attached to the left of the card / right edge of screen) -->
 	<button type="button" id="bnplStickyTab" class="bnpl-sticky-tab" aria-label="Check your BNPL Eligibility" title="Toggle BNPL Eligibility">
-		<span class="bnpl-toggle-badge" id="bnplToggleBadge">&lt;&gt;</span>
+		<span class="bnpl-toggle-badge" id="bnplToggleBadge"><i class="fa-solid fa-xmark"></i></span>
 		<span class="bnpl-tab-label">Check your BNPL Eligibility</span>
 	</button>
 
@@ -27,8 +27,8 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 				<span class="bnpl-badge-icon"><i class="fa-solid fa-bolt"></i></span>
 				<span class="bnpl-heading-text">Check your BNPL Eligibility</span>
 			</div>
-			<button type="button" id="bnplToggleClose" class="bnpl-panel-toggle-btn" aria-label="Hide panel" title="Hide / Open">
-				<span class="bnpl-btn-code">&lt;&gt;</span>
+			<button type="button" id="bnplToggleClose" class="bnpl-panel-toggle-btn" aria-label="Close panel" title="Close">
+				<i class="fa-solid fa-xmark"></i>
 			</button>
 		</div>
 
@@ -235,19 +235,24 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	color: #166534;
 	border: 1px solid #bbf7d0;
 	border-radius: 6px;
-	padding: 3px 8px;
-	font-size: 12px;
-	font-weight: 900;
+	width: 26px;
+	height: 26px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 13px;
+	font-weight: 700;
 	cursor: pointer;
 	line-height: 1;
 	transition: all 0.2s ease;
 	outline: none;
+	padding: 0;
 }
 
 .bnpl-panel-toggle-btn:hover {
-	background: #16a34a;
-	color: #ffffff;
-	border-color: #16a34a;
+	background: #fee2e2;
+	color: #dc2626;
+	border-color: #fca5a5;
 }
 
 /* Panel Body */
@@ -496,9 +501,13 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 
 	if (!widget || !tabToggle) return;
 
-	// Toggle function (<> button and tab click)
+	// Toggle function (x button and tab click)
 	function toggleWidget() {
-		widget.classList.toggle('is-open');
+		var isOpen = widget.classList.toggle('is-open');
+		var tabBadge = document.getElementById('bnplToggleBadge');
+		if (tabBadge) {
+			tabBadge.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bolt"></i>';
+		}
 	}
 
 	tabToggle.addEventListener('click', toggleWidget);
