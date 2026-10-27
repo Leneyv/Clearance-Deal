@@ -54,6 +54,12 @@
 	</footer><!-- #colophon -->
 </div><!-- #page -->
 
+<?php
+if ( file_exists( get_template_directory() . '/inc/bnpl-floating-widget.php' ) ) {
+	require_once get_template_directory() . '/inc/bnpl-floating-widget.php';
+}
+?>
+
 <?php wp_footer(); ?>
 
 </body>
