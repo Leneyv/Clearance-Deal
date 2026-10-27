@@ -14,7 +14,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 
 <div id="bnplFloatingWidget" class="bnpl-floating-widget is-open" aria-live="polite">
 	<!-- Vertical Sticky Tab (Attached to the left of the card / right edge of screen) -->
-	<button type="button" id="bnplStickyTab" class="bnpl-sticky-tab" aria-label="Check your BNPL Eligibility">
+	<button type="button" id="bnplStickyTab" class="bnpl-sticky-tab" aria-label="Check your BNPL Eligibility" title="Toggle BNPL Eligibility">
 		<span class="bnpl-toggle-badge" id="bnplToggleBadge">&lt;&gt;</span>
 		<span class="bnpl-tab-label">Check your BNPL Eligibility</span>
 	</button>
@@ -104,26 +104,16 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 /* ==========================================================================
    BNPL Vertical Sticky Floating Widget
    ========================================================================== */
-:root {
-	--bnpl-widget-width: 290px;
-}
-
 .bnpl-floating-widget {
 	position: fixed;
 	right: 0;
 	top: 50%;
-	transform: translateY(-50%) translateX(0);
+	transform: translateY(-50%);
 	z-index: 99999;
 	display: flex;
 	align-items: center;
-	transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 	-webkit-font-smoothing: antialiased;
-}
-
-/* Collapsed state: slide card panel out of view to the right, keep tab on edge */
-.bnpl-floating-widget:not(.is-open) {
-	transform: translateY(-50%) translateX(var(--bnpl-widget-width));
 }
 
 /* Sticky Vertical Tab */
@@ -146,6 +136,8 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	transition: background 0.2s ease, transform 0.15s ease;
 	flex-shrink: 0;
 	outline: none;
+	position: relative;
+	z-index: 2;
 }
 
 .bnpl-sticky-tab:hover {
@@ -183,7 +175,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 
 /* Card Panel */
 .bnpl-card-panel {
-	width: var(--bnpl-widget-width);
+	width: 290px;
 	max-width: calc(100vw - 44px);
 	background: #ffffff;
 	border-radius: 14px 0 0 14px;
@@ -194,6 +186,26 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	display: flex;
 	flex-direction: column;
 	text-align: left;
+	transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+	transform-origin: right center;
+	position: relative;
+	z-index: 1;
+}
+
+/* Open State */
+.bnpl-floating-widget.is-open .bnpl-card-panel {
+	transform: translateX(0);
+	opacity: 1;
+	pointer-events: auto;
+}
+
+/* Collapsed State: smoothly slide card panel off-screen to the right */
+.bnpl-floating-widget:not(.is-open) .bnpl-card-panel {
+	transform: translateX(110%);
+	opacity: 0;
+	pointer-events: none;
+	position: absolute;
+	right: 0;
 }
 
 /* Panel Header */
@@ -460,8 +472,8 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 }
 
 @media (max-width: 480px) {
-	:root {
-		--bnpl-widget-width: 275px;
+	.bnpl-card-panel {
+		width: 275px;
 	}
 	.bnpl-tab-label {
 		font-size: 10px;
@@ -477,7 +489,6 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	var widget = document.getElementById('bnplFloatingWidget');
 	var tabToggle = document.getElementById('bnplStickyTab');
 	var closeToggle = document.getElementById('bnplToggleClose');
-	var cardPanel = document.getElementById('bnplCardPanel');
 	var phoneInput = document.getElementById('bnplPhoneInput');
 	var phoneError = document.getElementById('bnplPhoneError');
 	var stepInput = document.getElementById('bnplStepInput');
@@ -488,25 +499,9 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 
 	if (!widget || !tabToggle) return;
 
-	// Update panel width dynamically for responsive sliding
-	function updateWidgetWidth() {
-		if (cardPanel) {
-			var w = cardPanel.offsetWidth || 290;
-			widget.style.setProperty('--bnpl-widget-width', w + 'px');
-		}
-	}
-	updateWidgetWidth();
-	window.addEventListener('resize', updateWidgetWidth);
-
 	// Toggle function (<> button and tab click)
 	function toggleWidget() {
-		var isOpen = widget.classList.contains('is-open');
-		if (isOpen) {
-			widget.classList.remove('is-open');
-		} else {
-			updateWidgetWidth();
-			widget.classList.add('is-open');
-		}
+		widget.classList.toggle('is-open');
 	}
 
 	tabToggle.addEventListener('click', toggleWidget);
@@ -550,9 +545,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 			fetch('<?php echo esc_url( $ajax_url ); ?>', {
 				method: 'POST',
 				body: formData
-			}).catch(function(err) {
-				// Non-blocking
-			});
+			}).catch(function(err) {});
 		} catch (e) {}
 
 		// After exactly 3 seconds, show "congragulation you are eligible- shop now"
