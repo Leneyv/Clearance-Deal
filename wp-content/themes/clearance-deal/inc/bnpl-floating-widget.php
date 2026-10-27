@@ -39,7 +39,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 			<!-- Step 1: Input Phone -->
 			<div id="bnplStepInput" class="bnpl-step is-active">
 				<p class="bnpl-step-desc">
-					Get instant pre-approval to buy today with <strong>50% deposit</strong> and pay the balance in easy instalments!
+					Get instant pre-approval to buy today with <strong>50% payment</strong> and pay the balance in easy instalments!
 				</p>
 				<form id="bnplPhoneForm" onsubmit="event.preventDefault(); window.bnplCheckEligibility();">
 					<div class="bnpl-input-group">
