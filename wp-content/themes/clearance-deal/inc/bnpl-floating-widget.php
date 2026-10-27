@@ -15,7 +15,9 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 <div id="bnplFloatingWidget" class="bnpl-floating-widget is-open" aria-live="polite">
 	<!-- Vertical Sticky Tab (Attached to the left of the card / right edge of screen) -->
 	<button type="button" id="bnplStickyTab" class="bnpl-sticky-tab" aria-label="Check your BNPL Eligibility" title="Toggle BNPL Eligibility">
-		<span class="bnpl-toggle-badge" id="bnplToggleBadge"><i class="fa-solid fa-xmark"></i></span>
+		<span class="bnpl-toggle-badge" id="bnplToggleBadge">
+			<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+		</span>
 		<span class="bnpl-tab-label">Check your BNPL Eligibility</span>
 	</button>
 
@@ -28,7 +30,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 				<span class="bnpl-heading-text">Check your BNPL Eligibility</span>
 			</div>
 			<button type="button" id="bnplToggleClose" class="bnpl-panel-toggle-btn" aria-label="Close panel" title="Close">
-				<i class="fa-solid fa-xmark"></i>
+				<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 			</button>
 		</div>
 
@@ -501,12 +503,15 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 
 	if (!widget || !tabToggle) return;
 
+	var closeSvg = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+	var boltSvg = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>';
+
 	// Toggle function (x button and tab click)
 	function toggleWidget() {
 		var isOpen = widget.classList.toggle('is-open');
 		var tabBadge = document.getElementById('bnplToggleBadge');
 		if (tabBadge) {
-			tabBadge.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bolt"></i>';
+			tabBadge.innerHTML = isOpen ? closeSvg : boltSvg;
 		}
 	}
 
