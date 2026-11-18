@@ -66,10 +66,10 @@ get_header();
 <div class="top-announcement-bar">
 	<div class="top-announcement-track">
 		<span><i class="fa-solid fa-rotate-left"></i> <?php esc_html_e( 'Easy Return in 7 Days', 'clearance-deal' ); ?></span>
-		<span><i class="fa-solid fa-truck-fast"></i> <?php esc_html_e( 'Free Delivery', 'clearance-deal' ); ?></span>
+		<span><i class="fa-solid fa-truck-fast"></i> <?php esc_html_e( 'Paid Doorstep Delivery Across Kenya', 'clearance-deal' ); ?></span>
 		<span><i class="fa-solid fa-shield-halved"></i> <?php esc_html_e( 'Secure Payment', 'clearance-deal' ); ?></span>
 		<span><i class="fa-solid fa-rotate-left"></i> <?php esc_html_e( 'Easy Return in 7 Days', 'clearance-deal' ); ?></span>
-		<span><i class="fa-solid fa-truck-fast"></i> <?php esc_html_e( 'Free Delivery', 'clearance-deal' ); ?></span>
+		<span><i class="fa-solid fa-truck-fast"></i> <?php esc_html_e( 'Paid Doorstep Delivery Across Kenya', 'clearance-deal' ); ?></span>
 		<span><i class="fa-solid fa-shield-halved"></i> <?php esc_html_e( 'Secure Payment', 'clearance-deal' ); ?></span>
 	</div>
 </div>

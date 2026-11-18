@@ -282,7 +282,7 @@ function clearance_deal_trust_badges() {
 		</div>
 		<div class="trust-badge">
 			<i class="fa-solid fa-truck-fast"></i>
-			<span><?php esc_html_e( 'Free Delivery', 'clearance-deal' ); ?></span>
+			<span><?php esc_html_e( 'Paid Delivery', 'clearance-deal' ); ?></span>
 		</div>
 		<div class="trust-badge trust-badge--mpesa">
 			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/mpesa-logo.svg' ); ?>" alt="M-Pesa" class="mpesa-logo-img" />
@@ -1110,11 +1110,7 @@ function clearance_deal_render_featured_media( $product ) {
 	?>
 	<div class="deal-image-wrapper deal-carousel" data-autoplay="4000">
 		<?php foreach ( array_values( $image_ids ) as $i => $image_id ) : ?>
-			<img
-				src="<?php echo esc_url( wp_get_attachment_image_url( $image_id, 'medium_large' ) ); ?>"
-				alt="<?php echo esc_attr( get_the_title( $post_id ) ); ?>"
-				loading="<?php echo 0 === $i ? 'eager' : 'lazy'; ?>"
-				class="deal-carousel-slide<?php echo 0 === $i ? ' is-active' : ''; ?>">
+			<?php echo wp_get_attachment_image($image_id, 'medium_large', false, array('alt'=>get_the_title($post_id), 'loading'=>'lazy', 'decoding'=>'async', 'sizes'=>'(max-width: 600px) 50vw, (max-width: 1024px) 33vw, 280px', 'class'=>'deal-carousel-slide'.(0 === $i ? ' is-active' : ''))); ?>
 		<?php endforeach; ?>
 
 		<?php if ( count( $image_ids ) > 1 ) : ?>
@@ -1393,7 +1389,7 @@ function clearance_deal_render_media( $post_id, $image_size = 'medium_large' ) {
 		// Output HTML5 Video
 		?>
 		<div class="deal-media-container deal-media-video has-local-video">
-			<video class="deal-local-video" controls autoplay muted playsinline preload="auto">
+			<video class="deal-local-video" controls muted playsinline preload="none">
 				<source src="<?php echo esc_url( $video_file ); ?>" type="video/mp4">
 				<?php esc_html_e( 'Your browser does not support the video tag.', 'clearance-deal' ); ?>
 			</video>
@@ -1874,8 +1870,15 @@ function clearance_deal_carousel_script() {
 }
 add_action( 'wp_footer', 'clearance_deal_carousel_script', 30 );
 
-
-
-
+/**
+ * Permanently disable Cash on Delivery (COD) payment method.
+ * Only paid delivery (online prepaid orders via PesaPal, M-Pesa, Card) is available.
+ */
+add_filter( 'woocommerce_available_payment_gateways', function( $gateways ) {
+    if ( isset( $gateways['cod'] ) ) {
+        unset( $gateways['cod'] );
+    }
+    return $gateways;
+}, 999 );
 
 require_once get_template_directory() . '/inc/seo-aeo.php';

@@ -15,16 +15,20 @@ Tags: clearance, deals, e-commerce, custom, clean, modern, responsive
    CSS Variables & Reset
    ========================================== */
 :root {
-    --primary-color: #ef4444; /* Alert/deal red */
-    --primary-hover: #dc2626;
-    --secondary-color: #0f172a; /* Slate 900 */
-    --accent-color: #f59e0b; /* Amber warning/rating */
-    --background-color: #f8fafc; /* Slate 50 */
+    --primary-color: #3A0F34; /* Brand: Deep Aubergine */
+    --primary-hover: #52184a;
+    --secondary-color: #3A0F34; /* Brand: Deep Aubergine */
+    --accent-color: #EAAA00; /* Brand: Marigold */
+    --accent-hover: #d49b00;
+    --background-color: #f7f9fa;
     --card-background: #ffffff;
-    --text-main: #334155; /* Slate 700 */
-    --text-muted: #64748b; /* Slate 500 */
-    --border-color: #e2e8f0; /* Slate 200 */
-    --success-color: #10b981; /* Emerald 500 */
+    --text-main: #27212b;
+    --text-muted: #64748b;
+    --border-color: #DDE3E8; /* Brand: Ice Silver */
+    --success-color: #16a34a;
+    --brand-ice-silver: #DDE3E8;
+    --brand-deep-aubergine: #3A0F34;
+    --brand-marigold: #EAAA00;
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -385,7 +389,7 @@ a {
     line-height: 1.15;
     margin-bottom: 1.1rem;
     letter-spacing: -0.03em;
-    color: #0f172a;
+    color: #3A0F34;
 }
 
 .hero h1 span {
@@ -422,7 +426,7 @@ a {
 .hero-stat strong {
     font-size: 1.1rem;
     font-weight: 800;
-    color: #0f172a;
+    color: #3A0F34;
 }
 
 .hero-stat span {
@@ -872,14 +876,15 @@ a {
     position: absolute;
     top: 0.75rem;
     left: 0.75rem;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #b91c1c 100%);
-    color: #ffffff;
-    font-weight: 800;
+    background: linear-gradient(135deg, #EAAA00 0%, #d49b00 100%) !important;
+    color: #3A0F34 !important;
+    font-weight: 900;
     font-size: 0.85rem;
     padding: 0.25rem 0.6rem;
     border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-sm);
-    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    z-index: 20;
+    letter-spacing: 0.02em;
 }
 
 .badge-clearance {
@@ -989,7 +994,7 @@ a {
     display: block;
     width: 100%;
     text-align: center;
-    background-color: var(--primary-color);
+    background-color: #3A0F34;
     color: #ffffff;
     font-weight: 700;
     font-size: 1rem;
@@ -1000,7 +1005,9 @@ a {
 }
 
 .btn-get-deal:hover {
-    background-color: var(--primary-hover);
+    background-color: #EAAA00;
+    color: #3A0F34;
+    font-weight: 800;
     transform: translateY(-1px);
 }
 
@@ -1396,11 +1403,11 @@ a {
    Footer
    ========================================== */
 .site-footer {
-    background-color: var(--secondary-color);
-    color: #94a3b8; /* Slate 400 */
+    background-color: #3A0F34 !important;
+    color: #DDE3E8 !important;
     padding: 4rem 1.5rem 2rem 1.5rem;
     margin-top: 5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 2px solid #EAAA00;
 }
 
 .footer-container {
@@ -1420,7 +1427,12 @@ a {
 }
 
 .footer-brand h3 span {
-    color: var(--primary-color);
+    color: #EAAA00;
+}
+
+.footer-brand p {
+    color: #DDE3E8;
+    line-height: 1.6;
 }
 
 .footer-brand img.footer-logo {
@@ -1430,11 +1442,13 @@ a {
     display: block;
 }
 
-.footer-links h4 {
-    color: #ffffff;
+.footer-links h4,
+.footer-newsletter h4 {
+    color: #EAAA00 !important;
     font-size: 1.05rem;
     margin-bottom: 1.25rem;
     font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 .footer-links ul {
@@ -1445,15 +1459,46 @@ a {
     margin-bottom: 0.75rem;
 }
 
-.footer-links a:hover {
-    color: #ffffff;
+.footer-links a {
+    color: #DDE3E8;
+    transition: var(--transition);
 }
 
-.footer-newsletter h4 {
-    color: #ffffff;
-    font-size: 1.05rem;
-    margin-bottom: 1.25rem;
-    font-weight: 700;
+.footer-links a:hover {
+    color: #EAAA00 !important;
+    padding-left: 4px;
+}
+
+.footer-links a i {
+    color: #EAAA00;
+    font-size: 0.8rem;
+    margin-right: 4px;
+}
+
+.footer-newsletter p {
+    color: #DDE3E8;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.footer-newsletter .newsletter-form button {
+    background: #EAAA00 !important;
+    color: #3A0F34 !important;
+    font-weight: 800;
+    transition: all 0.2s ease;
+}
+
+.footer-newsletter .newsletter-form button:hover {
+    background: #d49b00 !important;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(221, 227, 232, 0.15);
+    color: #DDE3E8;
+}
+
+.footer-bottom a {
+    color: #EAAA00;
 }
 
 .newsletter-form {
@@ -1699,7 +1744,11 @@ a {
 
     .deal-savings {
         font-size: 0.68rem !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
+        color: #3A0F34 !important;
+        background: #DDE3E8 !important;
+        padding: 1px 4px !important;
+        border-radius: 4px !important;
     }
 
     .bnpl-badge {
@@ -1708,6 +1757,9 @@ a {
         line-height: 1.2 !important;
         letter-spacing: 0 !important;
         text-align: center !important;
+        background: linear-gradient(135deg, #3A0F34 0%, #52184a 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid #DDE3E8 !important;
     }
 
     .badge-discount {
@@ -1715,6 +1767,9 @@ a {
         padding: 2px 5px !important;
         top: 6px !important;
         left: 6px !important;
+        background: linear-gradient(135deg, #EAAA00 0%, #d49b00 100%) !important;
+        color: #3A0F34 !important;
+        font-weight: 900 !important;
     }
 
     .btn-get-deal {
@@ -1725,6 +1780,15 @@ a {
         text-align: center !important;
         justify-content: center !important;
         white-space: nowrap !important;
+        background-color: #3A0F34 !important;
+        color: #ffffff !important;
+        border: none !important;
+    }
+
+    .btn-get-deal:hover,
+    .btn-get-deal:active {
+        background-color: #EAAA00 !important;
+        color: #3A0F34 !important;
     }
 
     .deal-carousel-arrow {
@@ -1815,7 +1879,7 @@ a {
    ========================================== */
 .ch-hero {
     position: relative;
-    background: #0f172a;
+    background: #3A0F34;
     padding: 5.5rem 1rem;
     text-align: center;
     overflow: hidden;
@@ -1872,7 +1936,7 @@ a {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.78) 0%, rgba(15, 23, 42, 0.65) 50%, rgba(15, 23, 42, 0.85) 100%);
+    background: linear-gradient(180deg, rgba(58, 15, 52, 0.82) 0%, rgba(38, 10, 34, 0.72) 50%, rgba(58, 15, 52, 0.88) 100%);
     z-index: 2;
 }
 
@@ -1884,14 +1948,15 @@ a {
 }
 .ch-hero-badge {
     display: inline-block;
-    background: #e8420a;
-    color: #fff;
+    background: #EAAA00;
+    color: #3A0F34;
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     padding: 0.3rem 0.75rem;
     margin-bottom: 1.5rem;
+    border-radius: 4px;
 }
 .ch-hero-h1 {
     color: #fff;
@@ -1901,10 +1966,10 @@ a {
     font-size: clamp(2.5rem, 6vw, 5rem);
     margin-bottom: 1.5rem;
 }
-.ch-scroll-orange { color: #e8420a; }
-.ch-scroll-coral  { color: #EE6B5E; }
+.ch-scroll-orange { color: #EAAA00; }
+.ch-scroll-coral  { color: #EAAA00; }
 .ch-hero-sub {
-    color: #9ca3af;
+    color: #DDE3E8;
     font-size: 1.1rem;
     line-height: 1.65;
     max-width: 36rem;
@@ -1918,8 +1983,9 @@ a {
     margin-bottom: 3.5rem;
 }
 .ch-btn-primary {
-    background: #e8420a;
-    color: #fff;
+    background: #EAAA00;
+    color: #3A0F34;
+    font-weight: 800;
     font-weight: 900;
     font-size: 0.8rem;
     letter-spacing: 0.15em;
@@ -2450,7 +2516,7 @@ a {
 }
 
 .woocommerce-cart table.cart td.actions .button {
-    background: #0f172a;
+    background: #3A0F34;
     color: #ffffff;
     font-weight: 600;
     border-radius: var(--radius-sm);
@@ -2461,7 +2527,8 @@ a {
 }
 
 .woocommerce-cart table.cart td.actions .button:hover {
-    background: #1e293b;
+    background: #EAAA00;
+    color: #3A0F34;
 }
 
 .woocommerce-cart .cart-collaterals {
@@ -2514,21 +2581,22 @@ a {
     display: block;
     width: 100%;
     text-align: center;
-    background: #ef4444;
+    background: #3A0F34;
     color: #ffffff !important;
     font-size: 1.1rem;
     font-weight: 800;
     padding: 1rem 1.5rem;
     border-radius: var(--radius-sm);
     text-decoration: none;
-    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    box-shadow: 0 4px 14px rgba(58, 15, 52, 0.35);
     transition: all 0.2s ease;
 }
 
 .woocommerce-cart .wc-proceed-to-checkout a.checkout-button:hover {
-    background: #dc2626;
+    background: #EAAA00;
+    color: #3A0F34 !important;
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.45);
+    box-shadow: 0 6px 20px rgba(234, 170, 0, 0.45);
 }
 
 /* Header cart button */
@@ -2537,20 +2605,21 @@ a {
     align-items: center;
     gap: 0.4rem;
     background: #f1f5f9;
-    color: #0f172a;
+    color: #3A0F34;
     padding: 0.5rem 0.85rem;
     border-radius: 9999px;
     font-size: 0.9rem;
     font-weight: 700;
     transition: all 0.2s ease;
+    border: 1px solid #DDE3E8;
 }
 .header-cart:hover {
-    background: #e2e8f0;
-    color: #ef4444;
+    background: #DDE3E8;
+    color: #3A0F34;
 }
 .header-cart-count {
-    background: #ef4444;
-    color: #ffffff;
+    background: #EAAA00;
+    color: #3A0F34;
     font-size: 0.75rem;
     font-weight: 800;
     min-width: 18px;
@@ -2566,7 +2635,7 @@ a {
 .cpl-breakdown-row--instalment dt,
 .cpl-breakdown-row--instalment dt strong {
     font-weight: 700 !important;
-    color: var(--secondary-color, #0f172a) !important;
+    color: var(--secondary-color, #3A0F34) !important;
     font-size: 0.95rem !important;
 }
 
@@ -2592,14 +2661,14 @@ a {
 
 .cpl-breakdown-row--due-today-bottom dt {
     font-weight: 700 !important;
-    color: var(--secondary-color, #0f172a) !important;
+    color: var(--secondary-color, #3A0F34) !important;
     font-size: 0.95rem !important;
 }
 
 .cpl-breakdown-row--due-today-bottom dd,
 .cpl-breakdown-row--due-today-bottom .cpl-breakdown-deposit {
     font-weight: 800 !important;
-    color: #ef4444 !important;
+    color: #3A0F34 !important;
     font-size: 1.05rem !important;
 }
 
@@ -2626,7 +2695,7 @@ a {
     }
 }
 .category-tabs-pill {
-    background: #e2e8f0 !important;
+    background: #DDE3E8 !important;
     padding: 6px !important;
     border-radius: 999px !important;
     display: inline-flex !important;
@@ -2651,10 +2720,18 @@ a {
     font-size: 0.92rem !important;
 }
 .mobile-nav-deal-tab.is-active {
-    background: #fef2f2 !important;
-    color: #ef4444 !important;
+    background: rgba(58, 15, 52, 0.08) !important;
+    color: #3A0F34 !important;
     font-weight: 700 !important;
+    border-left: 3px solid #EAAA00 !important;
 }
 
 
 
+
+/* SEO usability refinements — 14 November 2026 */
+.site-info a { text-decoration:underline; }
+.ch-hero .cpl-btn[style*="16a34a"] {background:#166534 !important; color:#fff !important;}
+#deals-section .ch-deals-header p {color:#475569 !important;}
+.deal-urgency-label {color:#854d0e !important;}
+@media(prefers-reduced-motion:reduce){.wa-float-btn,.wa-float-btn::before{animation:none!important}}

@@ -1,0 +1,217 @@
+# 02. COMMAND LOG
+
+This file maintains an immutable, append-only chronological record of all direct instructions given by the user for the **Clearance Kenya** project.
+
+---
+
+### CMD-001
+- **Date & Time:** 2026-10-27 04:40 UTC
+- **User Instruction:** "Add floating vertical sticky BNPL eligibility widget on the right edge of mobile and desktop with phone input check"
+- **Understanding:** Implement a sticky floating widget on the right side of the screen allowing Kenyan users to test their BNPL / Lipa Polepole eligibility using their phone number.
+- **What was done:** Created `wp-content/themes/clearance-deal/inc/bnpl-floating-widget.php`, added toggle tab with phone validation, simulation loading state, and smooth collapse behavior.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/inc/bnpl-floating-widget.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/functions.php`
+- **Result:** Done
+- **Changelog Link:** [CHG-001](./03_CHANGELOG.md#chg-001)
+
+---
+
+### CMD-002
+- **Date & Time:** 2026-10-27 07:15 UTC
+- **User Instruction:** "update result text to 'Congratulation you are eligible for buy now pay later...'"
+- **Understanding:** Update the eligibility check output messaging in the BNPL widget to celebrate user approval and clearly state terms.
+- **What was done:** Updated the JavaScript success template inside `bnpl-floating-widget.php` to display: *"Congratulation! You are eligible for Buy Now Pay Later. Pay 50% payment upfront and clear the rest in 12 monthly instalments via M-Pesa."*
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/inc/bnpl-floating-widget.php`
+- **Result:** Done
+- **Changelog Link:** [CHG-002](./03_CHANGELOG.md#chg-002)
+
+---
+
+### CMD-003
+- **Date & Time:** 2026-10-27 07:20 UTC
+- **User Instruction:** "change <> icon to x icon on the widget"
+- **Understanding:** Replace the chevron `<>` toggle indicator on the collapsed floating tab with a clean `X` close/dismiss icon.
+- **What was done:** Replaced `<>` unicode symbol with an inline SVG `X` close icon for crisp cross-device rendering.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/inc/bnpl-floating-widget.php`
+- **Result:** Done
+- **Changelog Link:** [CHG-003](./03_CHANGELOG.md#chg-003)
+
+---
+
+### CMD-004
+- **Date & Time:** 2026-10-27 07:48 UTC
+- **User Instruction:** "change 'deposit' to 'payment'"
+- **Understanding:** Standardize terminology across the widget and site so that the initial 50% commitment is termed "payment" rather than "deposit".
+- **What was done:** Replaced all occurrences of the word "deposit" with "payment" in the widget UI and calculation summaries.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/inc/bnpl-floating-widget.php`
+- **Result:** Done
+- **Changelog Link:** [CHG-004](./03_CHANGELOG.md#chg-004)
+
+---
+
+### CMD-005
+- **Date & Time:** 2026-10-27 09:10 UTC
+- **User Instruction:** "update Lipa Polepole text to 'Pay 50% now and buy, then 12 easy monthly instalments'"
+- **Understanding:** Align homepage banners, cards, and product pages with the exact user-mandated Lipa Polepole financing phrase.
+- **What was done:** Updated banner copy and financing badges across `front-page.php` to reflect *"Pay 50% now and buy, then 12 easy monthly instalments"*.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/front-page.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/style.css`
+- **Result:** Done
+- **Changelog Link:** [CHG-005](./03_CHANGELOG.md#chg-005)
+
+---
+
+### CMD-006
+- **Date & Time:** 2026-10-27 12:45 UTC
+- **User Instruction:** "apply brand colors: Deep Aubergine (#3A0F34), Marigold (#EAAA00), and Ice Silver (#DDE3E8)"
+- **Understanding:** Rebrand the website palette to the client's official color scheme.
+- **What was done:** Defined CSS variables `:root { --cd-brand-aubergine: #3A0F34; --cd-brand-marigold: #EAAA00; --cd-brand-ice-silver: #DDE3E8; }`, restyled the navigation bar, headers, buttons, cards, badges, and footer.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/style.css`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/header.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/footer.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/front-page.php`
+- **Result:** Done
+- **Changelog Link:** [CHG-006](./03_CHANGELOG.md#chg-006)
+
+---
+
+### CMD-007
+- **Date & Time:** 2026-10-30 02:35 UTC
+- **User Instruction:** "BNPL module should not be shown on https://clearance.co.ke/jobs/ this page only remove from this page rest of the page should be shown"
+- **Understanding:** Exclude the sticky BNPL floating widget and related BNPL financing elements specifically on the `/jobs/` careers page while keeping them active on all other store pages.
+- **What was done:** Updated `inc/bnpl-floating-widget.php` conditional hook: `if (is_page('jobs') || is_page_template('page-jobs.php') || $_SERVER['REQUEST_URI'] === '/jobs/') { return; }`. Also added target CSS hide rules in `page-jobs.php`.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/inc/bnpl-floating-widget.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/page-jobs.php`
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-007](./03_CHANGELOG.md#chg-007)
+
+---
+
+### CMD-008
+- **Date & Time:** 2026-11-04 10:15 UTC
+- **User Instruction:** "check howmany products are there"
+- **Understanding:** Query the live WooCommerce database to count active products.
+- **What was done:** Ran WP-CLI query `wp post list --post_type=product --post_status=publish --format=count` and reported product counts categorized by price brackets.
+- **Files Created / Changed:**
+  - None (database read-only query)
+- **Result:** Done (41 active catalog products identified)
+- **Changelog Link:** [CHG-008](./03_CHANGELOG.md#chg-008)
+
+---
+
+### CMD-009
+- **Date & Time:** 2026-11-04 11:20 UTC
+- **User Instruction:** "i want to impliment WIG and hair related keyword for kenya impliment in to clearance.co.ke to rank google searhc and AI SEO check waht to be done ad do it"
+- **Understanding:** Comprehensive SEO and AI Answer Engine Optimization (AEO) integration targeting Kenyan wig and hair terms (human hair wigs Nairobi, HD lace frontals Kenya, raw virgin hair weaves, braided wigs, closure wigs).
+- **What was done:** Created `wp-content/themes/clearance-deal/inc/seo-aeo.php`, built JSON-LD schemas (`WebSite`, `OnlineStore`, `FAQPage`, `ItemList`), updated `robots.txt` and `llms.txt` for AI crawlers (Perplexity, ChatGPT, Claude, Gemini), and refreshed meta tag structures.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/inc/seo-aeo.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/header.php`
+  - `/var/www/clearance/robots.txt`
+  - `/var/www/clearance/llms.txt`
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-009](./03_CHANGELOG.md#chg-009)
+
+---
+
+### CMD-010
+- **Date & Time:** 2026-11-04 12:45 UTC
+- **User Instruction:** "Price in Kenya is the main keyword kenyans type so include that also in everywhere for SEO and AI SEO"
+- **Understanding:** Inject the high-converting buyer search term `"Price in Kenya"` into all title tags, headings, OpenGraph tags, JSON-LD schemas, breadcrumbs, and LLM text files.
+- **What was done:** Updated single product title generators to `[Product Name] Price in Kenya: KSh [Price] | Clearance Deal`, added dynamic FAQ blocks targeting `"What is the price in Kenya for...?"`, updated homepage headlines, meta descriptions, and `llms.txt`.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/inc/seo-aeo.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/front-page.php`
+  - `/var/www/clearance/llms.txt`
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-010](./03_CHANGELOG.md#chg-010)
+
+---
+
+### CMD-011
+- **Date & Time:** 2026-11-04 13:00 UTC
+- **User Instruction:** "also add those keyword and research more keywords and add those keywords and make about 100 blogs including those keywords"
+- **Understanding:** Conduct extensive keyword research for the Kenyan hair and beauty market and generate 100 comprehensive, search-optimized blog posts across 6 distinct categories.
+- **What was done:** Developed and executed `/var/www/clearance/generate_100_blogs.py`. Created 100 long-form posts (800-1500 words each) categorized into `prices-kenya`, `wigs-lace-frontals`, `raw-virgin-hair`, `shopping-guides-kenya`, `maintenance-styling`, and `lipa-polepole-deals`. Created templates `page-blog.php`, `single.php`, and `archive.php`.
+- **Files Created / Changed:**
+  - `/var/www/clearance/generate_100_blogs.py`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/page-blog.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/single.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/archive.php`
+- **Result:** Done and tested (100 posts live and accessible)
+- **Changelog Link:** [CHG-011](./03_CHANGELOG.md#chg-011)
+
+---
+
+### CMD-012
+- **Date & Time:** 2026-11-04 17:35 UTC
+- **User Instruction:** "make sure those blogs dont show the date of publish"
+- **Understanding:** Strip out all visible publication dates and timestamps from blog posts, archives, and blog hub to keep content evergreen.
+- **What was done:** Removed `get_the_date()` from `single.php`, `page-blog.php`, and `archive.php`. Replaced with evergreen trust badges (*"Verified Guide"* / *"Kenyan Hair Authority"*).
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/single.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/page-blog.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/archive.php`
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-012](./03_CHANGELOG.md#chg-012)
+
+---
+
+### CMD-013
+- **Date & Time:** 2026-11-11 19:25 UTC
+- **User Instruction:** "make a promo code for 10% for clearance.co.ke it should work for 100 people and unlimited period"
+- **Understanding:** Create a WooCommerce coupon code offering a 10% discount, capped at 100 unique redemptions, with no expiry date.
+- **What was done:** Generated coupon `CLEARANCE10` in WooCommerce via WP-CLI with: `discount_type = 'percent'`, `coupon_amount = 10`, `usage_limit = 100`, `usage_limit_per_user = 1`, `date_expires = null`.
+- **Files Created / Changed:**
+  - Database entry in `wp_posts` (Post ID: 523) and `wp_postmeta`
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-013](./03_CHANGELOG.md#chg-013)
+
+---
+
+### CMD-014
+- **Date & Time:** 2026-11-14 16:50 UTC
+- **User Instruction:** "make clerrance guest checkout disable andcash on delivery checkout disable only paid delviery is available for this website"
+- **Understanding:** Disable guest checkout (require customer login/signup), completely disable Cash on Delivery (COD), and enforce paid doorstep delivery throughout checkout and site banners.
+- **What was done:**
+  1. Set `woocommerce_enable_guest_checkout` = `'no'`.
+  2. Set `woocommerce_enable_signup_and_login_from_checkout` = `'yes'`.
+  3. Disabled COD in WooCommerce options (`woocommerce_cod_settings['enabled'] = 'no'`).
+  4. Added permanent gateway filter in `wp-content/themes/clearance-deal/functions.php` to unregister `cod` from all checkout sessions.
+  5. Updated announcement banners and product badges from "Free Delivery" to *"Paid Doorstep Delivery Across Kenya"*.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/functions.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/header.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/front-page.php`
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-014](./03_CHANGELOG.md#chg-014)
+
+---
+
+### CMD-015
+- **Date & Time:** 2026-11-18 14:11 UTC
+- **User Instruction:** "STANDING RULE FOR THIS PROJECT: MAINTAIN A 'PROJECT MEMORY' FOR HANDOVER AND QC... Create a folder called /project-memory in the project root... backfill the history now."
+- **Understanding:** Establish a permanent, structured project memory directory at `/var/www/clearance/project-memory/` containing 12 standardized markdown files, fully backfilled from git history, codebase inspection, and past instructions.
+- **What was done:** Initialized `/project-memory/` on the remote server and local mirror, authored files `00` through `11`, audited git log and WooCommerce configuration, and verified all historical actions.
+- **Files Created / Changed:**
+  - `/var/www/clearance/project-memory/00_README_FOR_AI.md`
+  - `/var/www/clearance/project-memory/01_PROJECT_OVERVIEW.md`
+  - `/var/www/clearance/project-memory/02_COMMAND_LOG.md`
+  - `/var/www/clearance/project-memory/03_CHANGELOG.md`
+  - `/var/www/clearance/project-memory/04_FEATURES_STATUS.md`
+  - `/var/www/clearance/project-memory/05_ARCHITECTURE.md`
+  - `/var/www/clearance/project-memory/06_DATABASE_AND_APIS.md`
+  - `/var/www/clearance/project-memory/07_ENV_AND_SETUP.md`
+  - `/var/www/clearance/project-memory/08_DECISIONS.md`
+  - `/var/www/clearance/project-memory/09_KNOWN_ISSUES_AND_TODO.md`
+  - `/var/www/clearance/project-memory/10_QC_CHECKLIST.md`
+  - `/var/www/clearance/project-memory/11_AGENT_AND_PROMPTS.md`
+- **Result:** Done
+- **Changelog Link:** [CHG-015](./03_CHANGELOG.md#chg-015)

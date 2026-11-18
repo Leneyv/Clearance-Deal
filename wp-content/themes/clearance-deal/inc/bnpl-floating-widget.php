@@ -8,13 +8,25 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// Do not display BNPL widget on the /jobs/ page (https://clearance.co.ke/jobs/)
+$is_jobs_page = is_page( 'jobs' ) || is_page( 251 ) || is_page_template( 'page-jobs.php' );
+if ( ! $is_jobs_page && ! empty( $_SERVER['REQUEST_URI'] ) ) {
+	$request_path = trim( (string) wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' );
+	if ( 'jobs' === $request_path || 0 === strpos( $request_path, 'jobs/' ) ) {
+		$is_jobs_page = true;
+	}
+}
+if ( $is_jobs_page ) {
+	return;
+}
+
 $ajax_url = admin_url( 'admin-ajax.php' );
 $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 ?>
 
-<div id="bnplFloatingWidget" class="bnpl-floating-widget is-open" aria-live="polite">
+<div id="bnplFloatingWidget" class="bnpl-floating-widget" aria-live="polite">
 	<!-- Vertical Sticky Tab (Attached to the left of the card / right edge of screen) -->
-	<button type="button" id="bnplStickyTab" class="bnpl-sticky-tab" aria-label="Check your BNPL Eligibility" title="Toggle BNPL Eligibility">
+	<button type="button" id="bnplStickyTab" aria-expanded="false" aria-controls="bnplCardPanel" class="bnpl-sticky-tab" aria-label="Check your BNPL Eligibility" title="Toggle BNPL Eligibility">
 		<span class="bnpl-toggle-badge" id="bnplToggleBadge">
 			<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 		</span>
@@ -87,7 +99,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 					<i class="fa-solid fa-circle-check"></i>
 				</div>
 				<h4 class="bnpl-success-heading">🎉 Approved!</h4>
-				<p class="bnpl-success-message" style="font-size: 13px; font-weight: 700; color: #166534; line-height: 1.4; margin-bottom: 14px !important;">
+				<p class="bnpl-success-message" style="font-size: 13px; font-weight: 700; color: #3A0F34; line-height: 1.4; margin-bottom: 14px !important;">
 					Congratulation you are eligible for buy now pay later, buy now before deals are over
 				</p>
 				<button type="button" id="bnplShopNowBtn" class="bnpl-shop-btn">
@@ -122,14 +134,14 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+	background: linear-gradient(180deg, #3A0F34 0%, #20071d 100%);
 	color: #ffffff;
-	border: 1.5px solid #16a34a;
+	border: 1.5px solid #EAAA00;
 	border-right: none;
 	border-radius: 12px 0 0 12px;
 	padding: 14px 6px;
 	cursor: pointer;
-	box-shadow: -4px 4px 18px rgba(0, 0, 0, 0.16);
+	box-shadow: -4px 4px 18px rgba(0, 0, 0, 0.2);
 	user-select: none;
 	-webkit-tap-highlight-color: transparent;
 	transition: background 0.2s ease, transform 0.15s ease;
@@ -140,7 +152,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 }
 
 .bnpl-sticky-tab:hover {
-	background: linear-gradient(180deg, #15803d 0%, #166534 100%);
+	background: linear-gradient(180deg, #501648 0%, #3A0F34 100%);
 }
 
 .bnpl-sticky-tab:active {
@@ -164,8 +176,8 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	justify-content: center;
 	font-size: 11px;
 	font-weight: 900;
-	background: rgba(255, 255, 255, 0.25);
-	color: #ffffff;
+	background: #EAAA00;
+	color: #3A0F34;
 	padding: 2px 5px;
 	border-radius: 4px;
 	letter-spacing: -0.5px;
@@ -179,7 +191,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	background: #ffffff;
 	border-radius: 14px 0 0 14px;
 	box-shadow: -8px 8px 30px rgba(0, 0, 0, 0.22);
-	border: 1.5px solid #16a34a;
+	border: 1.5px solid #3A0F34;
 	border-right: none;
 	overflow: hidden;
 	display: flex;
@@ -209,8 +221,8 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 
 /* Panel Header */
 .bnpl-panel-header {
-	background: #f0fdf4;
-	border-bottom: 1.5px solid #dcfce7;
+	background: #3A0F34;
+	border-bottom: 1.5px solid #EAAA00;
 	padding: 10px 14px;
 	display: flex;
 	align-items: center;
@@ -224,18 +236,18 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	gap: 7px;
 	font-size: 12.5px;
 	font-weight: 800;
-	color: #166534;
+	color: #ffffff;
 }
 
 .bnpl-badge-icon {
-	color: #16a34a;
+	color: #EAAA00;
 	font-size: 13px;
 }
 
 .bnpl-panel-toggle-btn {
-	background: #dcfce7;
-	color: #166534;
-	border: 1px solid #bbf7d0;
+	background: #EAAA00;
+	color: #3A0F34;
+	border: 1px solid #d49b00;
 	border-radius: 6px;
 	width: 26px;
 	height: 26px;
@@ -252,9 +264,9 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 }
 
 .bnpl-panel-toggle-btn:hover {
-	background: #fee2e2;
-	color: #dc2626;
-	border-color: #fca5a5;
+	background: #3A0F34;
+	color: #ffffff;
+	border-color: #EAAA00;
 }
 
 /* Panel Body */
@@ -274,31 +286,31 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	display: block;
 	font-size: 11.5px;
 	font-weight: 700;
-	color: #1e293b;
+	color: #3A0F34;
 	margin-bottom: 6px;
 }
 
 .bnpl-phone-box {
 	display: flex;
 	align-items: center;
-	border: 1.5px solid #cbd5e1;
+	border: 1.5px solid #DDE3E8;
 	border-radius: 8px;
 	overflow: hidden;
-	background: #f8fafc;
+	background: #fdfafc;
 	transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .bnpl-phone-box:focus-within {
-	border-color: #16a34a;
+	border-color: #3A0F34;
 	background: #ffffff;
-	box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+	box-shadow: 0 0 0 3px rgba(58, 15, 52, 0.15);
 }
 
 .bnpl-phone-prefix {
 	font-size: 12px;
 	font-weight: 700;
-	color: #334155;
-	background: #e2e8f0;
+	color: #3A0F34;
+	background: #DDE3E8;
 	padding: 9px 10px;
 	border-right: 1px solid #cbd5e1;
 	white-space: nowrap;
@@ -312,7 +324,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	padding: 9px 10px !important;
 	font-size: 14px !important;
 	font-weight: 600 !important;
-	color: #0f172a !important;
+	color: #3A0F34 !important;
 	background: transparent !important;
 	width: 100% !important;
 	box-shadow: none !important;
@@ -333,9 +345,9 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 .bnpl-submit-btn {
 	margin-top: 12px;
 	width: 100%;
-	background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+	background: linear-gradient(135deg, #3A0F34 0%, #20071d 100%);
 	color: #ffffff;
-	border: none;
+	border: 1px solid #EAAA00;
 	border-radius: 8px;
 	padding: 10px 14px;
 	font-size: 13px;
@@ -346,13 +358,15 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	box-shadow: 0 3px 10px rgba(22, 163, 74, 0.25);
+	box-shadow: 0 3px 10px rgba(58, 15, 52, 0.25);
 	transition: all 0.2s ease;
 }
 
 .bnpl-submit-btn:hover {
-	background: linear-gradient(135deg, #15803d 0%, #166534 100%);
-	box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+	background: #EAAA00;
+	color: #3A0F34;
+	border-color: #d49b00;
+	box-shadow: 0 4px 14px rgba(234, 170, 0, 0.35);
 }
 
 /* Step 2: Loading */
@@ -365,8 +379,8 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 .bnpl-spinner {
 	width: 38px;
 	height: 38px;
-	border: 3.5px solid #e2e8f0;
-	border-top-color: #16a34a;
+	border: 3.5px solid #DDE3E8;
+	border-top-color: #3A0F34;
 	border-radius: 50%;
 	animation: bnplSpinAnim 0.75s linear infinite;
 }
@@ -378,7 +392,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 .bnpl-loading-label {
 	font-size: 13px;
 	font-weight: 800;
-	color: #166534;
+	color: #3A0F34;
 	text-align: center;
 	margin-bottom: 14px !important;
 	text-transform: lowercase;
@@ -398,7 +412,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 .bnpl-progress-track {
 	width: 100%;
 	height: 6px;
-	background: #e2e8f0;
+	background: #DDE3E8;
 	border-radius: 999px;
 	overflow: hidden;
 }
@@ -406,7 +420,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 .bnpl-progress-fill {
 	height: 100%;
 	width: 0%;
-	background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+	background: linear-gradient(90deg, #3A0F34 0%, #EAAA00 100%);
 	border-radius: 999px;
 	transition: width 3s linear;
 }
@@ -415,7 +429,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 .bnpl-success-badge {
 	text-align: center;
 	font-size: 38px;
-	color: #16a34a;
+	color: #EAAA00;
 	margin: 4px 0 6px;
 	animation: bnplBounceIn 0.4s ease;
 }
@@ -429,7 +443,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 .bnpl-success-heading {
 	font-size: 14px;
 	font-weight: 800;
-	color: #166534;
+	color: #3A0F34;
 	text-align: center;
 	margin-bottom: 4px;
 }
@@ -437,7 +451,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 .bnpl-success-message {
 	font-size: 12.5px;
 	font-weight: 800;
-	color: #0f172a;
+	color: #3A0F34;
 	text-align: center;
 	margin-bottom: 4px !important;
 	line-height: 1.35;
@@ -453,9 +467,9 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 
 .bnpl-shop-btn {
 	width: 100%;
-	background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-	color: #ffffff !important;
-	border: none;
+	background: #EAAA00;
+	color: #3A0F34 !important;
+	border: 1px solid #d49b00;
 	border-radius: 8px;
 	padding: 10px 14px;
 	font-size: 13px;
@@ -465,14 +479,16 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	box-shadow: 0 3px 10px rgba(22, 163, 74, 0.25);
+	box-shadow: 0 3px 10px rgba(234, 170, 0, 0.25);
 	text-decoration: none !important;
 	transition: all 0.2s ease;
 }
 
 .bnpl-shop-btn:hover {
-	background: linear-gradient(135deg, #15803d 0%, #166534 100%);
-	box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+	background: #3A0F34;
+	color: #ffffff !important;
+	border-color: #EAAA00;
+	box-shadow: 0 4px 14px rgba(58, 15, 52, 0.35);
 }
 
 @media (max-width: 480px) {
@@ -509,6 +525,7 @@ $cpl_nonce = wp_create_nonce( 'cpl_save_phone' );
 	// Toggle function (x button and tab click)
 	function toggleWidget() {
 		var isOpen = widget.classList.toggle('is-open');
+        tabToggle.setAttribute('aria-expanded',String(isOpen));
 		var tabBadge = document.getElementById('bnplToggleBadge');
 		if (tabBadge) {
 			tabBadge.innerHTML = isOpen ? closeSvg : boltSvg;

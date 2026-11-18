@@ -10,6 +10,13 @@ get_header();
 ?>
 
 <style>
+/* Ensure BNPL floating widget is never displayed on jobs page */
+#bnplFloatingWidget, .bnpl-floating-widget {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
 /* Jobs Page Modern Styling */
 .cd-jobs-hero {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);

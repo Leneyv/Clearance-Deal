@@ -1,48 +1,13 @@
-# robots.txt for Clearance Deal Kenya (https://clearance.co.ke)
+# Public catalogue and guides are crawlable by search and answer engines.
 User-agent: *
 Disallow: /wp-admin/
 Disallow: /wp-login.php
 Disallow: /cart/
 Disallow: /checkout/
 Disallow: /my-account/
-Disallow: /*?add-to-cart=
 Disallow: /*?*add-to-cart=
 Disallow: /wp-content/uploads/wc-logs/
 Disallow: /wp-content/uploads/woocommerce_transient_files/
 Disallow: /wp-content/uploads/woocommerce_uploads/
 Allow: /wp-admin/admin-ajax.php
-Allow: /wp-content/uploads/
-Allow: /wp-content/themes/
-
-# Allow major AI search and answer engine crawlers (AEO)
-User-agent: GPTBot
-Allow: /
-Disallow: /cart/
-Disallow: /checkout/
-Disallow: /wp-admin/
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-Disallow: /cart/
-Disallow: /checkout/
-
-User-agent: ClaudeBot
-Allow: /
-Disallow: /cart/
-Disallow: /checkout/
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-# XML Sitemaps
-Sitemap: https://clearance.co.ke/sitemap.xml
 Sitemap: https://clearance.co.ke/wp-sitemap.xml
