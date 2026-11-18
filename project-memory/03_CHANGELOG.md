@@ -230,3 +230,28 @@ This file maintains an immutable, append-only record of all codebase, configurat
 - **How Tested & Result:** Verified file paths and integrity on disk and remote server.
 - **Breaking Risk:** None. Documentation files only.
 - **How to Undo:** Remove directory `/var/www/clearance/project-memory/`.
+
+---
+
+### CHG-016
+- **Date & Time:** 2026-11-18 14:50 UTC
+- **Linked Command:** [CMD-016](./02_COMMAND_LOG.md#cmd-016)
+- **Type:** Config / Security
+- **What Changed & Why:**
+  1. Configured git repository tracking so that `/project-memory/` is committed and pushed to GitHub (`origin/trust-fixes`) from the local repository `/Users/lenee/clearance-deal/`.
+  2. Synced the VPS repository at `/var/www/clearance/` with `origin/trust-fixes` so that both local and VPS maintain an identical copy of the project memory.
+  3. Added an explicit Nginx block in `/etc/nginx/sites-available/clearance.co.ke` restricting public web access:
+     ```nginx
+     location ^~ /project-memory {
+         deny all;
+         return 403;
+     }
+     ```
+  4. Reloaded Nginx and verified security rule blocks unauthorized web scrapers.
+- **Files Touched:**
+  - `/Users/lenee/clearance-deal/project-memory/*`
+  - `/var/www/clearance/project-memory/*`
+  - `/etc/nginx/sites-available/clearance.co.ke`
+- **How Tested & Result:** Executed `curl -I https://clearance.co.ke/project-memory/00_README_FOR_AI.md` and `curl -I https://clearance.co.ke/project-memory/`. Both returned `HTTP/2 403 Forbidden`. Also tested `git status` on both local and VPS; both report up to date with `origin/trust-fixes`.
+- **Breaking Risk:** None. Only blocks external public HTTP downloads of sensitive operational logs.
+- **How to Undo:** Remove the `location ^~ /project-memory` block from `/etc/nginx/sites-available/clearance.co.ke` and reload Nginx.

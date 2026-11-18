@@ -20,6 +20,8 @@ This checklist provides repeatable, step-by-step test routines that any human en
 | **QC-10** | Content Hub | 100 Blog Posts Accessibility & No Dates | **Pass** | 2026-11-04 |
 | **QC-11** | Delivery Policy | "Paid Doorstep Delivery" Text Consistency | **Pass** | 2026-11-14 |
 | **QC-12** | Mobile Usability | Viewport Responsiveness & Tap Targets | **Pass** | 2026-11-14 |
+| **QC-13** | Security / Privacy | Public Web Blocking of `/project-memory/` (403) | **Pass** | 2026-11-18 |
+| **QC-14** | Sync & Resilience | Git Dual Tracking (Local, VPS & GitHub) | **Pass** | 2026-11-18 |
 
 ---
 
@@ -186,3 +188,29 @@ This checklist provides repeatable, step-by-step test routines that any human en
 - **Expected Result:** Valid viewport meta tag present; swipe gestures enabled.
 - **Status:** **Pass**
 - **Date Tested:** 2026-11-14
+
+---
+
+### QC-13: Public Web Blocking of `/project-memory/`
+- **What it should do:** Any external request to `/project-memory/` or files inside it must return HTTP 403 Forbidden.
+- **Test Steps:**
+  1. Execute HTTP HEAD request via curl:
+     ```bash
+     curl -I https://clearance.co.ke/project-memory/00_README_FOR_AI.md
+     curl -I https://clearance.co.ke/project-memory/
+     ```
+  2. Inspect response status line.
+- **Expected Result:** `HTTP/2 403` returned for all endpoints under `/project-memory/`.
+- **Status:** **Pass**
+- **Date Tested:** 2026-11-18
+
+---
+
+### QC-14: Git Dual Tracking & Synchronization
+- **What it should do:** Local repository, VPS repository, and GitHub remote `origin/trust-fixes` must remain synchronized and contain the complete `/project-memory/` directory.
+- **Test Steps:**
+  1. Inspect local branch status: `cd /Users/lenee/clearance-deal && git status`
+  2. Inspect VPS branch status: `ssh root@129.121.132.35 "cd /var/www/clearance && git status"`
+- **Expected Result:** Both report `Your branch is up to date with 'origin/trust-fixes'`, working tree clean.
+- **Status:** **Pass**
+- **Date Tested:** 2026-11-18

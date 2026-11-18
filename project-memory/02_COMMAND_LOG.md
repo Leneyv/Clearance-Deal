@@ -215,3 +215,22 @@ This file maintains an immutable, append-only chronological record of all direct
   - `/var/www/clearance/project-memory/11_AGENT_AND_PROMPTS.md`
 - **Result:** Done
 - **Changelog Link:** [CHG-015](./03_CHANGELOG.md#chg-015)
+
+---
+
+### CMD-016
+- **Date & Time:** 2026-11-18 14:47 UTC
+- **User Instruction:** "STANDING RULE: HOST THE PROJECT MEMORY IN THE PROJECT DIRECTORY AND ON OUR VPS SERVER... The folder must be at <project root>/project-memory and must be part of the project's git repository (committed and pushed with the code)... Find out how this project is deployed on our VPS... Make sure the same /project-memory folder exists in the project directory on the VPS... Make the sync automatic... Make sure the web server (Nginx, Apache or the app itself) does not serve /project-memory. Add an explicit deny rule, then test that a public URL such as https://<our domain>/project-memory/00_README_FOR_AI.md returns 403 or 404... Never write passwords, API keys, tokens..."
+- **Understanding:** Establish full dual-residency for `/project-memory/` inside the git repository on both the local machine (`/Users/lenee/clearance-deal/project-memory/`) and the VPS (`/var/www/clearance/project-memory/`), push to GitHub (`origin/trust-fixes`), configure automatic synchronization, and strictly block all public HTTP access to `/project-memory` via Nginx with a verified 403 Forbidden rule.
+- **What was done:**
+  1. Linked local git clone `/Users/lenee/clearance-deal/` with remote VPS repository and GitHub `origin/trust-fixes`.
+  2. Pushed the full commit history and `project-memory/` to GitHub (`https://github.com/Leneyv/Clearance-Deal.git`).
+  3. Added explicit Nginx security block `location ^~ /project-memory { deny all; return 403; }` and `location ~ /\.git { deny all; return 403; }` in `/etc/nginx/sites-available/clearance.co.ke`.
+  4. Reloaded Nginx and verified via `curl -I https://clearance.co.ke/project-memory/00_README_FOR_AI.md` returning `HTTP/2 403`.
+  5. Established two-way sync protocol over passwordless SSH.
+- **Files Created / Changed:**
+  - `/Users/lenee/clearance-deal/project-memory/*`
+  - `/var/www/clearance/project-memory/*`
+  - `/etc/nginx/sites-available/clearance.co.ke`
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-016](./03_CHANGELOG.md#chg-016)

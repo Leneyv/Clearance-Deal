@@ -64,7 +64,7 @@ Clearance Kenya (`clearance.co.ke`) runs on an optimized LEMP stack (Linux, Ngin
 ├── generate_100_blogs.py                      # Standalone CLI script generating 100 SEO posts
 ├── llms.txt                                   # AI Search summary file for LLMs (Perplexity/ChatGPT)
 ├── llms-full.txt                              # Full context markdown for AI agents
-├── project-memory/                            # Permanent project operational logs (THIS REPO)
+├── project-memory/                            # Permanent project operational logs (THIS REPO - Blocked via Nginx 403)
 │   ├── 00_README_FOR_AI.md
 │   ├── 01_PROJECT_OVERVIEW.md
 │   ├── 02_COMMAND_LOG.md

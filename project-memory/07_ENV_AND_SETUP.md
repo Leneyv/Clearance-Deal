@@ -66,6 +66,19 @@ systemctl reload php8.3-fpm
 systemctl reload nginx
 ```
 
+### C. Synchronizing Project Memory (Dual Local & VPS Sync)
+After every task, once the memory files are updated:
+```bash
+# 1. Commit and push from local repository:
+cd /Users/lenee/clearance-deal
+git add project-memory/
+git commit -m "docs(memory): update project memory [CMD-xxx/CHG-xxx]"
+git push origin trust-fixes
+
+# 2. Synchronize VPS copy via SSH:
+ssh root@129.121.132.35 "cd /var/www/clearance && git pull origin trust-fixes && chown -R www-data:www-data /var/www/clearance/project-memory"
+```
+
 ---
 
 ## 4. Useful Operational WP-CLI Commands
