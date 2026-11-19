@@ -234,3 +234,20 @@ This file maintains an immutable, append-only chronological record of all direct
   - `/etc/nginx/sites-available/clearance.co.ke`
 - **Result:** Done and tested
 - **Changelog Link:** [CHG-016](./03_CHANGELOG.md#chg-016)
+
+---
+
+### CMD-017
+- **Date & Time:** 2026-11-19 14:35 UTC
+- **User Instruction:** "i want manual aproval for any customre reveiws on clearance.co.ke dont approve automatic i will review every customer comment and approve"
+- **Understanding:** Require 100% manual administrative approval for all customer reviews and comments on clearance.co.ke. Disable all automatic approval mechanisms so every single review is held in moderation until reviewed by the store owner.
+- **What was done:**
+  1. Configured WordPress options: `comment_moderation = 1` (manual approval required for all comments), `comment_previously_approved = 0` (disable automatic bypass for previously approved commenters), `moderation_notify = 1` (email admin notification when reviews are held).
+  2. Implemented programmatic safety filter on `pre_comment_approved` returning `0` in `wp-content/themes/clearance-deal/functions.php` to guarantee no plugin or edge case can auto-approve comments.
+  3. Tested review submission to verify that customer reviews enter `hold` / `pending` status.
+- **Files Created / Changed:**
+  - `/var/www/clearance/wp-content/themes/clearance-deal/functions.php`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/functions.php`
+  - Database options: `comment_moderation`, `comment_previously_approved`, `moderation_notify`, `comments_notify`
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-017](./03_CHANGELOG.md#chg-017)

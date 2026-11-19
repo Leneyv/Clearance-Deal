@@ -39,6 +39,9 @@ The database runs on **MySQL 8.0 / MariaDB** using the standard WordPress table 
 | `woocommerce_enable_myaccount_registration` | `yes` | Displays registration form on My Account page. |
 | `woocommerce_cod_settings` | `a:1:{s:7:"enabled";s:2:"no";}` | Disables Cash on Delivery in WooCommerce gateway manager. |
 | `woocommerce_pesapal_settings` | Serialized Array | Stores PesaPal v3 API configuration (keys referenced securely below). |
+| `comment_moderation` | `1` | Forces all customer reviews and comments into manual moderation. |
+| `comment_previously_approved` | `0` | Disables automatic approval bypass for authors with previous approvals. |
+| `moderation_notify` | `1` | Dispatches email notification to store admin when a review requires approval. |
 | `active_plugins` | Serialized Array | Controls active plugin roster (`woocommerce`, `clearance-pay-later`, `pesapal`, etc.). |
 
 ---

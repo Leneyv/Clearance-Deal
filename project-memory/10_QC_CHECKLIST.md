@@ -22,6 +22,7 @@ This checklist provides repeatable, step-by-step test routines that any human en
 | **QC-12** | Mobile Usability | Viewport Responsiveness & Tap Targets | **Pass** | 2026-11-14 |
 | **QC-13** | Security / Privacy | Public Web Blocking of `/project-memory/` (403) | **Pass** | 2026-11-18 |
 | **QC-14** | Sync & Resilience | Git Dual Tracking (Local, VPS & GitHub) | **Pass** | 2026-11-18 |
+| **QC-15** | Content Moderation | Customer Review Manual Approval Required | **Pass** | 2026-11-19 |
 
 ---
 
@@ -214,3 +215,21 @@ This checklist provides repeatable, step-by-step test routines that any human en
 - **Expected Result:** Both report `Your branch is up to date with 'origin/trust-fixes'`, working tree clean.
 - **Status:** **Pass**
 - **Date Tested:** 2026-11-18
+
+---
+
+### QC-15: Customer Review Manual Approval Required
+- **What it should do:** Any product review or comment submitted on clearance.co.ke must remain unapproved (`status: hold` / `0`) and invisible on the live product page until an administrator manually approves it in WP Admin.
+- **Test Steps:**
+  1. Inspect options via WP-CLI:
+     ```bash
+     wp option get comment_moderation --allow-root
+     wp option get comment_previously_approved --allow-root
+     ```
+  2. Verify programmatic filter in `functions.php`:
+     ```bash
+     grep -A 8 "pre_comment_approved" /var/www/clearance/wp-content/themes/clearance-deal/functions.php
+     ```
+- **Expected Result:** `comment_moderation` is `1`, `comment_previously_approved` is `0`, and `pre_comment_approved` forces status `0`.
+- **Status:** **Pass**
+- **Date Tested:** 2026-11-19

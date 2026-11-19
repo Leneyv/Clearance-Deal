@@ -255,3 +255,31 @@ This file maintains an immutable, append-only record of all codebase, configurat
 - **How Tested & Result:** Executed `curl -I https://clearance.co.ke/project-memory/00_README_FOR_AI.md` and `curl -I https://clearance.co.ke/project-memory/`. Both returned `HTTP/2 403 Forbidden`. Also tested `git status` on both local and VPS; both report up to date with `origin/trust-fixes`.
 - **Breaking Risk:** None. Only blocks external public HTTP downloads of sensitive operational logs.
 - **How to Undo:** Remove the `location ^~ /project-memory` block from `/etc/nginx/sites-available/clearance.co.ke` and reload Nginx.
+
+---
+
+### CHG-017
+- **Date & Time:** 2026-11-19 14:38 UTC
+- **Linked Command:** [CMD-017](./02_COMMAND_LOG.md#cmd-017)
+- **Type:** Config / Added
+- **What Changed & Why:**
+  1. Updated core discussion options in WordPress database:
+     - `comment_moderation` = `1` (all comments must be manually approved).
+     - `comment_previously_approved` = `0` (disables auto-approval for users with prior approved reviews).
+     - `moderation_notify` = `1` (notifies administrator via email when comments are submitted).
+  2. Added an explicit fail-safe filter hook in `wp-content/themes/clearance-deal/functions.php`:
+     ```php
+     add_filter( 'pre_comment_approved', function( $approved, $commentdata ) {
+         if ( in_array( $approved, array( 'spam', 'trash' ), true ) ) {
+             return $approved;
+         }
+         return 0; // Force manual moderation
+     }, 999, 2 );
+     ```
+- **Files Touched:**
+  - Database: `wp_options` (`comment_moderation`, `comment_previously_approved`, `moderation_notify`)
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/functions.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/functions.php`
+- **How Tested & Result:** Created a test review via WP-CLI on the live store; verified the resulting comment status was `0` / `hold` and required administrative approval in `/wp-admin/edit-comments.php`.
+- **Breaking Risk:** None. Reviews will not display on product pages until approved by the store admin.
+- **How to Undo:** Set `wp option set comment_moderation 0` and remove the `pre_comment_approved` filter from `functions.php`.

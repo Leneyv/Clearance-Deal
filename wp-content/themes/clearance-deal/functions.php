@@ -1881,4 +1881,18 @@ add_filter( 'woocommerce_available_payment_gateways', function( $gateways ) {
     return $gateways;
 }, 999 );
 
+/**
+ * Require manual approval for all customer product reviews and comments.
+ * Never allow automatic approval; every customer submission is held in
+ * moderation (status: 0 / pending) until manually reviewed and approved by an admin.
+ */
+add_filter( 'pre_comment_approved', function( $approved, $commentdata ) {
+    // Retain spam or trash designations if flagged by security/anti-spam tools
+    if ( in_array( $approved, array( 'spam', 'trash' ), true ) ) {
+        return $approved;
+    }
+    // Force manual moderation (0 = unapproved / pending admin review)
+    return 0;
+}, 999, 2 );
+
 require_once get_template_directory() . '/inc/seo-aeo.php';

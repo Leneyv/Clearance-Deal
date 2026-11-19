@@ -23,6 +23,7 @@ This document provides a live, verified status matrix of every major feature and
 | **Proprietary Lipa Polepole Plugin** | Backend plugin `clearance-pay-later` calculating 50% deposit and instalment breakdowns in cart/checkout. | **Done and tested** | Legacy Setup | 2026-10-27 | Active plugin: `clearance-pay-later`. |
 | **Project Memory System** | Standardized 12-file operational log and handover bridge inside `/project-memory/`. | **Done and tested** | [CMD-015](./02_COMMAND_LOG.md#cmd-015) / [CHG-015](./03_CHANGELOG.md#chg-015) | 2026-11-18 | Full backfill completed. |
 | **VPS Memory Sync & 403 Security** | Bidirectional git tracking to GitHub and VPS, with explicit Nginx deny rule (403 Forbidden). | **Done and tested** | [CMD-016](./02_COMMAND_LOG.md#cmd-016) / [CHG-016](./03_CHANGELOG.md#chg-016) | 2026-11-18 | Tested via curl (HTTP 403) and git push/pull sync. |
+| **Review Manual Moderation** | Mandatory administrative review & approval for all customer reviews/comments; automatic approval disabled. | **Done and tested** | [CMD-017](./02_COMMAND_LOG.md#cmd-017) / [CHG-017](./03_CHANGELOG.md#chg-017) | 2026-11-19 | Verified via `pre_comment_approved` filter & WP options. |
 | **Automated SMS Reminders** | SMS alerts for upcoming monthly instalment payments via Africa's Talking or Advanta SMS. | **Planned** | Backlog | N/A | Slated for Phase 2. |
 | **Automated Courier Tracking (Speedaf / Fargo)** | Real-time webhook integration with local Kenyan parcel couriers. | **Planned** | Backlog | N/A | Slated for Phase 2. |
 
