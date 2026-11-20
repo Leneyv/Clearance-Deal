@@ -1898,7 +1898,9 @@ add_filter( 'pre_comment_approved', function( $approved, $commentdata ) {
 /**
  * Remove WordPress core duplicate canonical tag (handled comprehensively in inc/seo-aeo.php)
  */
-remove_action( 'wp_head', 'rel_canonical' );
+add_action( 'init', function() {
+    remove_action( 'wp_head', 'rel_canonical' );
+} );
 
 /**
  * Display Product Care & Styling Guide Banner on Single Product Page
