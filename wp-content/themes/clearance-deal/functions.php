@@ -1895,4 +1895,42 @@ add_filter( 'pre_comment_approved', function( $approved, $commentdata ) {
     return 0;
 }, 999, 2 );
 
+/**
+ * Remove WordPress core duplicate canonical tag (handled comprehensively in inc/seo-aeo.php)
+ */
+remove_action( 'wp_head', 'rel_canonical' );
+
+/**
+ * Display Product Care & Styling Guide Banner on Single Product Page
+ * Connects the product to its dedicated service / how-to blog post.
+ */
+add_action( 'woocommerce_single_product_summary', function() {
+    global $product;
+    if ( ! $product ) {
+        return;
+    }
+    $guide_url   = get_post_meta( $product->get_id(), '_clearance_care_guide_url', true );
+    $guide_title = get_post_meta( $product->get_id(), '_clearance_care_guide_title', true );
+    if ( ! $guide_url ) {
+        $blog_post = get_page_by_path( 'how-to-care-for-' . $product->get_slug() . '-kenya', OBJECT, 'post' );
+        if ( $blog_post ) {
+            $guide_url   = get_permalink( $blog_post->ID );
+            $guide_title = get_the_title( $blog_post->ID );
+        }
+    }
+    if ( $guide_url ) {
+        ?>
+        <div class="cd-product-care-link" style="margin: 16px 0 20px; padding: 14px 18px; background: #faf5ff; border: 1.5px solid #3A0F34; border-radius: 12px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(58,15,52,0.06);">
+            <i class="fa-solid fa-sparkles" style="font-size: 22px; color: #EAAA00; flex-shrink: 0;"></i>
+            <div style="font-size: 13.5px; line-height: 1.45;">
+                <span style="font-weight: 800; color: #3A0F34; display: block; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Expert Styling &amp; Care Guide:</span>
+                <a href="<?php echo esc_url( $guide_url ); ?>" style="color: #3A0F34; font-weight: 700; text-decoration: underline;">
+                    <?php echo esc_html( $guide_title ?: 'Learn how to wash, install & style this product in Kenya' ); ?> &rarr;
+                </a>
+            </div>
+        </div>
+        <?php
+    }
+}, 36 );
+
 require_once get_template_directory() . '/inc/seo-aeo.php';

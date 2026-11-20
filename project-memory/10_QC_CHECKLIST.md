@@ -23,6 +23,7 @@ This checklist provides repeatable, step-by-step test routines that any human en
 | **QC-13** | Security / Privacy | Public Web Blocking of `/project-memory/` (403) | **Pass** | 2026-11-18 |
 | **QC-14** | Sync & Resilience | Git Dual Tracking (Local, VPS & GitHub) | **Pass** | 2026-11-18 |
 | **QC-15** | Content Moderation | Customer Review Manual Approval Required | **Pass** | 2026-11-19 |
+| **QC-16** | Content & Interlinking | 41 Product Service Blogs & Reciprocal Linking | **Pass** | 2026-11-20 |
 
 ---
 
@@ -233,3 +234,28 @@ This checklist provides repeatable, step-by-step test routines that any human en
 - **Expected Result:** `comment_moderation` is `1`, `comment_previously_approved` is `0`, and `pre_comment_approved` forces status `0`.
 - **Status:** **Pass**
 - **Date Tested:** 2026-11-19
+
+---
+
+### QC-16: 41 Product Service Blogs & Reciprocal Linking
+- **What it should do:** Every catalog product must have a dedicated how-to/service blog post with a single H1, AEO summary, HowTo/FAQ schema, product showcase card, and reciprocal links from the single product page and site footer.
+- **Test Steps:**
+  1. Count published posts via WP-CLI:
+     ```bash
+     wp post list --post_type=post --post_status=publish --format=count --allow-root
+     ```
+  2. Verify XML sitemap contains the care guides:
+     ```bash
+     curl -s https://clearance.co.ke/wp-sitemap-posts-post-1.xml | grep -o 'how-to-care-for' | wc -l
+     ```
+  3. Verify single product page displays reciprocal Care Guide banner:
+     ```bash
+     curl -s https://clearance.co.ke/product/dyson-airwrap-id-6-in-1-multi-styler/ | grep -o 'cd-product-care-link'
+     ```
+  4. Verify footer contains direct link to `/blog/`:
+     ```bash
+     curl -s https://clearance.co.ke/ | grep 'Hair &amp; Wigs Blog'
+     ```
+- **Expected Result:** Total post count = 141 (41 care guides), sitemap contains all 41 URLs, product page links to guide, and footer links to blog hub.
+- **Status:** **Pass**
+- **Date Tested:** 2026-11-20

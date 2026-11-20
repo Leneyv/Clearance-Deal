@@ -283,3 +283,35 @@ This file maintains an immutable, append-only record of all codebase, configurat
 - **How Tested & Result:** Created a test review via WP-CLI on the live store; verified the resulting comment status was `0` / `hold` and required administrative approval in `/wp-admin/edit-comments.php`.
 - **Breaking Risk:** None. Reviews will not display on product pages until approved by the store admin.
 - **How to Undo:** Set `wp option set comment_moderation 0` and remove the `pre_comment_approved` filter from `functions.php`.
+
+---
+
+### CHG-018
+- **Date & Time:** 2026-11-20 14:45 UTC
+- **Linked Command:** [CMD-018](./02_COMMAND_LOG.md#cmd-018)
+- **Type:** Added / Upgraded
+- **What Changed & Why:**
+  1. Authored and published 41 comprehensive, individual product service & how-to care guides (`generate_product_service_blogs.py`), creating a dedicated article for every single catalog item on clearance.co.ke.
+  2. Each article is optimized for SEO, AEO (AI engines), and GEO (Kenyan context):
+     - Single `<h1>` per page with clean slugs (`how-to-care-for-[product-slug]-kenya`).
+     - AEO summary box at top of article.
+     - Step-by-step cleaning, washing, detangling, and weatherproofing instructions.
+     - Nairobi salon service fee comparison tables vs DIY savings.
+     - Embedded product showcase card with price in KSh, 50% Lipa Polepole financing calculation, doorstep delivery notice, and direct "Buy Now" button.
+     - JSON-LD structured data for `HowTo` and `FAQPage`.
+     - Zero visible publish dates/times (evergreen trust badge format).
+  3. Added reciprocal Care Guide banner in `functions.php` on single product pages linking directly to each product's care guide.
+  4. Removed duplicate WordPress core `rel_canonical` tag via `remove_action( 'wp_head', 'rel_canonical' )`.
+  5. Enhanced `footer.php` with prominent direct links to the entire blog hub (`https://clearance.co.ke/blog/`) under Company & Guides and in the footer-bottom bar.
+  6. Verified all 41 posts are listed in the live XML sitemap (`https://clearance.co.ke/wp-sitemap-posts-post-1.xml`, 141 total posts).
+- **Files Touched:**
+  - `/var/www/clearance/generate_product_service_blogs.py`
+  - `/var/www/clearance/products_catalog.json`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/functions.php`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/footer.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/functions.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/footer.php`
+  - Database: `wp_posts` (IDs 536 to 576), `wp_postmeta`
+- **How Tested & Result:** Verified via curl and WP-CLI: total published post count = 141. Single H1 check (`<h1` count = 1), single canonical check, and 200 HTTP response verified on sample care post `how-to-care-for-dyson-airwrap-id-6-in-1-multi-styler-kenya/`. Verified footer links take visitor directly to `/blog/`.
+- **Breaking Risk:** None. All new posts use existing responsive templates.
+- **How to Undo:** Remove posts via WP-CLI: `wp post delete $(wp post list --post_type=post --category=208 --format=ids --allow-root) --force --allow-root` and revert theme files.

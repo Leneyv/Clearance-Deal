@@ -251,3 +251,30 @@ This file maintains an immutable, append-only chronological record of all direct
   - Database options: `comment_moderation`, `comment_previously_approved`, `moderation_notify`, `comments_notify`
 - **Result:** Done and tested
 - **Changelog Link:** [CHG-017](./03_CHANGELOG.md#chg-017)
+
+---
+
+### CMD-018
+- **Date & Time:** 2026-11-20 14:36 UTC
+- **User Instruction:** "make blogs for every prodcut in clearance.co.ke, as an individual peage as service related queries like how to clean how to braid how to how to where to get this service etc kins of end of the day our aim is for the customer to buy goods form us. so make the blog that wya with cta - and i want you to make blogs with SEO AEO AND GEO with meta tat h1 etc all AI relate all these seo related on the attached screen shot settings and puhs those via google search colsoe + make aeo geo ontent too dont mention the date and time of the blog make sure you make blogs for every product in the website and link those in to our webist ealso add blog in the footer once i click on that it will take me to whole blogs"
+- **Understanding:** Author individual, high-converting product service/how-to care guide blogs covering all 41 published products in the store; optimize for SEO, AEO (AI engines), and GEO (Kenya local context); adhere to all screenshot best practices (single H1, clean slugs, noindex absence, canonicals, alt tags, schema HowTo & FAQ, no dates/times, mobile responsiveness); implement bi-directional internal links (Product -> Blog, Blog -> Product); and add prominent blog hub links to the site footer.
+- **What was done:**
+  1. Extracted all 41 published products from the WooCommerce database.
+  2. Created category `Product Care & Styling Guides` (Term ID: 208, slug: `product-care-guides`).
+  3. Created and executed `generate_product_service_blogs.py` generating 41 exhaustive guides covering washing, detangling, salon care vs DIY in Nairobi/Mombasa, KSh pricing, Lipa Polepole financing breakdown, doorstep delivery, and prominent CTA cards.
+  4. Attached product images with descriptive alt text, HowTo and FAQPage JSON-LD schemas, and saved reciprocal metadata `_clearance_care_guide_url` and `_clearance_care_guide_title` on each product.
+  5. Added Care Guide Banner to single product pages in `functions.php` (priority 36, below M-Pesa badge).
+  6. Enhanced `footer.php` with prominent links to `https://clearance.co.ke/blog/` in both footer company links and the footer-bottom bar.
+  7. Removed duplicate `rel_canonical` tag from WordPress core.
+  8. Verified XML sitemap (`/wp-sitemap-posts-post-1.xml`) includes all 41 new URLs (total posts: 141) and pinged Google & Bing sitemap endpoints.
+- **Files Created / Changed:**
+  - `/var/www/clearance/generate_product_service_blogs.py`
+  - `/var/www/clearance/products_catalog.json`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/functions.php`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/footer.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/functions.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/footer.php`
+  - Database: 41 new posts (IDs 536 to 576), postmeta for all 41 products
+  - Project memory files
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-018](./03_CHANGELOG.md#chg-018)

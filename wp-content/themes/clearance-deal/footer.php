@@ -25,11 +25,11 @@
 			</div>
 
 			<div class="footer-links">
-				<h2 style="font-size:16px;margin-bottom:16px">Company</h2>
+				<h2 style="font-size:16px;margin-bottom:16px">Company &amp; Guides</h2>
 				<ul>
+					<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" style="color:#EAAA00; font-weight:700;"><i class="fa-solid fa-book-open"></i> Hair &amp; Wigs Blog (All Guides)</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> About Us</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/contact-us/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Contact Us</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Hair &amp; Wigs Blog</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/jobs/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Careers &amp; Jobs</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/terms-and-conditions/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Terms &amp; Conditions</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>"><i class="fa-solid fa-angle-right"></i> Privacy Policy</a></li>
@@ -49,7 +49,7 @@
 
 		<div class="footer-bottom" style="justify-content: center; text-align: center;">
 			<div class="site-info">
-				&copy; <?php echo esc_html( date_i18n( 'Y' ) ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>. All rights reserved.
+				&copy; <?php echo esc_html( date_i18n( 'Y' ) ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>. All rights reserved. &bull; <a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" style="color:#EAAA00; font-weight:700; text-decoration:none;"><i class="fa-solid fa-book-open" style="font-size:12px;"></i> Hair &amp; Wigs Blog Hub (All Guides)</a>
 			</div>
 		</div>
 	</footer><!-- #colophon -->
