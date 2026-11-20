@@ -259,3 +259,25 @@ This checklist provides repeatable, step-by-step test routines that any human en
 - **Expected Result:** Total post count = 141 (41 care guides), sitemap contains all 41 URLs, product page links to guide, and footer links to blog hub.
 - **Status:** **Pass**
 - **Date Tested:** 2026-11-20
+
+---
+
+### QC-17: Unique Featured Images Across All Blog Posts
+- **What it should do:** Every single blog article (all 141 posts) must display its own distinct, relevant image taken from the WordPress media library gallery. Zero cards on `/blog/` or category archives may repeat the fallback image.
+- **Test Steps:**
+  1. Inspect `_thumbnail_id` coverage in database:
+     ```bash
+     wp eval 'global $wpdb; echo $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id WHERE p.post_type=\"post\" AND p.post_status=\"publish\" AND pm.meta_key=\"_thumbnail_id\"");' --allow-root
+     ```
+  2. Verify uniqueness of assigned image attachments:
+     ```bash
+     wp eval 'global $wpdb; $total = $wpdb->get_var("SELECT COUNT(DISTINCT meta_value) FROM {$wpdb->postmeta} pm INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id WHERE p.post_type=\"post\" AND pm.meta_key=\"_thumbnail_id\""); echo "Unique images: $total\n";' --allow-root
+     ```
+  3. Inspect live card images on `https://clearance.co.ke/blog/`:
+     ```bash
+     curl -s https://clearance.co.ke/blog/ | grep -oE '<img src="[^"]+" alt="[^"]+" loading="lazy">'
+     ```
+- **Expected Result:** 141 posts have thumbnails, all 141 thumbnails are unique, and every card on `/blog/` renders a distinct image from the gallery.
+- **Status:** **Pass**
+- **Date Tested:** 2026-11-20
+

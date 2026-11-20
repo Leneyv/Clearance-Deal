@@ -13,7 +13,7 @@
 5. **Strict Checkout Policy:** **Guest checkout is strictly disabled** (mandatory account registration); **Cash on Delivery (COD) is permanently disabled**; only paid doorstep delivery across Kenya is permitted.
 6. **Active Promo:** Store-wide 10% discount promo code `CLEARANCE10` (max 100 uses, unlimited duration).
 7. **SEO & AEO Engine:** Custom engine (`inc/seo-aeo.php`, `llms.txt`, `robots.txt`) ranking for high-intent Kenyan search queries targeting `"Price in Kenya"`.
-8. **Content Hub:** 141 evergreen Kenyan guides (100 topical cluster articles + 41 dedicated product service/care guides) published without visible publish dates to preserve perpetual authority.
+8. **Content Hub:** 141 evergreen Kenyan guides (100 topical cluster articles + 41 dedicated product service/care guides) published without visible publish dates, each featuring its own unique authentic image from the media gallery.
 9. **Tech Stack & Hosting:** Ubuntu 24.04 LTS VPS (`129.121.132.35`), Nginx 1.24, PHP 8.3-FPM, MySQL 8.0, WordPress 6.x, WooCommerce 11.x, custom theme `clearance-deal`.
 10. **Zero-Fiction Rule:** All features must be tested against live PHP/MySQL environments; no guessing, no plaintext secrets, and unverified items must be explicitly marked `UNVERIFIED` or `NOT TESTED`.
 

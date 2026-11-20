@@ -278,3 +278,29 @@ This file maintains an immutable, append-only chronological record of all direct
   - Project memory files
 - **Result:** Done and tested
 - **Changelog Link:** [CHG-018](./03_CHANGELOG.md#chg-018)
+
+---
+
+### CMD-019
+- **Date & Time:** 2026-11-20 19:44 UTC
+- **User Instruction:** "https://clearance.co.ke/blog/ here you put same images for every article , dont do that each article should have its own images take from our gallary"
+- **Understanding:** Every blog article on clearance.co.ke must display its own distinct, relevant image sourced directly from the website's WordPress media library gallery. Replace the single repeated fallback image across all 141 posts with individual, unique featured images (`_thumbnail_id`), ensuring zero duplication across articles.
+- **What was done:**
+  1. Audited the WordPress media library and extracted 240+ authentic product and beauty image attachments.
+  2. Mapped the 41 product care guides directly to their corresponding WooCommerce product primary image attachments.
+  3. Semantically matched the remaining 100 cluster blog articles to distinct, relevant gallery images (blonde wigs, raw bundles, deep wave/curly textures, short cuts, styling tools, cap constructions, and beauty lifestyle photography).
+  4. Programmatically assigned unique `_thumbnail_id` postmeta to all 141 posts via `assign_blog_images.py`.
+  5. Verified 100% uniqueness: exactly 141 distinct featured images assigned to 141 posts with zero duplicate IDs.
+  6. Updated `page-blog.php` and `archive.php` to fetch `medium_large` and fallback to `full` image sizes.
+  7. Purged WP Super Cache and Nginx FastCGI cache, and verified live on `https://clearance.co.ke/blog/` that all 18 visible cards per page render unique image URLs.
+- **Files Created / Changed:**
+  - `/Users/lenee/clearance-deal/assign_blog_images.py`
+  - `/var/www/clearance/assign_blog_images.py`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/page-blog.php`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/archive.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/page-blog.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/archive.php`
+  - Database: `wp_postmeta` (141 `_thumbnail_id` entries updated)
+- **Result:** Done and tested
+- **Changelog Link:** [CHG-019](./03_CHANGELOG.md#chg-019)
+

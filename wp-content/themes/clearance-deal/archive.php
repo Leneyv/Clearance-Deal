@@ -190,7 +190,7 @@ $term_desc    = $current_term && ! is_wp_error( $current_term ) ? $current_term-
 				the_post();
 				$categories = get_the_category();
 				$cat_name   = ! empty( $categories ) ? $categories[0]->name : $term_name;
-				$thumb_url  = has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'medium_large' ) : 'https://clearance.co.ke/wp-content/uploads/2026/10/model-front-view-straight-raw-indian-hair-bundles-768x1024.jpg';
+				$thumb_url  = has_post_thumbnail() ? ( get_the_post_thumbnail_url( get_the_ID(), 'medium_large' ) ?: get_the_post_thumbnail_url( get_the_ID(), 'full' ) ) : 'https://clearance.co.ke/wp-content/uploads/2026/10/model-front-view-straight-raw-indian-hair-bundles-768x1024.jpg';
 				?>
 				<article class="cd-blog-card">
 					<a href="<?php echo esc_url( get_permalink() ); ?>" class="cd-card-thumb">

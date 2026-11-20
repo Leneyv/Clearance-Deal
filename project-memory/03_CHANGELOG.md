@@ -315,3 +315,31 @@ This file maintains an immutable, append-only record of all codebase, configurat
 - **How Tested & Result:** Verified via curl and WP-CLI: total published post count = 141. Single H1 check (`<h1` count = 1), single canonical check, and 200 HTTP response verified on sample care post `how-to-care-for-dyson-airwrap-id-6-in-1-multi-styler-kenya/`. Verified footer links take visitor directly to `/blog/`.
 - **Breaking Risk:** None. All new posts use existing responsive templates.
 - **How to Undo:** Remove posts via WP-CLI: `wp post delete $(wp post list --post_type=post --category=208 --format=ids --allow-root) --force --allow-root` and revert theme files.
+
+---
+
+### CHG-019
+- **Date & Time:** 2026-11-20 19:50 UTC
+- **Linked Command:** [CMD-019](./02_COMMAND_LOG.md#cmd-019)
+- **Type:** Added / Fixed
+- **What Changed & Why:**
+  1. Identified that all 141 published posts lacked a `_thumbnail_id` in the database, causing `page-blog.php` and `archive.php` to render the identical fallback model image on every single card across `https://clearance.co.ke/blog/`.
+  2. Scanned and indexed the WordPress Media Library (`attachment` post type), isolating 240+ authentic hair, wig, tool, cosmetics, and styling photo assets.
+  3. Created and executed `assign_blog_images.py`:
+     - Linked each of the 41 product care guides to its specific WooCommerce product's primary featured image attachment.
+     - Distributed distinct, topic-matched gallery images to the 100 cluster blog articles (blonde waves, straight temple hair, deep curls, short pixie/bob cuts, styling accessories, and lifestyle photography).
+     - Applied `_thumbnail_id` postmeta to all 141 posts with 100% uniqueness (141 posts -> 141 distinct image IDs).
+  4. Updated `page-blog.php` and `archive.php` to retrieve `medium_large` and fallback to `full` image attachments for responsive delivery.
+  5. Flushed WP Super Cache and reloaded Nginx FastCGI microcache.
+- **Files Touched:**
+  - `/Users/lenee/clearance-deal/assign_blog_images.py`
+  - `/var/www/clearance/assign_blog_images.py`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/page-blog.php`
+  - `/Users/lenee/clearance-deal/wp-content/themes/clearance-deal/archive.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/page-blog.php`
+  - `/var/www/clearance/wp-content/themes/clearance-deal/archive.php`
+  - Database: `wp_postmeta` (141 `_thumbnail_id` records)
+- **How Tested & Result:** Verified via WP-CLI that all 141 posts return `has_post_thumbnail() == true` with valid thumbnail URLs. Checked live HTML of `https://clearance.co.ke/blog/` (pages 1, 2, 3, 4) with `curl`, confirming 18 unique image URLs per page and zero duplicate image URLs across articles. Single article hero banner verified on live post.
+- **Breaking Risk:** None. All images are locally hosted on the existing WordPress uploads directory.
+- **How to Undo:** Revert `page-blog.php` and `archive.php` via git, and if necessary delete `_thumbnail_id` from posts where `post_type = 'post'`.
+
